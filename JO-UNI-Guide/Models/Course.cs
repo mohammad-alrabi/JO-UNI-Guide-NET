@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JO_UNI_Guide.Models
 {
@@ -11,6 +12,8 @@ namespace JO_UNI_Guide.Models
         public string Details { get; set; }
 
         //Realtion with Department
+        [ForeignKey("Department")] 
+
         public int Department_ID { get; set; }
         public virtual Department Department { get; set; }
     }
