@@ -1,4 +1,5 @@
 ﻿using JO_UNI_Guide.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,18 @@ builder.Services.AddControllersWithViews();
 // استدعاء نص الاتصال من ملف appsettings.json وربطه بـ PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// تفعيل نظام Identity مع دعم الـ Roles (الصلاحيات)
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    // إعدادات اختيارية: مثلاً هون خلينا الباسورد ما يكون معقد كتير للتسهيل وقت التطوير
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -25,7 +38,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
