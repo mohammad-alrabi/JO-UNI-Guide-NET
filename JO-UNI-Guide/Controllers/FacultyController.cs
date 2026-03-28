@@ -1,5 +1,6 @@
 ﻿using JO_UNI_Guide.Data;
 using JO_UNI_Guide.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace JO_UNI_Guide.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class FacultyController : Controller
     {
         private readonly ApplicationDbContext _context;

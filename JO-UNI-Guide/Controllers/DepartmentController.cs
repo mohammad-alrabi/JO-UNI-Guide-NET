@@ -1,11 +1,13 @@
 ﻿using JO_UNI_Guide.Data;
 using JO_UNI_Guide.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace JO_UNI_Guide.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DepartmentController : Controller
     {
      private readonly ApplicationDbContext _context;
@@ -42,7 +44,7 @@ namespace JO_UNI_Guide.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Department_ID , DepartmentName ,Details,Faculty_ID")] Department department) 
+        public async Task<IActionResult> Create([Bind("Department_ID,DepartmentName,Details,Faculty_ID")] Department department) 
         {
             if (ModelState.IsValid) 
             {

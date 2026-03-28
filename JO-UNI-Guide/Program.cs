@@ -26,6 +26,21 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        // استدعاء الميثود اللي كتبناها
+        await JO_UNI_Guide.Data.DbInitializer.SeedRolesAndAdminAsync(services);
+    }
+    catch (Exception ex)
+    {
+        // لطباعة أي خطأ ممكن يصير في شاشة الكونسول
+        Console.WriteLine($"An error occurred while seeding the database: {ex.Message}");
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

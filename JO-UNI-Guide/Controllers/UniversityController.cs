@@ -2,16 +2,23 @@
 using JO_UNI_Guide.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting; 
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace JO_UNI_Guide.Controllers
 {
+    [Authorize(Roles ="Admin")] //عشان ما حدا من المستخدمين او الطلاب يقدر يفوت على صفحة الادمن 
     public class UniversityController : Controller
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ApplicationDbContext _context;
         // Dependency injection => بربط الداتابيز بالكونترولر
-        public UniversityController (ApplicationDbContext context)
+        public UniversityController (ApplicationDbContext context , IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
         // هاي الميثود وضيفتها تبحث بالداتابيز عشان تتأكد اذا الجامعة موجودة او لا 
         private async Task<bool> UniversityExists(int id)
@@ -36,11 +43,32 @@ namespace JO_UNI_Guide.Controllers
         // to Create new Uni 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult>Create([Bind("University_ID,Name,Logo,Location,Rank_QS")] University university) //OverPosting Protection
+        public async Task<IActionResult> Create([Bind("University_ID,Name,Location,Logo,Description,Website")] University university, IFormFile? logoFile) //OverPosting Protection
         {
             // في حال كانت الداتا الي دخلها الادمن صح
             if (ModelState.IsValid) 
             {
+                //لمعالجة ورفع الصورة اللوجو
+                if(logoFile != null && logoFile.Length > 0) 
+                {
+                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                    string imagesFolder = Path.Combine(wwwRootPath, "imges");
+
+                    //اذا الملف مش موجود اعمله
+                    if (!Directory.Exists(imagesFolder)) 
+                    {
+                        Directory.CreateDirectory(imagesFolder);
+                    }
+                    //انشاء اسم يونيك عشان ما يصير كونفليكت
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(logoFile.FileName);
+                    string fullPath = Path.Combine(imagesFolder, fileName);
+                    //لحفظ الصورة فعليا جوا السيرفر
+                    using (var fileStrem = new FlieStrem(fullPath , FileMode.Create))
+                    {
+                        await logoFile.CopyToAsync(fileStrem);
+                    }
+                    university.Logo = "/images/" + fileName;
+                }
                 _context.Universities.Add(university);
                 await _context.SaveChangesAsync();
 

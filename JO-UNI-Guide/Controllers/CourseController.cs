@@ -1,5 +1,6 @@
 ﻿using JO_UNI_Guide.Data;
 using JO_UNI_Guide.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using System.ComponentModel;
 
 namespace JO_UNI_Guide.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CourseController : Controller
     {
        private readonly ApplicationDbContext _context;
@@ -78,7 +80,7 @@ namespace JO_UNI_Guide.Controllers
             var course = await _context.Courses.FindAsync(id);
             if (course == null)
                 return NotFound();
-            var department = await _context.Departments.AsNoTracking().OrderBy (n =>n.DepartmentName).ToArrayAsync();
+            var department = await _context.Departments.AsNoTracking().OrderBy (n =>n.DepartmentName).ToListAsync();
             ViewData["Department_ID"] = new SelectList(department, "Department_ID", "DepartmentName", course.Department_ID);
             return View(course);
         }
@@ -111,15 +113,15 @@ namespace JO_UNI_Guide.Controllers
                 }
                     return RedirectToAction(nameof(Index));
             }
-                var departemnt = await _context.Departments.AsNoTracking().OrderBy(n=>n.DepartmentName).ToListAsync();
-                ViewData["Department_ID"] = new SelectList(departemnt, "Department_ID", "DepartmentName", course.Department_ID);
+                var department = await _context.Departments.AsNoTracking().OrderBy(n=>n.DepartmentName).ToListAsync();
+                ViewData["Department_ID"] = new SelectList(department, "Department_ID", "DepartmentName", course.Department_ID);
                 return View(course);
         }
         public async Task<IActionResult>Delete(int? id) 
         {
             if (id == null)
                 return NotFound();
-            var course = await _context.Courses.Include(d =>d.Department).FirstOrDefaultAsync(i => i.Course_ID == id);
+            var course = await _context.Courses.Include(d =>d.Department).ThenInclude(f => f.Faculty).FirstOrDefaultAsync(i => i.Course_ID == id);
             if(course == null)
                 { return NotFound(); }
             return View(course);
