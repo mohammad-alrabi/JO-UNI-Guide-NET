@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JO_UNI_Guide.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class AdminController : Controller
     {
       private readonly ApplicationDbContext _context;
@@ -23,6 +23,15 @@ namespace JO_UNI_Guide.Controllers
                 FacultiesCount = await _context.Faculties.CountAsync(),
                 DepartmentsCount = await _context.Departments.CountAsync(),
                 CoursesCount = await _context.Courses.CountAsync(),
+                LatestUniversities = await _context.Universities
+                                    .OrderByDescending(u => u.University_ID)
+                                    .Take(5)
+                                    .ToListAsync(),
+                LatestCourses = await _context.Courses
+                                  .OrderByDescending(c => c.Course_ID)
+                                  .Take(5)
+                                  .ToListAsync(),
+
             };
             return View(model);
         }

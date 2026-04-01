@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JO_UNI_Guide.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class DepartmentController : Controller
     {
      private readonly ApplicationDbContext _context;
@@ -21,15 +21,33 @@ namespace JO_UNI_Guide.Controllers
             return await _context.Departments.AnyAsync(e => e.Department_ID == id);
         }
         // لعرض كل الاقسام 
-        public async Task<IActionResult> Index() 
+        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber) 
         {
+            if (searchString != null) 
+            {
+                pageNumber = 1;
+            }
+            else 
+            {
+                searchString = currentFilter; 
+            }
+            ViewData["CurrentFilter"] = searchString;
             //include => بتجيب الكلية (faculty>
             //ThenInclude => بتكمل وبتجيب الجامعة التابعة الها الكلية
             var departments = _context.Departments
                 .Include(e => e.Faculty)
                 .ThenInclude(f => f.University)
-                .AsNoTracking();
-            return View(await departments.ToListAsync());
+                .AsNoTracking()
+                .AsQueryable();
+            if (!string.IsNullOrEmpty(searchString)) 
+            {
+                departments = departments.Where(d => d.DepartmentName.Contains(searchString)||
+                                                d.Faculty.Name.Contains(searchString));
+            }
+            departments = departments.OrderBy(d => d.DepartmentName);
+            int pageSize = 5;
+            return View(await JO_UNI_Guide.Helpers.PaginatedList<Department>.CreateAsync(
+                departments, pageNumber ?? 1, pageSize));
         }
         //لاضافة قسم جديد 
         public async Task<IActionResult> Create() 

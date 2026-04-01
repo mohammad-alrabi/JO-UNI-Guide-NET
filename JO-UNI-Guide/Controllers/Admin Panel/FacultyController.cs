@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JO_UNI_Guide.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class FacultyController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,15 +23,35 @@ namespace JO_UNI_Guide.Controllers
             return await _context.Faculties.AnyAsync(e => e.Faculty_ID == id);
         }
         // عرض كل الكليات مع اسم الجامعة التابعه لها 
-        public async Task<IActionResult> Index() 
+        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber) 
         {
+            if (searchString != null) 
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFikter"] = searchString;
             //عشان نجيب بيانات الجامعة المربوطة بالكلية رح نستخدم Include
             // Include هي المسؤلة عن العلاقات مع الجدول الاساسي 
             // معها رح يجيبلنا الكلية والجامعة التابعة لها 
             var faculties = _context.Faculties
                 .Include(f => f.University)
-                .AsNoTracking();
-            return View(await faculties.ToListAsync());
+                .AsNoTracking()
+                .AsQueryable();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                //البحث باسم الكلية او اسم الجامعة التابعه لها
+                faculties = faculties.Where(f=>f.Name.Contains(searchString) ||
+                                             f.University.Name.Contains(searchString));
+            }
+            faculties = faculties.OrderBy(n => n.Name);
+            int pageSize = 5;
+            
+            return View(await JO_UNI_Guide.Helpers.PaginatedList<Faculty>.CreateAsync(
+                faculties , pageNumber ?? 1 , pageSize));
         }
 
         public async Task<IActionResult>Create() 

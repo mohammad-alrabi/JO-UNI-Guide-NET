@@ -4,13 +4,13 @@ namespace JO_UNI_Guide.Data
 {
     public static class DbInitializer
     {
-        public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider)
+        public static async Task SeedRolesAndSuperAdminAsync(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            string[] roleNames = { "Admin", "Student" };
-            foreach (var roleName in roleNames) 
+            string[] roleNames = { "SuperAdmin", "Admin", "Student" };
+            foreach (var roleName in roleNames)
             {
                 var roleExist = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
@@ -18,27 +18,21 @@ namespace JO_UNI_Guide.Data
                     await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
-            string adminEmail = "admin@gmail.com";
-            var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-            if (adminUser == null)
+            string superAdminEmail = "SuperAdmin12@jouni.com";
+            string superAdminPassword = "Password1234";
+            if (await userManager.FindByEmailAsync(superAdminEmail) == null)
             {
-                adminUser = new IdentityUser
+                var superAdminUser = new IdentityUser
                 {
-                    UserName = adminEmail,
-                    Email = adminEmail,
-                    EmailConfirmed = true
+                    UserName = superAdminEmail,
+                    Email = superAdminEmail,
+                    EmailConfirmed = true,
                 };
-                var createPowerUser = await userManager.CreateAsync(adminUser, "Admin@12345");
-                if (createPowerUser.Succeeded)
+                var result = await userManager.CreateAsync(superAdminUser, superAdminPassword);
+                if (result.Succeeded)
                 {
-                    // ربط الحساب برتبة Admin
-                    if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
-                    {
-                        await userManager.AddToRoleAsync(adminUser, "Admin");
-                    }
+                    await userManager.AddToRoleAsync(superAdminUser, "SuperAdmin");
                 }
-
             }
         }
     }

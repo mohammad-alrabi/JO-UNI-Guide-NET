@@ -6,5 +6,8 @@
         public int FacultiesCount { get; set; }
         public int DepartmentsCount { get; set; }
         public int CoursesCount { get; set; }
+
+        public List<University> LatestUniversities { get; set; }
+        public List<Course> LatestCourses { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace JO_UNI_Guide.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class CourseController : Controller
     {
        private readonly ApplicationDbContext _context;
@@ -20,15 +20,32 @@ namespace JO_UNI_Guide.Controllers
         {
             return await _context.Courses.AnyAsync(e =>e.Course_ID == id);
         }
-        public async Task<IActionResult> Index() 
+        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber) 
         {
+            if (searchString != null) 
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
             // course => Department => Faculty => university
             var courses = _context.Courses
                 .Include(e => e.Department)
                     .ThenInclude(e => e.Faculty)
                         .ThenInclude(e => e.University)
-                .AsNoTracking();
-            return View(await courses.ToListAsync());
+                .AsNoTracking()
+                .AsQueryable();
+            if (!string.IsNullOrEmpty(searchString)) 
+            {
+                courses = courses.Where(c => c.Course_Name.Contains(searchString)||c.Department.DepartmentName.Contains(searchString));
+            }
+            courses = courses.OrderBy(c => c.Course_Name);
+            int pageSize = 5;
+            return View(await JO_UNI_Guide.Helpers.PaginatedList<Course>.CreateAsync(
+                        courses, pageNumber ?? 1, pageSize));
         }
         public async Task<IActionResult> Create() 
         {
