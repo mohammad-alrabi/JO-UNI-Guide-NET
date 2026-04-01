@@ -4,35 +4,35 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// استدعاء نص الاتصال من ملف appsettings.json وربطه بـ PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// تفعيل نظام Identity مع دعم الـ Roles (الصلاحيات)
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    // إعدادات اختيارية للتسهيل وقت التطوير
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequiredLength = 6;
+    // Password Requirements
+    options.Password.RequireDigit = true;          // لازم يحتوي على رقم
+    options.Password.RequireLowercase = true;       // لازم يحتوي على حرف صغير
+    options.Password.RequireNonAlphanumeric = false; // مش لازم رمز خاص
+    options.Password.RequireUppercase = true;       // لازم يحتوي على حرف كبير
+    options.Password.RequiredLength = 8;            // 8 أحرف على الأقل
+
+    // Lockout — بيقفل الحساب بعد 5 محاولات غلط
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+    options.Lockout.AllowedForNewUsers = true;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
-// --- كود زراعة البيانات الأساسية (Data Seeding) لمرة واحدة فقط ---
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
-        // استدعاء الميثود اللي بتعمل رتبة SuperAdmin وباقي الرتب
         await JO_UNI_Guide.Data.DbInitializer.SeedRolesAndSuperAdminAsync(services);
     }
     catch (Exception ex)
@@ -41,9 +41,7 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred while seeding the database.");
     }
 }
-// ----------------------------------------------------
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -52,10 +50,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
-// ترتيب الـ Authentication لازم يكون قبل الـ Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -63,4 +58,4 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run(); // مرة وحدة بس بنهاية الملف
+app.Run();

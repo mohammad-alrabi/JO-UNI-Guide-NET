@@ -7,7 +7,6 @@ using static JO_UNI_Guide.Models.LoginModel;
 
 namespace JO_UNI_Guide.Controllers
 {
-    [Authorize(Roles = "SuperAdmin, Admin")]
     public class AccountController : Controller
     {
         // سحبنا محرك تسجيل الدخول تبع Identity
@@ -20,14 +19,20 @@ namespace JO_UNI_Guide.Controllers
 
         // 1. فتح شاشة تسجيل الدخول
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated) 
+            {
+                return RedirectToAction("Dashboard", "Admin");
+            }
             return View();
         }
 
         // 2. تنفيذ عملية الدخول لما الأدمن يكبس "Login"
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             if (ModelState.IsValid)
@@ -62,6 +67,7 @@ namespace JO_UNI_Guide.Controllers
 
         // 3. تسجيل الخروج
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {

@@ -8,18 +8,18 @@ namespace JO_UNI_Guide.Data
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var config = serviceProvider.GetRequiredService<IConfiguration>();
 
             string[] roleNames = { "SuperAdmin", "Admin", "Student" };
             foreach (var roleName in roleNames)
             {
-                var roleExist = await roleManager.RoleExistsAsync(roleName);
-                if (!roleExist)
+                if (!await roleManager.RoleExistsAsync(roleName)) 
                 {
                     await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
-            string superAdminEmail = "SuperAdmin12@jouni.com";
-            string superAdminPassword = "Password1234";
+            string superAdminEmail =config[ "SupeAdmin:Email"];
+            string superAdminPassword = config["SuperAdmin:Password"];
             if (await userManager.FindByEmailAsync(superAdminEmail) == null)
             {
                 var superAdminUser = new IdentityUser

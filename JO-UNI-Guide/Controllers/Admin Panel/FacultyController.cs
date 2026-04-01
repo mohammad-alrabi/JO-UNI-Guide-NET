@@ -33,7 +33,7 @@ namespace JO_UNI_Guide.Controllers
             {
                 searchString = currentFilter;
             }
-            ViewData["CurrentFikter"] = searchString;
+            ViewData["CurrentFilghter"] = searchString;
             //عشان نجيب بيانات الجامعة المربوطة بالكلية رح نستخدم Include
             // Include هي المسؤلة عن العلاقات مع الجدول الاساسي 
             // معها رح يجيبلنا الكلية والجامعة التابعة لها 
