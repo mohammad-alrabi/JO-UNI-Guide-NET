@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using static JO_UNI_Guide.Models.LoginModel;
 
 namespace JO_UNI_Guide.Controllers
 {

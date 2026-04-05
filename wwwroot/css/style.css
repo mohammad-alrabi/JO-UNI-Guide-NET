@@ -1,121 +1,278 @@
-﻿namespace JO_UNI_Guide.wwwroot.css
-{
-    public class style
-
-    body
-
-    margin: 0;
-    font-family: Arial;
-    background: #f5f7fa;
+﻿/* ===== Color Variables ===== */
+:root {
+    --primary: #4F46E5;
+    --secondary: #06B6D4; 
+    --accent: #F59E0B; 
+    --dark: #1E1B4B;
+    --light: #F8FAFC;
 }
 
-
-/* Navbar */
-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 40px;
-    background: #4B3F8F;
-    color: white;
+/* ===== Navbar ===== */
+.navbar {
+    background: linear-gradient(135deg, var(--dark), var(--primary));
+    padding: 1rem 0;
 }
 
-nav a {
-    margin: 0 10px;
-    color: white;
-    text-decoration: none;
+.navbar-brand {
+    color: white !important;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
 }
-    nav a:hover {
-        color: #FFD700;
+
+.nav-link {
+    color: rgba(255,255,255,0.85) !important;
+    font-weight: 500;
+    margin: 0 0.3rem;
+    transition: color 0.2s;
+}
+
+    .nav-link:hover {
+        color: var(--accent) !important;
     }
 
-/* Hero */
-.hero {
-    text-align: center;
-    padding: 100px;
-    background: linear-gradient(to right, #4B3F8F, #6C5DD3);
-    color: white;
+/* ===== Admin Button ===== */
+.admin-btn {
+    background: var(--accent) !important;
+    color: var(--dark) !important;
+    border-radius: 20px;
+/*    padding: 0.3rem 1.2rem !important;*/
+    font-weight: 600;
 }
 
-    .hero button {
-        padding: 10px 20px;
+    .admin-btn:hover {
+        background: white !important;
+        color: var(--primary) !important;
+    }
+
+/* ===== Footer ===== */
+.footer {
+    background: var(--dark);
+    color: rgba(255,255,255,0.7);
+}
+
+/* ===== Alerts ===== */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+/* ===== Hero ===== */
+.hero-section {
+    background: linear-gradient(135deg, var(--dark), var(--primary));
+    color: white;
+    padding: 100px 0;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.85;
+    margin-bottom: 2rem;
+}
+
+.btn-hero {
+    background: var(--accent);
+    color: var(--dark);
+    font-weight: 700;
+    padding: 0.8rem 2.5rem;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+}
+
+    .btn-hero:hover {
         background: white;
-        color: #4B3F8F;
-        border: none;
-        border-radius: 5px;
-        margin-top: 10px;
-        cursor: pointer;
-        transition: 0.3s;
+        color: var(--primary);
+        transform: translateY(-2px);
     }
 
-        .hero button:hover {
-            background: #4B3F8F;
-            color: white;
-        }
-.cards {
-    text-align: center;
-    padding: 40px;
+/* ===== Stats ===== */
+.stats-section {
+    background: var(--light);
+    padding: 60px 0;
 }
 
-.card-container {
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(79,70,229,0.1);
+    transition: transform 0.3s;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-card h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .stat-card p {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+
+/* ===== Universities ===== */
+.universities-section {
+    padding: 80px 0;
+    background: white;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 3rem;
+}
+
+.uni-card {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s;
+    height: 100%;
+}
+
+    .uni-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .uni-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        background: var(--light);
+    }
+
+.uni-card-body {
+    padding: 1.5rem;
+}
+
+    .uni-card-body h5 {
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .uni-card-body p {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+.btn-explore {
+    background: var(--primary);
+    color: white;
+    border-radius: 20px;
+    padding: 0.4rem 1.2rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+    .btn-explore:hover {
+        background: var(--secondary);
+        color: white;
+    }
+
+.btn-view-all {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    border-radius: 30px;
+    padding: 0.7rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+    .btn-view-all:hover {
+        background: var(--primary);
+        color: white;
+    }
+/* ===== Login ===== */
+.login-body {
+    background: linear-gradient(135deg, var(--dark), var(--primary));
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-wrapper {
+    width: 100%;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    padding: 2rem;
 }
 
-.card {
+.login-card {
     background: white;
-    padding: 30px;
-    border-radius: 10px;
-    width: 200px;
-    box-shadow: 0 0 10px #ccc;
-    transition: 0.3s;
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
 
-    .card:hover {
-        transform: scale(1.05);
-    }
-.login-container {
-    width: 300px;
-    margin: 100px auto;
-    padding: 30px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #ccc;
-    text-align: center;
+.login-logo h2 {
+    color: var(--primary);
+    font-weight: 800;
+    margin-bottom: 0;
 }
 
-    .login-container input {
-        width: 100%;
-        margin: 10px 0;
-        padding: 10px;
+.login-logo p {
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.login-subtitle {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+.login-input {
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    border: 2px solid #e2e8f0;
+    transition: border-color 0.3s;
+}
+
+    .login-input:focus {
+        border-color: var(--primary);
+        box-shadow: none;
     }
 
-    .login-container button {
-        width: 100%;
-        padding: 10px;
-        background: #4B3F8F;
+.btn-login {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border-radius: 10px;
+    padding: 0.8rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    transition: opacity 0.3s;
+}
+
+    .btn-login:hover {
+        opacity: 0.9;
         color: white;
-        border: none;
-    }
-    .login-container button {
-        width: 100%;
-        padding: 10px;
-        background: #4B3F8F;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: 0.3s;
     }
 
-        .login-container button:hover {
-            background: #6C5DD3;
-        }
-.login-container {
-    width: 300px;
-    margin: 100px auto;
-    padding: 30px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.back-link {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.9rem;
 }
+
+    .back-link:hover {
+        color: var(--primary);
+    }

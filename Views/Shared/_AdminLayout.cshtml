@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <link rel="stylesheet" href="~/css/admin.css" />
+</head>
+<body class="admin-body">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">JO-UNI-Guide</div>
+
+        <nav class="sidebar-nav">
+            <a asp-controller="Admin" asp-action="Dashboard">
+                Dashboard
+            </a>
+            <a asp-controller="University" asp-action="Index">
+                Universities
+            </a>
+            <a asp-controller="Faculty" asp-action="Index">
+                Faculties
+            </a>
+            <a asp-controller="Department" asp-action="Index">
+                Departments
+            </a>
+            <a asp-controller="Course" asp-action="Index">
+                Courses
+            </a>
+            <!-- بتطلع بس للسوبر أدمن -->
+            @if (User.IsInRole("SuperAdmin"))
+            {
+                <a asp-controller="Users" asp-action="Index">
+                    Users
+                </a>
+            }
+        </nav>
+
+        <!-- Logout بأسفل الـ Sidebar -->
+        <div class="sidebar-footer">
+            <form asp-controller="Account" asp-action="Logout" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Top Bar -->
+        <div class="topbar">
+            <span>Welcome, @User.Identity.Name</span>
+        </div>
+
+        <!-- Alerts -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error">
+                @TempData["Error"]
+            </div>
+        }
+
+        <!-- Page Content -->
+        <div class="content">
+            @RenderBody()
+        </div>
+
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

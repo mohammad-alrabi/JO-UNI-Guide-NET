@@ -1,20 +1,75 @@
-﻿
+﻿@model List<University>
 @{
-
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<section class="hero">
-    <h1>Find Your Future Major 🎓</h1>
-    <p>Explore universities and majors in Jordan </p>
-    <button>Get Started</button>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="hero-title">Find Your Future Major 🎓</h1>
+        <p class="hero-subtitle">Explore universities and majors in Jordan</p>
+        <a asp-controller="Home" asp-action="Universities" class="btn btn-hero">
+            Get Started
+        </a>
+    </div>
 </section>
-<section class="cards">
-    <h2>Top Universities</h2>
 
-    <div class="card-container">
-        <div class="card">University of Jordan</div>
-        <div class="card">JUST</div>
-        <div class="card">Hashemite University</div>
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h2>@ViewBag.UniversitiesCount+</h2>
+                    <p>Universities</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h2>@ViewBag.FacultiesCount+</h2>
+                    <p>Faculties</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h2>@ViewBag.Courses+</h2>
+                    <p>Courses</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Top Universities Section -->
+<section class="universities-section">
+    <div class="container">
+        <h2 class="section-title">Top Universities</h2>
+        <div class="row">
+            @foreach (var university in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="uni-card">
+                        <img src="@university.Logo"
+                             alt="@university.Name"
+                             onerror="this.src='/images/default.png'" />
+                        <div class="uni-card-body">
+                            <h5>@university.Name</h5>
+                            <p>@university.Location</p>
+                            <a asp-controller="Home"
+                               asp-action="UniversityDetails"
+                               asp-route-id="@university.University_ID"
+                               class="btn btn-explore">
+                                Explore
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-4">
+            <a asp-controller="Home" asp-action="Universities" class="btn btn-view-all">
+                View All Universities
+            </a>
+        </div>
     </div>
 </section>

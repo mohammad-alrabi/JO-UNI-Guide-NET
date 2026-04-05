@@ -99,7 +99,8 @@ namespace JO_UNI_Guide.Controllers
             //شيل الرتبة القديمة وحط وحدة جديدة 
             var currentRoles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, currentRoles);
-            await _userManager.AddToRolesAsync(user, currentRoles);
+            await _userManager.AddToRoleAsync(user, role); // ← role الجديدة
+
 
             TempData["Success"] = "User role updated successfully.";
             return RedirectToAction(nameof(Index));

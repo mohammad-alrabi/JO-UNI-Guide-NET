@@ -18,7 +18,7 @@ namespace JO_UNI_Guide.Data
                     await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
-            string superAdminEmail =config[ "SupeAdmin:Email"];
+            string superAdminEmail =config[ "SuperAdmin:Email"];
             string superAdminPassword = config["SuperAdmin:Password"];
             if (await userManager.FindByEmailAsync(superAdminEmail) == null)
             {
