@@ -1,0 +1,14 @@
+## Visual Studio الملفات المؤقتة الخاصة بـ
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.sln.docstates
+
+## ملفات نظام التشغيل
+Thumbs.db
+Desktop.ini
+
+## ملفات الربط مع قاعدة البيانات الشخصية
+appsettings.Development.json

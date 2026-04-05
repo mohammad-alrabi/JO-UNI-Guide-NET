@@ -1,0 +1,121 @@
+﻿namespace JO_UNI_Guide.wwwroot.css
+{
+    public class style
+
+    body
+
+    margin: 0;
+    font-family: Arial;
+    background: #f5f7fa;
+}
+
+
+/* Navbar */
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 40px;
+    background: #4B3F8F;
+    color: white;
+}
+
+nav a {
+    margin: 0 10px;
+    color: white;
+    text-decoration: none;
+}
+    nav a:hover {
+        color: #FFD700;
+    }
+
+/* Hero */
+.hero {
+    text-align: center;
+    padding: 100px;
+    background: linear-gradient(to right, #4B3F8F, #6C5DD3);
+    color: white;
+}
+
+    .hero button {
+        padding: 10px 20px;
+        background: white;
+        color: #4B3F8F;
+        border: none;
+        border-radius: 5px;
+        margin-top: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .hero button:hover {
+            background: #4B3F8F;
+            color: white;
+        }
+.cards {
+    text-align: center;
+    padding: 40px;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 200px;
+    box-shadow: 0 0 10px #ccc;
+    transition: 0.3s;
+}
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+.login-container {
+    width: 300px;
+    margin: 100px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+    text-align: center;
+}
+
+    .login-container input {
+        width: 100%;
+        margin: 10px 0;
+        padding: 10px;
+    }
+
+    .login-container button {
+        width: 100%;
+        padding: 10px;
+        background: #4B3F8F;
+        color: white;
+        border: none;
+    }
+    .login-container button {
+        width: 100%;
+        padding: 10px;
+        background: #4B3F8F;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .login-container button:hover {
+            background: #6C5DD3;
+        }
+.login-container {
+    width: 300px;
+    margin: 100px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}

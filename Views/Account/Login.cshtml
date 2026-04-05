@@ -1,0 +1,18 @@
+﻿@model LoginViewModel
+
+<div class="login-container">
+
+    <h2>Welcome Back 👋</h2>
+    <p>Please login to your account</p>
+    <form asp-action="Login" method="post">
+
+        <input asp-for="Email" placeholder="Email" />
+
+        <input asp-for="Password" type="password" placeholder="Password" />
+
+        <button type="submit">Login</button>
+
+    </form>
+    <div asp-validation-summary="All"></div>
+
+</div>
