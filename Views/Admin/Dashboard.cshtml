@@ -2,7 +2,8 @@
 
 @{
     ViewData["Title"] = "Dashboard";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "_AdminLayout";
+
 }
 
 <div class="container mt-4">
@@ -62,11 +63,16 @@
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
-                        @foreach (var uni in Model.LatestUniversities)
+                        @if (Model.LatestUniversities.Any())
                         {
-                            <li class="list-group-item">
-                                @uni.Name
-                            </li>
+                            @foreach (var uni in Model.LatestUniversities)
+                            {
+                                <li class="list-group-item">@uni.Name</li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="list-group-item text-muted">No universities yet.</li>
                         }
                     </ul>
                 </div>

@@ -8,16 +8,17 @@ using Microsoft.EntityFrameworkCore;
 namespace JO_UNI_Guide.Controllers
 {
     [Authorize(Roles = "SuperAdmin, Admin")]
-    public class AdminPanelController : Controller
+    public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        public AdminPanelController (ApplicationDbContext context , UserManager<IdentityUser> userManager) 
+        public AdminController (ApplicationDbContext context , UserManager<IdentityUser> userManager) 
         {
             _context = context;
             _userManager = userManager;
         }
         //هاي الصفحة بنعرض فيها الاحصائيات
+        [Route("Dashboard")]
         public async Task<IActionResult> Dashboard()
         {
             var model = new DashboardViewModel

@@ -1,33 +1,26 @@
 @model JO_UNI_Guide.Models.Faculty
-
 @{
- ViewData["Title"] = "Create Faculty";
- Layout = "_AdminLayout";
+    ViewData["Title"] = "Create Faculty";
+    Layout = "_AdminLayout";
 }
-
 <div class="form-card">
-
     <h2 class="page-title mb-4">Add Faculty</h2>
-
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <form method="post">
-
         <div class="mb-3">
-            <label>Name</label>
+            <label asp-for="Name"></label>
             <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
-
         <div class="mb-3">
-            <label>University</label>
-            <select asp-for="UniversityId" class="form-control">
-                @foreach (var uni in ViewBag.Universities)
-                {
-                <option value="@uni.University_ID">@uni.Name</option>
-                }
+            <label asp-for="University_ID"></label>
+            <select asp-for="University_ID"
+                    asp-items="@(ViewData["University_ID"] as SelectList)"
+                    class="form-control">
+                <option value="">-- Select University --</option>
             </select>
+            <span asp-validation-for="University_ID" class="text-danger"></span>
         </div>
-
         <button class="btn btn-main">Save</button>
-
     </form>
-
 </div>

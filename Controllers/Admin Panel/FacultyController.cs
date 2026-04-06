@@ -67,6 +67,14 @@ namespace JO_UNI_Guide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Faculty_ID,Name,Details,Faculty_Dean,Location,University_ID")] Faculty faculty) 
         {
+            foreach (var error in ModelState)
+            {
+                Console.WriteLine($"Key: {error.Key}");
+                foreach (var err in error.Value.Errors)
+                {
+                    Console.WriteLine($"Error: {err.ErrorMessage}");
+                }
+            }
             if (ModelState.IsValid) 
             {
                 _context.Add(faculty);

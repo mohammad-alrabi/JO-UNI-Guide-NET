@@ -1,45 +1,8 @@
 ﻿@model JO_UNI_Guide.Models.University
 
-<<<<<<< HEAD
-<div class="container mt-5">
-
-    <h2 class="section-title">Edit University</h2>
-
-    <img src="@Model.Logo" width="120" class="img-thumbnail mb-3" />
-
-    <form method="post" enctype="multipart/form-data">
-
-        <input type="hidden" asp-for="University_ID" />
-
-        <div class="mb-3">
-            <label>Name</label>
-            <input asp-for="Name" class="form-control login-input" />
-        </div>
-
-        <div class="mb-3">
-            <label>Location</label>
-            <input asp-for="Location" class="form-control login-input" />
-        </div>
-
-        <div class="mb-3">
-            <label>Rank</label>
-            <input asp-for="Rank_QS" class="form-control login-input" />
-        </div>
-
-        <div class="mb-3">
-            <label>Change Logo</label>
-            <input type="file" name="logoFile" class="form-control" />
-        </div>
-
-        <button class="btn btn-primary btn-login">Update</button>
-
-    </form>
-
-</div>
-=======
 @{
     ViewData["Title"] = "Edit University";
-    Layout = "_AdminLayout"; 
+    Layout = "_AdminLayout";
 }
 
 <div class="container py-4">
@@ -49,14 +12,12 @@
 
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 border-bottom pb-3">
                     <div>
-                        <h2 class="page-title mb-1">
-                            <i class="bi bi-pencil-square text-warning me-2"></i>Edit University
-                        </h2>
-                        <p class="text-muted mb-0">Update university details and logo for <strong>@Model.Name</strong>.</p>
+                        <h2 class="page-title mb-1">Edit University</h2>
+                        <p class="text-muted mb-0">Update details for <strong>@Model.Name</strong></p>
                     </div>
 
-                    <a asp-action="Index" class="btn btn-outline-secondary fw-bold">
-                        <i class="bi bi-arrow-left me-1"></i> Back
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        Back
                     </a>
                 </div>
 
@@ -65,52 +26,45 @@
                     <input type="hidden" asp-for="University_ID" />
                     <input type="hidden" asp-for="Logo" />
 
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3 rounded-3"></div>
-
                     <div class="mb-3">
-                        <label asp-for="Name" class="form-label fw-bold"></label>
-                        <input asp-for="Name" class="form-control custom-input" placeholder="Enter university name" />
-                        <span asp-validation-for="Name" class="text-danger small"></span>
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control custom-input" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Location" class="form-label fw-bold"></label>
-                        <input asp-for="Location" class="form-control custom-input" placeholder="Enter university location" />
-                        <span asp-validation-for="Location" class="text-danger small"></span>
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="Rank_QS" class="form-label fw-bold"></label>
-                        <input asp-for="Rank_QS" class="form-control custom-input" placeholder="Enter QS rank" />
-                        <span asp-validation-for="Rank_QS" class="text-danger small"></span>
+                        <label asp-for="Location" class="form-label"></label>
+                        <input asp-for="Location" class="form-control custom-input" />
+                        <span asp-validation-for="Location" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-primary">Change Logo (Optional)</label>
+                        <label asp-for="Rank_QS" class="form-label"></label>
+                        <input asp-for="Rank_QS" class="form-control custom-input" />
+                        <span asp-validation-for="Rank_QS" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Change Logo (Optional)</label>
                         <input type="file"
                                name="logoFile"
-                               class="form-control custom-input"
-                               accept="image/*"
+                               class="form-control"
                                onchange="previewImage(event)" />
-                        <small class="text-muted">Leave this empty if you want to keep the current logo.</small>
                     </div>
 
-                    <div class="image-preview text-center mb-4 bg-light p-3 rounded-3 border">
-                        <p class="text-muted small mb-2 fw-bold">Current / New Logo Preview</p>
+                    <div class="text-center mb-3">
                         <img id="imagePreview"
                              src="@Model.Logo"
-                             alt="@Model.Name"
-                             class="img-fluid shadow-sm bg-white p-1 border"
-                             style="max-height: 150px; border-radius: 12px; object-fit: contain;"
+                             style="max-height:150px;"
                              onerror="this.src='/images/default.png'" />
                     </div>
 
-                    <div class="d-flex gap-2 flex-wrap mt-2">
-                        <button type="submit" class="btn btn-main flex-grow-1 fw-bold">
-                            <i class="bi bi-save me-1"></i> Update University
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            Update
                         </button>
 
-                        <a asp-action="Index" class="btn btn-light border px-4 fw-bold">
+                        <a asp-action="Index" class="btn btn-secondary">
                             Cancel
                         </a>
                     </div>
@@ -123,21 +77,13 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
     <script>
         function previewImage(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function () {
                 document.getElementById('imagePreview').src = reader.result;
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(event.target.files[0]);
         }
     </script>
 }
->>>>>>> da3ffeaf22b803cda544d0c1186b1fbae96d2f52

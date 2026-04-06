@@ -1,15 +1,5 @@
 ﻿@model JO_UNI_Guide.Models.University
 
-<<<<<<< HEAD
-<div class="container mt-5 text-center">
-
-    <h2 class="section-title">@Model.Name</h2>
-
-    <img src="@Model.Logo" class="img-fluid mb-3" style="max-width:200px;" />
-
-    <p><strong>Location:</strong> @Model.Location</p>
-    <p><strong>Rank:</strong> @Model.Rank_QS</p>
-=======
 @{
     ViewData["Title"] = "University Details";
 }
@@ -34,7 +24,7 @@
                     <h2 class="page-title mb-3">@Model.Name</h2>
 
                     <p class="text-muted mb-2">
-                        📍 <strong>Location:</strong> @Model.Location
+                        Location: @Model.Location
                     </p>
 
                     <div class="mb-3">
@@ -70,7 +60,7 @@
                         {
                             <div class="col-md-6 mb-3">
                                 <div class="faculty-box">
-                                    🎓 @faculty.Name
+                                    @faculty.Name
                                 </div>
                             </div>
                         }
@@ -86,6 +76,5 @@
 
         </div>
     </div>
->>>>>>> da3ffeaf22b803cda544d0c1186b1fbae96d2f52
 
 </div>
