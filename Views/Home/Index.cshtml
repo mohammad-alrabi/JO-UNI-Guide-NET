@@ -1,74 +1,87 @@
-﻿@model List<University>
+﻿@model List<JO_UNI_Guide.Models.University>
 @{
     ViewData["Title"] = "Home";
+    Layout = "_Layout";
+    
+
 }
 
-<!-- Hero Section -->
 <section class="hero-section">
     <div class="container text-center">
-        <h1 class="hero-title">Find Your Future Major 🎓</h1>
-        <p class="hero-subtitle">Explore universities and majors in Jordan</p>
-        <a asp-controller="Home" asp-action="Universities" class="btn btn-hero">
-            Get Started
+        <h1 class="hero-title">Find Your Future Major <i class="bi bi-mortarboard text-warning ms-1"></i></h1>
+        <p class="hero-subtitle">Explore universities, faculties, and majors in Jordan</p>
+        <a asp-controller="Home" asp-action="Universities" class="btn btn-hero mt-2 shadow-sm">
+            Get Started <i class="bi bi-arrow-right ms-2"></i>
         </a>
     </div>
 </section>
 
-<!-- Stats Section -->
 <section class="stats-section">
     <div class="container">
-        <div class="row text-center">
+        <div class="row text-center g-4">
             <div class="col-md-4">
                 <div class="stat-card">
+                    <i class="bi bi-buildings-fill display-4 text-primary mb-3 d-block opacity-75"></i>
                     <h2>@ViewBag.UniversitiesCount+</h2>
-                    <p>Universities</p>
+                    <p class="fw-bold mb-0">Universities</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="stat-card">
+                    <i class="bi bi-diagram-3-fill display-4 text-primary mb-3 d-block opacity-75"></i>
                     <h2>@ViewBag.FacultiesCount+</h2>
-                    <p>Faculties</p>
+                    <p class="fw-bold mb-0">Faculties</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="stat-card">
+                    <i class="bi bi-journal-bookmark-fill display-4 text-primary mb-3 d-block opacity-75"></i>
                     <h2>@ViewBag.Courses+</h2>
-                    <p>Courses</p>
+                    <p class="fw-bold mb-0">Courses</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Top Universities Section -->
 <section class="universities-section">
     <div class="container">
         <h2 class="section-title">Top Universities</h2>
-        <div class="row">
+        <div class="row g-4">
             @foreach (var university in Model)
             {
                 <div class="col-md-4 mb-4">
-                    <div class="uni-card">
-                        <img src="@university.Logo"
-                             alt="@university.Name"
-                             onerror="this.src='/images/default.png'" />
-                        <div class="uni-card-body">
-                            <h5>@university.Name</h5>
-                            <p>@university.Location</p>
-                            <a asp-controller="Home"
-                               asp-action="UniversityDetails"
-                               asp-route-id="@university.University_ID"
-                               class="btn btn-explore">
-                                Explore
-                            </a>
+                    <div class="uni-card h-100 d-flex flex-column">
+                        <div class="bg-light text-center border-bottom">
+                            <img src="@university.Logo"
+                                 alt="@university.Name"
+                                 class="p-3"
+                                 style="height: 180px; object-fit: contain;"
+                                 onerror="this.src='/images/default.png'" />
+                        </div>
+                        <div class="uni-card-body text-center d-flex flex-column flex-grow-1">
+                            <h5 class="fw-bold mb-2">@university.Name</h5>
+                            <p class="text-muted small mb-4">
+                                <i class="bi bi-geo-alt-fill text-danger me-1"></i> @university.Location
+                            </p>
+
+                            <div class="mt-auto">
+                                <a asp-controller="Home"
+                                   asp-action="UniversityDetails"
+                                   asp-route-id="@university.University_ID"
+                                   class="btn btn-explore w-100 shadow-sm">
+                                    Explore <i class="bi bi-arrow-right-short fs-5 align-middle"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             }
         </div>
-        <div class="text-center mt-4">
+
+        <div class="text-center mt-5">
             <a asp-controller="Home" asp-action="Universities" class="btn btn-view-all">
-                View All Universities
+                <i class="bi bi-grid-fill me-2"></i> View All Universities
             </a>
         </div>
     </div>

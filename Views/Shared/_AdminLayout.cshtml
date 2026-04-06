@@ -4,40 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - Admin Panel</title>
-    <link rel="stylesheet" href="~/css/admin.css" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body class="admin-body">
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-logo">JO-UNI-Guide</div>
-
         <nav class="sidebar-nav">
-            <a asp-controller="Admin" asp-action="Dashboard">
-                Dashboard
-            </a>
-            <a asp-controller="University" asp-action="Index">
-                Universities
-            </a>
-            <a asp-controller="Faculty" asp-action="Index">
-                Faculties
-            </a>
-            <a asp-controller="Department" asp-action="Index">
-                Departments
-            </a>
-            <a asp-controller="Course" asp-action="Index">
-                Courses
-            </a>
-            <!-- بتطلع بس للسوبر أدمن -->
+            <a asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
+            <a asp-controller="University" asp-action="Index">Universities</a>
+            <a asp-controller="Faculty" asp-action="Index">Faculties</a>
+            <a asp-controller="Department" asp-action="Index">Departments</a>
+            <a asp-controller="Course" asp-action="Index">Courses</a>
             @if (User.IsInRole("SuperAdmin"))
             {
-                <a asp-controller="Users" asp-action="Index">
-                    Users
-                </a>
+                <a asp-controller="Users" asp-action="Index">Users</a>
             }
         </nav>
-
-        <!-- Logout بأسفل الـ Sidebar -->
         <div class="sidebar-footer">
             <form asp-controller="Account" asp-action="Logout" method="post">
                 @Html.AntiForgeryToken()
@@ -46,34 +36,37 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-
-        <!-- Top Bar -->
         <div class="topbar">
             <span>Welcome, @User.Identity.Name</span>
         </div>
 
-        <!-- Alerts -->
         @if (TempData["Success"] != null)
         {
-            <div class="alert alert-success">
+            <div class="alert alert-success alert-dismissible fade show m-3">
                 @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         }
         @if (TempData["Error"] != null)
         {
-            <div class="alert alert-error">
+            <div class="alert alert-danger alert-dismissible fade show m-3">
                 @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         }
 
-        <!-- Page Content -->
         <div class="content">
             @RenderBody()
         </div>
-
     </div>
+
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery + Validation -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

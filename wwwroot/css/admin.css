@@ -1,0 +1,155 @@
+﻿/* ===== 1. الألوان الأساسية (نفس Style.css بالظبط) ===== */
+:root {
+    --primary: #4F46E5;
+    --secondary: #06B6D4;
+    --accent: #F59E0B;
+    --dark: #1E1B4B;
+    --light: #F8FAFC;
+    --grad: linear-gradient(135deg, var(--dark), var(--primary)); /* نفس الـ Navbar والـ Hero */
+}
+
+/* ===== 2. الهيكل العام للأدمن ===== */
+.admin-body {
+    background-color: #f1f5f9;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Sidebar - القائمة الجانبية (بنفس لون الـ Navbar) */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background: var(--grad); /* هون السر: صارت تشبه الـ Navbar */
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 1.5rem 1rem;
+    z-index: 1000;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+}
+
+.sidebar-logo {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-align: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    letter-spacing: 1px;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 0.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.sidebar-nav a:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--accent); /* بتضوي أصفر زي الـ Nav-link */
+    transform: translateX(5px);
+}
+
+.sidebar-nav a.active {
+    background: var(--accent);
+    color: var(--dark);
+    font-weight: 700;
+}
+
+/* المنطقة الرئيسية */
+.main-content {
+    margin-left: 260px;
+    min-height: 100vh;
+}
+
+/* Topbar (نفس روح الـ Stats Section) */
+.topbar {
+    background: white;
+    padding: 1.2rem 2.5rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+
+/* ===== 3. البطاقات والعناصر (نفس الـ Uni-Card والـ Stat-Card) ===== */
+
+/* العناوين بنفس لون الـ Section Title */
+.page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+}
+
+/* الكروت بنفس الظل والـ Radius تبع الـ Uni-Card */
+.uni-admin-card, .form-card, .details-card, .delete-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: none;
+    overflow: hidden;
+}
+
+/* الأزرار (نسخة من btn-hero و btn-explore) */
+.btn-main {
+    background: var(--accent);
+    color: var(--dark) !important;
+    font-weight: 700;
+    padding: 0.6rem 1.5rem;
+    border-radius: 30px; /* Round زي الـ View All */
+    border: none;
+    transition: all 0.3s;
+}
+
+.btn-main:hover {
+    background: white;
+    color: var(--primary) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* حقول الإدخال */
+.custom-input {
+    border-radius: 10px;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+}
+
+.custom-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+}
+
+/* زر الخروج بالشكل الجديد */
+.logout-btn {
+    width: 100%;
+    background: transparent;
+    color: #ff4d4d;
+    border: 2px solid #ff4d4d;
+    padding: 0.7rem;
+    border-radius: 30px;
+    font-weight: 700;
+    margin-top: 2rem;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: #ff4d4d;
+    color: white;
+    box-shadow: 0 5px 15px rgba(255,77,77,0.3);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .sidebar { width: 80px; padding: 1rem 0.5rem; }
+    .sidebar-logo, .sidebar-nav span { display: none; }
+    .main-content { margin-left: 80px; }
+}

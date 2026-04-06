@@ -273,6 +273,6 @@
     font-size: 0.9rem;
 }
 
-    .back-link:hover {
+.back-link:hover {
         color: var(--primary);
-    }
+}
