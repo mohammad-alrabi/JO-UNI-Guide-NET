@@ -1,0 +1,96 @@
+﻿@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Admin Dashboard</h2>
+
+    <div class="row">
+
+        <!-- Universities -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body text-center">
+                    <h5>Universities</h5>
+                    <h3>@Model.UniversitiesCount</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Faculties -->
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body text-center">
+                    <h5>Faculties</h5>
+                    <h3>@Model.FacultiesCount</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Departments -->
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body text-center">
+                    <h5>Departments</h5>
+                    <h3>@Model.DepartmentsCount</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses -->
+        <div class="col-md-3">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-body text-center">
+                    <h5>Courses</h5>
+                    <h3>@Model.CoursesCount</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+
+        <!-- Latest Universities -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Latest Universities
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        @foreach (var uni in Model.LatestUniversities)
+                        {
+                            <li class="list-group-item">
+                                @uni.Name
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest Courses -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Latest Courses
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        @foreach (var course in Model.LatestCourses)
+                        {
+                            <li class="list-group-item">
+                                @course.Course_Name
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
