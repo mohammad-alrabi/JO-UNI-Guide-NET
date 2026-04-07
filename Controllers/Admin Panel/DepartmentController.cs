@@ -34,9 +34,6 @@ namespace JO_UNI_Guide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Department department)
         {
-            ModelState.Remove("Faculty");
-            ModelState.Remove("Courses");
-
             if (ModelState.IsValid)
             {
                 _context.Departments.Add(department);

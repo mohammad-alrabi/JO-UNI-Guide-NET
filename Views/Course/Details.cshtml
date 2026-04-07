@@ -1,15 +1,25 @@
 ﻿@model JO_UNI_Guide.Models.Course
 @{
     ViewData["Title"] = "Course Details";
+    Layout = "_AdminLayout";
 }
 
-<h1>@Model.Course_Name</h1>
+<h2 class="page-title">@Model.Course_Name</h2>
 
-<p><strong>Details:</strong> @Model.Details</p>
-<p><strong>Department:</strong> @Model.Department.DepartmentName</p>
-<p><strong>Faculty:</strong> @Model.Department.Faculty.Name</p>
-<p><strong>University:</strong> @Model.Department.Faculty.University.Name</p>
-
-<a asp-action="Edit" asp-route-id="@Model.Course_ID" class="btn btn-success">Edit</a>
-<a asp-action="Delete" asp-route-id="@Model.Course_ID" class="btn btn-danger">Delete</a>
-<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+<div class="details-card">
+    <div class="mb-3">
+        <strong>Details:</strong> @Model.Details
+    </div>
+    <div class="mb-3">
+        <strong>Department:</strong> @Model.Department.DepartmentName
+    </div>
+    <div class="mb-3">
+        <strong>Faculty:</strong> @Model.Department.Faculty.Name
+    </div>
+    <div class="mb-3">
+        <strong>University:</strong> @Model.Department.Faculty.University.Name
+    </div>
+    <a asp-action="Edit" asp-route-id="@Model.Course_ID" class="btn btn-warning">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Course_ID" class="btn btn-danger">Delete</a>
+    <a asp-action="Index" class="btn">Back to List</a>
+</div>

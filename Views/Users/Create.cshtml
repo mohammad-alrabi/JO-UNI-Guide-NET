@@ -1,0 +1,33 @@
+﻿@model JO_UNI_Guide.Models.CreateUserModel
+@{
+    ViewData["Title"] = "Add New User";
+    Layout = "_AdminLayout";
+}
+
+<div class="form-card">
+    <h2 class="page-title mb-4">Add New User</h2>
+
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email Address</label>
+            <input asp-for="Email" class="form-control" placeholder="example@uni.com" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Password</label>
+            <input asp-for="Password" type="password" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Role" class="form-label">Select Role</label>
+            <select asp-for="Role" class="form-select" asp-items="@(ViewData["Role"] as SelectList)">
+                <option value="">-- Choose Role --</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-main px-5">Save Account</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>

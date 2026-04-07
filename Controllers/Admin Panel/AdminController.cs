@@ -41,7 +41,7 @@ namespace JO_UNI_Guide.Controllers
                                   .ToListAsync(),
 
             };
-            return View(model);
+            return View("~/Views/Dashboard/Dashboard.cshtml", model);
         }
     }
 }

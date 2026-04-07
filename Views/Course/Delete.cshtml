@@ -1,15 +1,22 @@
 ﻿@model JO_UNI_Guide.Models.Course
 @{
     ViewData["Title"] = "Delete Course";
+    Layout = "_AdminLayout";
 }
 
-<h1>Are you sure you want to delete this course?</h1>
+<h2 class="page-title">Delete Course</h2>
 
-<p><strong>Name:</strong> @Model.Course_Name</p>
-<p><strong>Department:</strong> @Model.Department.DepartmentName</p>
-
-<form asp-action="DeleteConfirmed" method="post">
-    <input type="hidden" asp-for="Course_ID" />
-    <button type="submit" class="btn btn-danger">Yes, Delete</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+<div class="delete-card">
+    <h4>Are you sure you want to delete this course?</h4>
+    <div class="mb-3">
+        <strong>Name:</strong> @Model.Course_Name
+    </div>
+    <div class="mb-3">
+        <strong>Department:</strong> @Model.Department.DepartmentName
+    </div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Course_ID" />
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a asp-action="Index" class="btn">Cancel</a>
+    </form>
+</div>

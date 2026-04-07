@@ -1,0 +1,38 @@
+﻿@model JO_UNI_Guide.Models.Faculty
+
+@{
+    ViewData["Title"] = "Faculty Details";
+    Layout = "_AdminLayout";
+}
+
+<div class="form-card">
+    <h2 class="page-title mb-4">Faculty Details</h2>
+
+    <div class="details-content">
+        <div class="row mb-3">
+            <div class="col-sm-3 fw-bold">
+                @Html.DisplayNameFor(model => model.Name)
+            </div>
+            <div class="col-sm-9">
+                @Html.DisplayFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-sm-3 fw-bold">
+                @Html.DisplayNameFor(model => model.University)
+            </div>
+            <div class="col-sm-9">
+                @* هنا نعرض اسم الجامعة من خلال العلاقة f.University *@
+                @(Model.University?.Name ?? "No University Assigned")
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="mt-4">
+            <a asp-action="Edit" asp-route-id="@Model.Faculty_ID" class="btn btn-main">Edit</a>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+        </div>
+    </div>
+</div>

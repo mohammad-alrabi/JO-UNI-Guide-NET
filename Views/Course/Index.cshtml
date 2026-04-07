@@ -1,59 +1,69 @@
 ﻿@model JO_UNI_Guide.Helpers.PaginatedList<JO_UNI_Guide.Models.Course>
 @{
     ViewData["Title"] = "Courses List";
+    Layout = "_AdminLayout";
     var currentFilter = ViewData["CurrentFilter"] as string;
 }
 
-<h1>Courses</h1>
+<h2 class="page-title">Courses</h2>
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
+<div class="uni-admin-card">
 
-<form asp-action="Index" method="get" style="margin-bottom:15px;">
-    <input type="text" name="searchString" value="@currentFilter" placeholder="Search courses..." />
-    <button type="submit">Search</button>
-</form>
+    <div class="top-bar">
+        <form asp-action="Index" method="get" class="search-form">
+            <input type="text"
+                   name="searchString"
+                   value="@currentFilter"
+                   placeholder="Search courses..."
+                   class="form-control" />
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Department</th>
-            <th>Faculty</th>
-            <th>University</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+            <button type="submit" class="btn btn-main">Search</button>
+        </form>
+
+        <a asp-action="Create" class="btn btn-main add-btn">
+            Add New Course
+        </a>
+    </div>
+
+    <table>
+        <thead>
             <tr>
-                <td>@item.Course_Name</td>
-                <td>@item.Department.DepartmentName</td>
-                <td>@item.Department.Faculty.Name</td>
-                <td>@item.Department.Faculty.University.Name</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Course_ID">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@item.Course_ID">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Course_ID">Delete</a>
-                </td>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Faculty</th>
+                <th>University</th>
+                <th>Actions</th>
             </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Course_Name</td>
+                    <td>@item.Department.DepartmentName</td>
+                    <td>@item.Department.Faculty.Name</td>
+                    <td>@item.Department.Faculty.University.Name</td>
+                    <td>
+                        <div class="btn-group">
+                            <a asp-action="Details" asp-route-id="@item.Course_ID" class="btn btn-info btn-sm">Details</a>
+                            <a asp-action="Edit" asp-route-id="@item.Course_ID" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.Course_ID" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="btn-group" style="margin-top:1.5rem;">
+        <span>Page @Model.PageIndex of @Model.TotalPages</span>
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn btn-main">Previous</a>
         }
-    </tbody>
-</table>
-
-<div>
-    Page @Model.PageIndex of @Model.TotalPages
-    @if (Model.HasPreviousPage)
-    {
-        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">Previous</a>
-    }
-    @if (Model.HasNextPage)
-    {
-        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)">Next</a>
-    }
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn btn-main">Next</a>
+        }
+    </div>
 </div>
-
-<a asp-action="Create" class="btn btn-primary" style="margin-top:10px;">Add New Course</a>

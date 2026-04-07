@@ -1,37 +1,30 @@
 ﻿@model JO_UNI_Guide.Models.Department
-
 @{
     ViewData["Title"] = "Edit Department";
+    Layout = "_AdminLayout";
 }
 
-<h2>Edit Department</h2>
+<h2 class="page-title">Edit Department</h2>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Department_ID" />
-
-    <div class="mb-3">
-        <label asp-for="DepartmentName" class="form-label"></label>
-        <input asp-for="DepartmentName" class="form-control" />
-        <span asp-validation-for="DepartmentName" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Details" class="form-label"></label>
-        <input asp-for="Details" class="form-control" />
-        <span asp-validation-for="Details" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Faculty_ID" class="form-label">Faculty</label>
-        <select asp-for="Faculty_ID" asp-items="ViewBag.FacultyList" class="form-select">
-            <option value="">-- Select Faculty --</option>
-        </select>
-        <span asp-validation-for="Faculty_ID" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Update</button>
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</form>
+<div class="form-card">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Department_ID" />
+        <div class="mb-3">
+            <label asp-for="DepartmentName" class="form-label"></label>
+            <input asp-for="DepartmentName" class="form-control" />
+            <span asp-validation-for="DepartmentName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Faculty_ID" class="form-label">Faculty</label>
+            <select asp-for="Faculty_ID" asp-items="ViewBag.FacultyList" class="form-select">
+                <option value="">-- Select Faculty --</option>
+            </select>
+            <span asp-validation-for="Faculty_ID" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-main">Update</button>
+        <a asp-action="Index" class="btn">Back</a>
+    </form>
+</div>
 
 @section Scripts {
     @{

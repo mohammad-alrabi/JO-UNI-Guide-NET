@@ -1,52 +1,44 @@
 ﻿@model IEnumerable<JO_UNI_Guide.Models.Department>
-
 @{
     ViewData["Title"] = "Departments";
+    Layout = "_AdminLayout";
 }
 
-<h2>Departments</h2>
+<h2 class="page-title">Departments</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add Department</a>
-</p>
-
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["Success"]
-    </div>
-}
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Department Name</th>
-            <th>Details</th>
-            <th>Faculty</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (!Model.Any())
-        {
-            <tr>
-                <td colspan="4">No departments found.</td>
+<div class="uni-admin-card">
+    <p>
+        <a asp-action="Create" class="btn btn-main">Add Department</a>
+    </p>
+    <table style="width:100%; border-collapse:collapse; text-align:left;">
+        <thead>
+            <tr >
+                <th>Department Name</th>
+                <th >Faculty</th>
+                <th >Actions</th>
             </tr>
-        }
-        else
-        {
-            @foreach (var item in Model)
+        </thead>
+        <tbody>
+            @if (!Model.Any())
             {
                 <tr>
-                    <td>@item.DepartmentName</td>
-                    <td>@item.Details</td>
-                    <td>@item.Faculty?.Name</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Department_ID" class="btn btn-warning btn-sm">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Department_ID" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
+                    <td colspan="3">No departments found.</td>
                 </tr>
             }
-        }
-    </tbody>
-</table>
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr >
+                        <td>@item.DepartmentName</td>
+                        <td>@item.Faculty?.Name</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Department_ID" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.Department_ID" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

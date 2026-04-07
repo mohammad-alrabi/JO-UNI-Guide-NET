@@ -26,7 +26,6 @@ using (var scope = app.Services.CreateScope())
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var configuration = services.GetRequiredService<IConfiguration>();
 
-    if (!await roleManager.RoleExistsAsync("Admin"))
         await roleManager.CreateAsync(new IdentityRole("Admin"));
     if (!await roleManager.RoleExistsAsync("SuperAdmin"))
         await roleManager.CreateAsync(new IdentityRole("SuperAdmin"));

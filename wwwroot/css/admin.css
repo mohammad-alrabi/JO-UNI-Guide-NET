@@ -198,3 +198,99 @@
     .main-content { margin-left: 80px; }
     .sidebar-nav a i { margin: 0; }
 }
+/* ===== Form Elements ===== */
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+    box-sizing: border-box;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+    }
+
+/* ===== Buttons ===== */
+.btn {
+    display: inline-block;
+    padding: 0.7rem 1.4rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+}
+
+/* ===== Table ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead tr {
+    border-bottom: 2px solid #eef2ff;
+}
+
+tbody tr {
+    border-bottom: 1px solid #eef2ff;
+}
+
+th, td {
+    padding: 0.8rem;
+    text-align: left;
+}
+
+/* ===== Text ===== */
+.text-danger {
+    color: #EF4444;
+    font-size: 0.85rem;
+}
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+      
+}
+.add-btn {
+    width: auto; /* مهم جداً */
+    flex: none; /* يمنع التمدد */
+}
+.top-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.add-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
