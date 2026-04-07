@@ -67,6 +67,8 @@ namespace JO_UNI_Guide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("University_ID,Name,Location,Logo,Rank_QS")] University university, IFormFile? logoFile) //OverPosting Protection
         {
+            ModelState.Remove("Logo");
+
             // في حال كانت الداتا الي دخلها الادمن صح
             if (ModelState.IsValid) 
             {

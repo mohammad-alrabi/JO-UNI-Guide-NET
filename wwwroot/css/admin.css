@@ -1,0 +1,200 @@
+﻿/* ===== Color Variables ===== */
+:root {
+    --primary: #4F46E5;
+    --secondary: #06B6D4;
+    --accent: #F59E0B;
+    --dark: #1E1B4B;
+    --light: #F8FAFC;
+    --side-width: 260px; /* عرض السايد بار */
+}
+
+/* ===== Global Polish & Animations ===== */
+.admin-body {
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.content-wrapper {
+    animation: fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Sidebar (نسخة مطورة من Navbar) ===== */
+.sidebar {
+    width: var(--side-width);
+    height: 100vh;
+    background: linear-gradient(180deg, var(--dark), var(--primary));
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 25px rgba(0,0,0,0.1);
+}
+
+.sidebar-logo {
+    color: white;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    text-align: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    color: rgba(255,255,255,0.85) !important;
+    text-decoration: none;
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 0.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.sidebar-nav a i {
+    margin-right: 12px;
+    font-size: 1.2rem;
+}
+
+.sidebar-nav a:hover, 
+.sidebar-nav a.active {
+    background: white;
+    color: var(--primary) !important;
+    transform: translateX(5px);
+}
+
+/* ===== Main Content Structure ===== */
+.main-content {
+    margin-left: var(--side-width);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar {
+    background: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.content {
+    padding: 2rem;
+    flex-grow: 1;
+}
+
+/* ===== Sidebar Footer & Logout ===== */
+.sidebar-footer {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.logout-btn {
+    width: 100%;
+    background: var(--accent) !important;
+    color: var(--dark) !important;
+    border: none;
+    padding: 0.7rem;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: white !important;
+    color: var(--primary) !important;
+    transform: translateY(-2px);
+}
+
+/* ===== UNIVERSITY ADMIN UI ELEMENTS ===== */
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--dark);
+    letter-spacing: -0.5px;
+}
+
+.btn { transition: all 0.25s ease !important; }
+.btn:hover { transform: translateY(-2px); }
+
+.btn-main {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white !important;
+    border-radius: 12px;
+    padding: 0.7rem 1.4rem;
+    font-weight: 700;
+    border: none;
+}
+
+.btn-main:hover {
+    box-shadow: 0 10px 25px rgba(79,70,229,0.2);
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #06B6D4, #3B82F6);
+    border: none; color: white !important;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #F59E0B, #F97316);
+    border: none; color: white !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    border: none; color: white !important;
+}
+
+/* ===== Cards & Alerts ===== */
+.form-card, .details-card, .delete-card, .search-box, .uni-admin-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    backdrop-filter: blur(8px);
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.12));
+    color: #166534;
+    border-left: 5px solid #22c55e;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 992px) {
+    :root { --side-width: 80px; }
+    .sidebar-logo, .sidebar-nav a span { display: none; }
+    .main-content { margin-left: 80px; }
+    .sidebar-nav a i { margin: 0; }
+}

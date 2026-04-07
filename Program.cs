@@ -23,8 +23,15 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
     options.Lockout.AllowedForNewUsers = true;
 })
+
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+});
 
 var app = builder.Build();
 
