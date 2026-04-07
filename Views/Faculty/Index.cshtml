@@ -1,0 +1,41 @@
+@model IEnumerable<JO_UNI_Guide.Models.Faculty>
+
+    @{
+ ViewData["Title"] = "Faculty";
+ Layout = "_AdminLayout";
+    }
+
+    <div class="uni-admin-card">
+
+        <div class="d-flex justify-content-between mb-4">
+            <h2 class="page-title">Faculties</h2>
+            <a href="/Faculty/Create" class="btn btn-main">+ Add Faculty</a>
+        </div>
+
+        <table class="table table-hover text-center align-middle">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>University</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+        {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.University?.Name</td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" href="/Faculty/Edit/@item.Id">Edit</a>
+                        <a class="btn btn-danger btn-sm" href="/Faculty/Delete/@item.Id">Delete</a>
+                    </td>
+                </tr>
+        }
+            </tbody>
+
+        </table>
+
+    </div>

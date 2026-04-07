@@ -1,0 +1,24 @@
+@model JO_UNI_Guide.Models.Faculty
+
+
+@{
+ ViewData["Title"] = "Delete Faculty";
+ Layout = "_AdminLayout";
+}
+
+<div class="delete-card text-center">
+
+    <h2 class="text-danger mb-3">Delete Faculty</h2>
+
+    <p>Are you sure you want to delete this?</p>
+
+    <h4>@Model.Name</h4>
+
+    <form method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <button class="btn btn-danger">Delete</button>
+        <a href="/Faculty" class="btn btn-secondary">Cancel</a>
+    </form>
+
+</div>

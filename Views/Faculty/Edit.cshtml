@@ -1,0 +1,35 @@
+@model JO_UNI_Guide.Models.Faculty
+
+@{
+ ViewData["Title"] = "Edit Faculty";
+ Layout = "_AdminLayout";
+}
+
+<div class="form-card">
+
+    <h2 class="page-title mb-4">Edit Faculty</h2>
+
+    <form method="post">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>University</label>
+            <select asp-for="UniversityId" class="form-control">
+                @foreach (var uni in ViewBag.Universities)
+                {
+                <option value="@uni.University_ID">@uni.Name</option>
+                }
+            </select>
+        </div>
+
+        <button class="btn btn-main">Update</button>
+
+    </form>
+
+</div>

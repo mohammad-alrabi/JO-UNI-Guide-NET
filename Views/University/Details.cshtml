@@ -1,5 +1,12 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model JO_UNI_Guide.Models.University
+
+<div class="container mt-5 text-center">
+
+    <h2 class="section-title">@Model.Name</h2>
+
+    <img src="@Model.Logo" class="img-fluid mb-3" style="max-width:200px;" />
+
+    <p><strong>Location:</strong> @Model.Location</p>
+    <p><strong>Rank:</strong> @Model.Rank_QS</p>
+
+</div>
