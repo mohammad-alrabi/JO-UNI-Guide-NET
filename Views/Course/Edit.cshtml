@@ -1,0 +1,44 @@
+﻿@model JO_UNI_Guide.Models.Course
+@{
+    ViewData["Title"] = "Edit Course";
+}
+
+<h1>Edit Course</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Course_ID" />
+
+    <div>
+        <label asp-for="Course_Name"></label>
+        <input asp-for="Course_Name" class="form-control" />
+        <span asp-validation-for="Course_Name" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Details"></label>
+        <textarea asp-for="Details" class="form-control"></textarea>
+        <span asp-validation-for="Details" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Department_ID"></label>
+        <select asp-for="Department_ID" asp-items="@(ViewData["Department_ID"] as SelectList)" class="form-control"></select>
+        <span asp-validation-for="Department_ID" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</form>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,59 @@
+﻿@model JO_UNI_Guide.Helpers.PaginatedList<JO_UNI_Guide.Models.Course>
+@{
+    ViewData["Title"] = "Courses List";
+    var currentFilter = ViewData["CurrentFilter"] as string;
+}
+
+<h1>Courses</h1>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<form asp-action="Index" method="get" style="margin-bottom:15px;">
+    <input type="text" name="searchString" value="@currentFilter" placeholder="Search courses..." />
+    <button type="submit">Search</button>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Faculty</th>
+            <th>University</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Course_Name</td>
+                <td>@item.Department.DepartmentName</td>
+                <td>@item.Department.Faculty.Name</td>
+                <td>@item.Department.Faculty.University.Name</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Course_ID">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Course_ID">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Course_ID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    Page @Model.PageIndex of @Model.TotalPages
+    @if (Model.HasPreviousPage)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">Previous</a>
+    }
+    @if (Model.HasNextPage)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)">Next</a>
+    }
+</div>
+
+<a asp-action="Create" class="btn btn-primary" style="margin-top:10px;">Add New Course</a>

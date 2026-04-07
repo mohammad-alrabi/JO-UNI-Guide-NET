@@ -3,60 +3,65 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 8;
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
-    options.Lockout.AllowedForNewUsers = true;
+    options.SignIn.RequireConfirmedEmail = true;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// ✅ هون صح
-bool isDevelopment = builder.Environment.IsDevelopment();
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.Lax;
-    options.Cookie.SecurePolicy = isDevelopment
-        ? CookieSecurePolicy.None
-        : CookieSecurePolicy.Always;
-});
-
 var app = builder.Build();
 
+// Seed SuperAdmin & Roles
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
+    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var configuration = services.GetRequiredService<IConfiguration>();
+
+    if (!await roleManager.RoleExistsAsync("Admin"))
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    if (!await roleManager.RoleExistsAsync("SuperAdmin"))
+        await roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
+
+    var superAdminEmail = configuration["SuperAdmin:Email"];
+    var superAdminPassword = configuration["SuperAdmin:Password"];
+    var user = await userManager.FindByEmailAsync(superAdminEmail);
+    if (user == null)
     {
-        await JO_UNI_Guide.Data.DbInitializer.SeedRolesAndSuperAdminAsync(services);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
+        user = new IdentityUser
+        {
+            UserName = superAdminEmail,
+            Email = superAdminEmail,
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(user, superAdminPassword);
+        await userManager.AddToRoleAsync(user, "SuperAdmin");
     }
 }
+
+// Configure middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.Run();

@@ -1,0 +1,15 @@
+﻿@model JO_UNI_Guide.Models.Course
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<h1>@Model.Course_Name</h1>
+
+<p><strong>Details:</strong> @Model.Details</p>
+<p><strong>Department:</strong> @Model.Department.DepartmentName</p>
+<p><strong>Faculty:</strong> @Model.Department.Faculty.Name</p>
+<p><strong>University:</strong> @Model.Department.Faculty.University.Name</p>
+
+<a asp-action="Edit" asp-route-id="@Model.Course_ID" class="btn btn-success">Edit</a>
+<a asp-action="Delete" asp-route-id="@Model.Course_ID" class="btn btn-danger">Delete</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
