@@ -35,7 +35,7 @@
 .sidebar {
     width: var(--side-width);
     height: 100vh;
-    background: linear-gradient(180deg, var(--dark), var(--primary));
+    background: linear-gradient(135deg, #830303, #4e0000);
     position: fixed;
     left: 0;
     top: 0;
@@ -143,7 +143,7 @@
 .btn:hover { transform: translateY(-2px); }
 
 .btn-main {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background: linear-gradient(135deg, #ed0606, #3e1414);
     color: white !important;
     border-radius: 12px;
     padding: 0.7rem 1.4rem;

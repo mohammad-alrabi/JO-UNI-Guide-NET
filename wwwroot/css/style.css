@@ -1,23 +1,28 @@
-﻿/* ===== Color Variables ===== */
-:root {
+﻿:root {
     --primary: #4F46E5;
-    --secondary: #06B6D4; 
-    --accent: #F59E0B; 
+    --secondary: #06B6D4;
+    --accent: #F59E0B;
     --dark: #1E1B4B;
     --light: #F8FAFC;
 }
 
-/* ===== Navbar ===== */
+.main-site-logo {
+    width: auto !important;
+    height: 42px !important;
+}
+
 .navbar {
-    background: linear-gradient(135deg, var(--dark), var(--primary));
+    background: linear-gradient(135deg, #830303, #4e0000);
     padding: 1rem 0;
 }
 
 .navbar-brand {
     color: white !important;
     font-weight: 700;
-    font-size: 1.4rem;
-    letter-spacing: 1px;
+    font-size: 1.15rem;
+    letter-spacing: 0.5px;
+    line-height: 1;
+
 }
 
 .nav-link {
@@ -31,12 +36,10 @@
         color: var(--accent) !important;
     }
 
-/* ===== Admin Button ===== */
 .admin-btn {
     background: var(--accent) !important;
     color: var(--dark) !important;
     border-radius: 20px;
-/*    padding: 0.3rem 1.2rem !important;*/
     font-weight: 600;
 }
 
@@ -45,20 +48,18 @@
         color: var(--primary) !important;
     }
 
-/* ===== Footer ===== */
 .footer {
     background: var(--dark);
     color: rgba(255,255,255,0.7);
 }
 
-/* ===== Alerts ===== */
 .alert {
     border-radius: 10px;
     border: none;
 }
-/* ===== Hero ===== */
+
 .hero-section {
-    background: linear-gradient(135deg, var(--dark), var(--primary));
+    background: linear-gradient(135deg, #830303, #4e0000);
     color: white;
     padding: 100px 0;
 }
@@ -91,7 +92,6 @@
         transform: translateY(-2px);
     }
 
-/* ===== Stats ===== */
 .stats-section {
     background: var(--light);
     padding: 60px 0;
@@ -120,7 +120,6 @@
         font-size: 1.1rem;
     }
 
-/* ===== Universities ===== */
 .universities-section {
     padding: 80px 0;
     background: white;
@@ -197,9 +196,9 @@
         background: var(--primary);
         color: white;
     }
-/* ===== Login ===== */
+
 .login-body {
-    background: linear-gradient(135deg, var(--dark), var(--primary));
+    background: linear-gradient(135deg, #830303, #4e0000);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -273,6 +272,97 @@
     font-size: 0.9rem;
 }
 
-.back-link:hover {
+    .back-link:hover {
         color: var(--primary);
+    }
+/* الحاوية الرئيسية */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* الكارد العريض */
+.login-horizontal-card {
+    width: 100%;
+    max-width: 950px; /* العرض صار أكبر */
+    min-height: 600px;
+    background: white;
+    border-radius: 30px;
+    overflow: hidden; /* عشان الزوايا تطلع مقصوصة صح */
+    display: flex;
+}
+
+/* القسم الجانبي الملون */
+.login-branding {
+    background: linear-gradient(135deg, #830303, #4e0000);
+    position: relative;
+}
+
+.login-side-logo {
+    height: 140px;
+    width: auto;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+    animation: float 3s ease-in-out infinite;
+}
+
+/* تأثير الزجاج */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* تحسين المدخلات */
+.custom-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+    .custom-input-group .icon {
+        position: absolute;
+        left: 15px;
+        color: var(--primary);
+        font-size: 1.1rem;
+        z-index: 5;
+    }
+
+    .custom-input-group input {
+        padding-left: 45px !important;
+        height: 55px;
+        border-radius: 12px;
+        border: 1.5px solid #eee;
+        background: #fbfbfb;
+        transition: all 0.3s;
+    }
+
+        .custom-input-group input:focus {
+            background: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+/* زر تسجيل الدخول الحديث */
+.btn-login-modern {
+    background: linear-gradient(135deg, #830303, #a00b0b);
+    color: white;
+    border-radius: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: none;
+    transition: all 0.3s;
+}
+
+    .btn-login-modern:hover {
+        background: linear-gradient(135deg, #830303, #4e0000);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        color :white;
+    }
+
+.hover-primary:hover {
+    color: var(--primary) !important;
 }
