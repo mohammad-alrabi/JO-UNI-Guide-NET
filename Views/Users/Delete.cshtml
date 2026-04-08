@@ -1,0 +1,52 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityUser
+
+@{
+    ViewData["Title"] = "Delete User";
+    Layout = "_AdminLayout";
+}
+
+<div class="form-card">
+    <div class="mb-4 text-center">
+        <div class="display-1 text-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <h2 class="page-title text-danger">Delete Account</h2>
+        <p class="text-muted">Are you sure you want to permanently delete this user?</p>
+    </div>
+
+    <hr />
+
+    <div class="details-section bg-light p-4 rounded mb-4">
+        <h5 class="text-secondary border-bottom pb-2 mb-3">User Information</h5>
+        <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted">Email Address:</dt>
+            <dd class="col-sm-8 fw-bold">@Model.Email</dd>
+
+            <dt class="col-sm-4 text-muted">Username:</dt>
+            <dd class="col-sm-8">@Model.UserName</dd>
+
+            <dt class="col-sm-4 text-muted">User ID:</dt>
+            <dd class="col-sm-8 small text-truncate">@Model.Id</dd>
+        </dl>
+    </div>
+
+    <div class="alert alert-danger shadow-sm">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <strong>Warning:</strong> deleting this account will remove all associated data and permissions. This action <strong>cannot</strong> be undone.
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-4 text-center">
+        @* إرسال الـ ID ليتعرف عليه الأكشن DeleteConfirmed *@
+        <input type="hidden" asp-for="Id" />
+
+        <button type="submit" class="btn btn-danger btn-lg px-5 shadow-sm">
+            <i class="bi bi-trash-fill"></i> Delete Permanently
+        </button>
+
+        <div class="mt-3">
+            <a asp-action="Index" class="text-decoration-none text-secondary">
+                <i class="bi bi-arrow-left-short"></i> Cancel and Go Back
+            </a>
+        </div>
+    </form>
+</div>

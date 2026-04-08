@@ -1,69 +1,125 @@
 ﻿@model JO_UNI_Guide.Helpers.PaginatedList<JO_UNI_Guide.Models.Course>
+
 @{
-    ViewData["Title"] = "Courses List";
+    ViewData["Title"] = "Courses";
     Layout = "_AdminLayout";
-    var currentFilter = ViewData["CurrentFilter"] as string;
 }
 
-<h2 class="page-title">Courses</h2>
+<div class="container py-4">
 
-<div class="uni-admin-card">
-
-    <div class="top-bar">
-        <form asp-action="Index" method="get" class="search-form">
-            <input type="text"
-                   name="searchString"
-                   value="@currentFilter"
-                   placeholder="Search courses..."
-                   class="form-control" />
-
-            <button type="submit" class="btn btn-main">Search</button>
-        </form>
-
-        <a asp-action="Create" class="btn btn-main add-btn">
-            Add New Course
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="page-title mb-0">Courses</h2>
+            <p class="text-muted small">Manage all courses across departments</p>
+        </div>
+        <a asp-action="Create" class="btn btn-main px-4 rounded-pill shadow-sm">
+            <i class="bi bi-plus-lg me-2"></i> Add Course
         </a>
     </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Faculty</th>
-                <th>University</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Course_Name</td>
-                    <td>@item.Department.DepartmentName</td>
-                    <td>@item.Department.Faculty.Name</td>
-                    <td>@item.Department.Faculty.University.Name</td>
-                    <td>
-                        <div class="btn-group">
-                            <a asp-action="Details" asp-route-id="@item.Course_ID" class="btn btn-info btn-sm">Details</a>
-                            <a asp-action="Edit" asp-route-id="@item.Course_ID" class="btn btn-warning btn-sm">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@item.Course_ID" class="btn btn-danger btn-sm">Delete</a>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <div class="btn-group" style="margin-top:1.5rem;">
-        <span>Page @Model.PageIndex of @Model.TotalPages</span>
-        @if (Model.HasPreviousPage)
-        {
-            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn btn-main">Previous</a>
-        }
-        @if (Model.HasNextPage)
-        {
-            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn btn-main">Next</a>
-        }
+    <div class="card shadow-sm border-0 mb-4 rounded-4 p-3 bg-white">
+        <form asp-action="Index" method="get">
+            <div class="row g-2">
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control border-start-0 bg-light" placeholder="Search by course, department, or university name..." />
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-dark w-100">Search</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">Reset</a>
+                </div>
+            </div>
+        </form>
     </div>
+
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th class="py-3">Course Name</th>
+                        <th class="py-3">Department</th>
+                        <th class="py-3">Faculty</th>
+                        <th class="py-3">University</th>
+                        <th class="py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    @if (Model.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-journal-x fs-1 d-block mb-2"></i>
+                                No courses found.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-dark py-3">
+                                    <i class="bi bi-book text-main me-1"></i> @item.Course_Name
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border">
+                                        @item.Department?.DepartmentName
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success bg-opacity-10 text-success border">
+                                        @item.Department?.Faculty?.Name
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border">
+                                        <i class="bi bi-building me-1"></i> @item.Department?.Faculty?.University?.Name
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <a asp-action="Details" asp-route-id="@item.Course_ID" class="btn btn-sm btn-info text-white shadow-none rounded-pill px-3">
+                                            Details
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Course_ID" class="btn btn-sm btn-warning text-white shadow-none rounded-pill px-3">
+                                            Edit
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Course_ID" class="btn btn-sm btn-danger shadow-none rounded-pill px-3">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
+            <a asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+               class="btn btn-white shadow-sm border @(Model.HasPreviousPage ? "" : "disabled text-muted")">
+                <i class="bi bi-chevron-left"></i> Previous
+            </a>
+
+            <span class="fw-bold text-muted small">
+                Page @Model.PageIndex of @Model.TotalPages
+            </span>
+
+            <a asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+               class="btn btn-white shadow-sm border @(Model.HasNextPage ? "" : "disabled text-muted")">
+                Next <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    }
+
 </div>

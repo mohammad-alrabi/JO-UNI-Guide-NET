@@ -97,6 +97,7 @@ namespace JO_UNI_Guide.Controllers
                 return NotFound();
             var faculty = await _context.Faculties
                 .Include(f=>f.University)
+                .Include(d =>d.Departments)
                 .FirstOrDefaultAsync(m => m.Faculty_ID == id);
 
             if (faculty == null)

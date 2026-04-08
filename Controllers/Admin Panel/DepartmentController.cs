@@ -15,13 +15,36 @@ namespace JO_UNI_Guide.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber)
         {
-            var departments = await _context.Departments
-                .Include(d => d.Faculty)
-                .ToListAsync();
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
 
-            return View(departments);
+            ViewData["CurrentFilter"] = searchString;
+
+            var departments = _context.Departments
+                .Include(d => d.Faculty)
+                .AsNoTracking()
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                // البحث باسم القسم أو اسم الكلية التابع لها
+                departments = departments.Where(d => d.DepartmentName.Contains(searchString) ||
+                                                     d.Faculty.Name.Contains(searchString));
+            }
+
+            departments = departments.OrderBy(d => d.DepartmentName);
+
+            int pageSize = 5; // عدد الأقسام في الصفحة الواحدة
+
+            return View(await JO_UNI_Guide.Helpers.PaginatedList<Department>.CreateAsync(departments, pageNumber ?? 1, pageSize));
         }
 
         public IActionResult Create()

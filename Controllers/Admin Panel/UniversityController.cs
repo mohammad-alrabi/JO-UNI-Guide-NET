@@ -52,7 +52,7 @@ namespace JO_UNI_Guide.Controllers
             }
             //ترتيب الداتا ابجديا في كل صفحة مثلا في 5 جامعات
             universities = universities.OrderBy(n => n.Name);
-            int pageSize = 5;
+            int pageSize = 3;
             return View (await JO_UNI_Guide.Helpers.PaginatedList<University>.CreateAsync(
                 universities,
                 pageNumber ?? 1 ,
@@ -122,7 +122,7 @@ namespace JO_UNI_Guide.Controllers
                 }
                 catch (Exception) 
                 {
-                    ModelState.AddModelError("", "Something went wrong");
+                    ModelState.AddModelError("", "This Unvirsity already exists");
                 }
             }
             // في حال ما تحقق الشرط وكانت البيانات الي دخلها الادمن خطأ او ناقصة 

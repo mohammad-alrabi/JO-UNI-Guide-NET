@@ -1,0 +1,46 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityUser
+
+@{
+    ViewData["Title"] = "Edit User Role";
+    Layout = "_AdminLayout";
+}
+
+<div class="form-card">
+    <div class="mb-4">
+        <h2 class="page-title mb-1">Edit User Role</h2>
+        <p class="text-muted">Updating permissions for: <strong>@ViewBag.UserEmail</strong></p>
+    </div>
+
+    <hr />
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" name="id" value="@ViewBag.UserId" />
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <label class="form-label fw-bold">Current Status</label>
+                <div class="p-2 border rounded bg-light">
+                    <span class="badge bg-info text-dark">
+                        <i class="bi bi-shield-lock-fill"></i> @(ViewBag.CurrentRole ?? "No Role Assigned")
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <label class="form-label fw-bold">Select New Role</label>
+                <select name="role" class="form-select" asp-items="@(ViewData["Role"] as SelectList)">
+                </select>
+                <small class="text-muted">This will override the existing permissions.</small>
+            </div>
+        </div>
+
+        <div class="mt-4 border-top pt-3">
+            <button type="submit" class="btn btn-main px-5">
+                <i class="bi bi-save"></i> Update Role
+            </button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </form>
+</div>

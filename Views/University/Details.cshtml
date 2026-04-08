@@ -2,79 +2,82 @@
 
 @{
     ViewData["Title"] = "University Details";
+    Layout = "_AdminLayout";
 }
 
 <div class="container py-4">
 
     <div class="details-card">
-        <div class="p-4 p-md-5">
 
-            <div class="row align-items-center g-4">
+        <!-- Header -->
+        <div class="details-header d-flex align-items-center gap-4 flex-wrap">
 
-                <!-- Logo -->
-                <div class="col-md-3 text-center">
-                    <img src="@Model.Logo"
-                         onerror="this.src='/images/default.png'"
-                         alt="@Model.Name"
-                         class="details-logo img-fluid shadow-sm" />
-                </div>
-
-                <!-- Info -->
-                <div class="col-md-9">
-                    <h2 class="page-title mb-3">@Model.Name</h2>
-
-                    <p class="text-muted mb-2">
-                        Location: @Model.Location
-                    </p>
-
-                    <div class="mb-3">
-                        <span class="uni-rank">QS Rank: #@Model.Rank_QS</span>
-                    </div>
-
-                    <div class="d-flex gap-2 flex-wrap">
-                        <a asp-action="Edit"
-                           asp-route-id="@Model.University_ID"
-                           class="btn btn-warning">
-                            Edit
-                        </a>
-
-                        <a asp-action="Index"
-                           class="btn btn-outline-secondary">
-                            Back
-                        </a>
-                    </div>
-                </div>
-
+            <div class="logo-box">
+                <img src="@Model.Logo"
+                     onerror="this.src='/images/default.png'"
+                     alt="@Model.Name" />
             </div>
 
-            <hr class="my-4" />
+            <div class="flex-grow-1">
+                <h2 class="page-title mb-2">@Model.Name</h2>
 
-            <!-- Faculties -->
-            <div>
-                <h4 class="mb-3 fw-bold">Faculties</h4>
+                <p class="text-muted mb-1">
+                    📍 @Model.Location
+                </p>
 
-                @if (Model.Faculties != null && Model.Faculties.Any())
-                {
-                    <div class="row">
-                        @foreach (var faculty in Model.Faculties)
-                        {
-                            <div class="col-md-6 mb-3">
-                                <div class="faculty-box">
-                                    @faculty.Name
-                                </div>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class="alert alert-info text-center mb-0">
-                        No faculties found for this university.
-                    </div>
-                }
+                <span class="uni-rank">QS Rank: #@Model.Rank_QS</span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a asp-action="Edit"
+                   asp-route-id="@Model.University_ID"
+                   class="btn btn-warning">
+                    Edit
+                </a>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    Back
+                </a>
             </div>
 
         </div>
+
+        <hr class="my-4" />
+
+        <!-- Faculties Section -->
+        <div class="faculties-section">
+
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h4 class="fw-bold mb-0">Faculties</h4>
+
+                <span class="badge-count">
+                    @(Model.Faculties?.Count() ?? 0) Faculties
+                </span>
+            </div>
+
+            @if (Model.Faculties != null && Model.Faculties.Any())
+            {
+                <div class="faculties-grid">
+                    @foreach (var faculty in Model.Faculties)
+                    {
+                        <div class="faculty-box">
+                            <a asp-controller="Faculty" asp-action="Details" asp-route-id="@faculty.Faculty_ID" class="text-decoration-none text-dark d-block">
+                                <i class="bi bi-arrow-right-circle me-2 text-primary"></i> @faculty.Name
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center mb-0">
+                    No faculties found for this university.
+                </div>
+            }
+
+        </div>
+
     </div>
 
 </div>

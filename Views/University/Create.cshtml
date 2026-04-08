@@ -8,7 +8,7 @@
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="form-card shadow-sm">
+            <div class="form-card shadow-sm p-4 bg-white rounded-4">
 
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 border-bottom pb-3">
                     <div>
@@ -16,8 +16,8 @@
                         <p class="text-muted mb-0">Add a new university with logo and ranking details.</p>
                     </div>
 
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        Back
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                        <i class="bi bi-arrow-left me-2"></i> Back
                     </a>
                 </div>
 
@@ -25,35 +25,38 @@
 
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                    <div class="mb-3">
-                        <label asp-for="Name" class="form-label"></label>
-                        <input asp-for="Name" class="form-control custom-input" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">University Name</label>
+                            <input asp-for="Name" class="form-control custom-input" placeholder="e.g. University of Jordan" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Location" class="form-label fw-bold">Location</label>
+                            <input asp-for="Location" class="form-control custom-input" placeholder="e.g. Amman" />
+                            <span asp-validation-for="Location" class="text-danger small"></span>
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Location" class="form-label"></label>
-                        <input asp-for="Location" class="form-control custom-input" />
-                        <span asp-validation-for="Location" class="text-danger"></span>
+                        <label asp-for="Rank_QS" class="form-label fw-bold">QS Ranking</label>
+                        <input asp-for="Rank_QS" class="form-control custom-input" placeholder="e.g. 1001-1200" />
+                        <span asp-validation-for="Rank_QS" class="text-danger small"></span>
                     </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Rank_QS" class="form-label"></label>
-                        <input asp-for="Rank_QS" class="form-control custom-input" />
-                        <span asp-validation-for="Rank_QS" class="text-danger"></span>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">University Logo</label>
+                        <input type="file" name="logoFile" class="form-control" accept="image/*" onchange="previewImage(event)" />
                     </div>
 
-                    <div class="mb-3">
-                        <label>University Logo</label>
-                        <input type="file" name="logoFile" class="form-control" onchange="previewImage(event)" />
+                    <div class="text-center mb-4" id="previewContainer" style="display: none;">
+                        <p class="text-muted small mb-2">Logo Preview</p>
+                        <img id="imagePreview" src="" class="shadow-sm p-2 bg-light rounded-circle" style="width: 130px; height: 130px; object-fit: contain; border: 2px dashed #0d6efd;" />
                     </div>
 
-                    <div class="text-center mb-3">
-                        <img id="imagePreview" src="/images/default.png" style="max-height:150px;" />
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">
-                        Save
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold fs-5 shadow-sm">
+                        <i class="bi bi-check-circle me-2"></i> Save University
                     </button>
 
                 </form>
@@ -66,11 +69,22 @@
 @section Scripts {
     <script>
         function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function () {
-                document.getElementById('imagePreview').src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
+            const file = event.target.files[0];
+            const container = document.getElementById('previewContainer');
+            const preview = document.getElementById('imagePreview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    preview.src = reader.result;
+                    container.style.display = 'block'; 
+                };
+                reader.readAsDataURL(file);
+            } else {
+           
+                preview.src = '';
+                container.style.display = 'none';
+            }
         }
     </script>
 }

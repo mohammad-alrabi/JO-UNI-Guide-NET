@@ -1,38 +1,120 @@
 ﻿@model JO_UNI_Guide.Models.Faculty
 
 @{
-    ViewData["Title"] = "Faculty Details";
+    ViewData["Title"] = "Faculty Profile";
     Layout = "_AdminLayout";
 }
 
-<div class="form-card">
-    <h2 class="page-title mb-4">Faculty Details</h2>
+<div class="container py-4">
 
-    <div class="details-content">
-        <div class="row mb-3">
-            <div class="col-sm-3 fw-bold">
-                @Html.DisplayNameFor(model => model.Name)
-            </div>
-            <div class="col-sm-9">
-                @Html.DisplayFor(model => model.Name)
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="page-title mb-1">Faculty Profile</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 small">
+                    <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Faculties</a></li>
+                    <li class="breadcrumb-item active text-muted" aria-current="page">@Model.Name</li>
+                </ol>
+            </nav>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary px-4 shadow-sm rounded-pill">
+            <i class="bi bi-arrow-left me-2"></i> Back to List
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 p-4 h-100 text-center bg-white">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                    <i class="bi bi-building fs-1"></i>
+                </div>
+
+                <h4 class="fw-bold text-dark mb-2">@Model.Name</h4>
+                <p class="text-muted mb-4">
+                    <i class="bi bi-bookmark-star-fill text-warning me-1"></i>
+                    @(Model.University?.Name ?? "No University Assigned")
+                </p>
+
+                <div class="mt-auto border-top pt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Faculty_ID" class="btn btn-warning text-white w-100 rounded-pill shadow-sm fw-bold">
+                        <i class="bi bi-pencil-square me-2"></i> Edit Faculty
+                    </a>
+                </div>
             </div>
         </div>
 
-        <div class="row mb-3">
-            <div class="col-sm-3 fw-bold">
-                @Html.DisplayNameFor(model => model.University)
-            </div>
-            <div class="col-sm-9">
-                @* هنا نعرض اسم الجامعة من خلال العلاقة f.University *@
-                @(Model.University?.Name ?? "No University Assigned")
-            </div>
-        </div>
+        <div class="col-lg-8">
 
-        <hr />
+            <div class="card shadow-sm border-0 rounded-4 p-4 mb-4 bg-white">
+                <h5 class="fw-bold text-secondary border-bottom pb-3 mb-4">
+                    <i class="bi bi-info-circle me-2 text-primary"></i> General Information
+                </h5>
 
-        <div class="mt-4">
-            <a asp-action="Edit" asp-route-id="@Model.Faculty_ID" class="btn btn-main">Edit</a>
-            <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded-3 border h-100">
+                            <span class="d-block text-muted small fw-bold mb-1">Faculty Dean</span>
+                            <span class="fs-6 fw-bold text-dark">
+                                <i class="bi bi-person-badge me-2 text-primary"></i>
+                                @(string.IsNullOrEmpty(Model.Faculty_Dean) ? "Not Assigned" : Model.Faculty_Dean)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded-3 border h-100">
+                            <span class="d-block text-muted small fw-bold mb-1">Location / Building</span>
+                            <span class="fs-6 fw-bold text-dark">
+                                <i class="bi bi-geo-alt me-2 text-danger"></i>
+                                @(string.IsNullOrEmpty(Model.Location) ? "Not Specified" : Model.Location)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 border">
+                    <span class="d-block text-muted small fw-bold mb-2">Description & Details</span>
+                    <p class="mb-0 text-dark" style="line-height: 1.6;">
+                        @(string.IsNullOrEmpty(Model.Details) ? "No description provided for this faculty yet." : Model.Details)
+                    </p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                    <h5 class="fw-bold text-secondary mb-0">
+                        <i class="bi bi-diagram-3 me-2 text-success"></i> Affiliated Departments
+                    </h5>
+                    <span class="badge bg-secondary rounded-pill px-3 py-2">
+                        @(Model.Departments?.Count() ?? 0) Departments
+                    </span>
+                </div>
+
+                @if (Model.Departments != null && Model.Departments.Any())
+                {
+                    <div class="row g-3">
+                        @foreach (var dept in Model.Departments)
+                        {
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded-3 bg-light d-flex align-items-center" style="transition: 0.3s;" onmouseover="this.classList.add('shadow-sm')" onmouseout="this.classList.remove('shadow-sm')">
+                                    <div class="bg-white rounded-circle p-2 shadow-sm me-3 text-primary border d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-book"></i>
+                                    </div>
+                                    <h6 class="mb-0 fw-bold text-dark">@dept.DepartmentName</h6>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 bg-light rounded-3 border">
+                        <i class="bi bi-folder-x fs-1 text-muted d-block mb-2"></i>
+                        <p class="text-muted fw-bold mb-0">No departments added yet.</p>
+                        <p class="text-muted small">You can add departments from the Departments section.</p>
+                    </div>
+                }
+            </div>
+
         </div>
     </div>
 </div>

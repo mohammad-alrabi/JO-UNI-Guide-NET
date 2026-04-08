@@ -38,9 +38,14 @@ namespace JO_UNI_Guide.Controllers
                         .ThenInclude(e => e.University)
                 .AsNoTracking()
                 .AsQueryable();
-            if (!string.IsNullOrEmpty(searchString)) 
+            if (!string.IsNullOrEmpty(searchString))
             {
-                courses = courses.Where(c => c.Course_Name.Contains(searchString)||c.Department.DepartmentName.Contains(searchString));
+                courses = courses.Where(c =>
+                    c.Course_Name.Contains(searchString) ||
+                    c.Department.DepartmentName.Contains(searchString) ||
+                    c.Department.Faculty.Name.Contains(searchString) ||          
+                    c.Department.Faculty.University.Name.Contains(searchString)  
+                );
             }
             courses = courses.OrderBy(c => c.Course_Name);
             int pageSize = 5;

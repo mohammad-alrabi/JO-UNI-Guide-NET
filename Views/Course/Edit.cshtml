@@ -1,32 +1,63 @@
 ﻿@model JO_UNI_Guide.Models.Course
+
 @{
     ViewData["Title"] = "Edit Course";
     Layout = "_AdminLayout";
 }
 
-<h2 class="page-title">Edit Course</h2>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
 
-<div class="form-card">
-    <form asp-action="Edit" method="post">
-        <input type="hidden" asp-for="Course_ID" />
-        <div class="mb-3">
-            <label asp-for="Course_Name" class="form-label"></label>
-            <input asp-for="Course_Name" class="form-control" />
-            <span asp-validation-for="Course_Name" class="text-danger"></span>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 border-bottom pb-3">
+                    <div>
+                        <h2 class="page-title mb-1 text-warning">
+                            <i class="bi bi-pencil-square me-2"></i>Edit Course
+                        </h2>
+                        <p class="text-muted mb-0 small">Update course information and department assignment.</p>
+                    </div>
+
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+                        <i class="bi bi-arrow-left me-2"></i> Back
+                    </a>
+                </div>
+
+                <form asp-action="Edit" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+
+                    <input type="hidden" asp-for="Course_ID" />
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Course_Name" class="form-label fw-bold">Course Name</label>
+                            <input asp-for="Course_Name" class="form-control custom-input" placeholder="e.g. Data Structures" />
+                            <span asp-validation-for="Course_Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Department_ID" class="form-label fw-bold">Department</label>
+                            <select asp-for="Department_ID" asp-items="@(ViewData["Department_ID"] as SelectList)" class="form-select custom-input">
+                                <option value="">-- Select Department --</option>
+                            </select>
+                            <span asp-validation-for="Department_ID" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Details" class="form-label fw-bold">Course Description</label>
+                        <textarea asp-for="Details" class="form-control custom-input" rows="5" placeholder="Update course description..."></textarea>
+                        <span asp-validation-for="Details" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning text-white w-100 rounded-pill py-2 fw-bold fs-5 shadow-sm mt-2">
+                        <i class="bi bi-save me-2"></i> Update Course Changes
+                    </button>
+
+                </form>
+            </div>
         </div>
-        <div class="mb-3">
-            <label asp-for="Details" class="form-label"></label>
-            <textarea asp-for="Details" class="form-control"></textarea>
-            <span asp-validation-for="Details" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="Department_ID" class="form-label"></label>
-            <select asp-for="Department_ID" asp-items="@(ViewData["Department_ID"] as SelectList)" class="form-control"></select>
-            <span asp-validation-for="Department_ID" class="text-danger"></span>
-        </div>
-        <button type="submit" class="btn btn-main">Save</button>
-        <a asp-action="Index" class="btn">Back to List</a>
-    </form>
+    </div>
 </div>
 
 @section Scripts {
