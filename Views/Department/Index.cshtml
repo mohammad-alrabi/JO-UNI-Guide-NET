@@ -58,8 +58,12 @@
                     {
                         @foreach (var item in Model)
                         {
-                            <tr>
-                                <td class="fw-bold text-dark py-3">@item.DepartmentName</td>
+                             <tr>
+                                <td class="fw-bold py-3">
+                                    <a asp-action="Details" asp-route-id="@item.Department_ID" class="text-decoration-none text-dark hover-primary">
+                                        <i class="bi bi-folder2-open me-1 text-primary"></i> @item.DepartmentName
+                                    </a>
+                                </td>
                                 <td class="text-muted">
                                     <span class="badge bg-primary bg-opacity-10 text-primary border">
                                         <i class="bi bi-bookmark me-1"></i> @item.Faculty?.Name
@@ -67,6 +71,9 @@
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2 justify-content-center">
+                                        <a asp-action="Details" asp-route-id="@item.Department_ID" class="btn btn-sm btn-info text-white shadow-none rounded-pill px-3">
+                                            Details
+                                        </a>
                                         <a asp-action="Edit" asp-route-id="@item.Department_ID" class="btn btn-sm btn-warning text-white shadow-none rounded-pill px-3">
                                             Edit
                                         </a>

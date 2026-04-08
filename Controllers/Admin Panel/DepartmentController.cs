@@ -68,6 +68,20 @@ namespace JO_UNI_Guide.Controllers
             ViewBag.FacultyList = new SelectList(_context.Faculties, "Faculty_ID", "Name", department.Faculty_ID);
             return View(department);
         }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var department = await _context.Departments
+                .Include(d => d.Faculty) 
+                    .ThenInclude(f => f.University) 
+                .Include(d => d.Courses) 
+                .FirstOrDefaultAsync(m => m.Department_ID == id);
+
+            if (department == null) return NotFound();
+
+            return View(department);
+        }
 
         public async Task<IActionResult> Edit(int? id)
         {
