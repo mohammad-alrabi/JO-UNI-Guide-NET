@@ -6,23 +6,65 @@
 
 <h2 class="page-title">Edit Department</h2>
 
-<div class="form-card">
+<div class="form-card shadow-sm p-4 bg-white rounded-4">
     <form asp-action="Edit" method="post">
+        @* الحقول المخفية الضرورية *@
         <input type="hidden" asp-for="Department_ID" />
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+
         <div class="mb-3">
-            <label asp-for="DepartmentName" class="form-label"></label>
+            <label asp-for="DepartmentName" class="form-label fw-bold">Department Name</label>
             <input asp-for="DepartmentName" class="form-control" />
-            <span asp-validation-for="DepartmentName" class="text-danger"></span>
+            <span asp-validation-for="DepartmentName" class="text-danger small"></span>
         </div>
-        <div class="mb-3">
-            <label asp-for="Faculty_ID" class="form-label">Faculty</label>
+
+        <div class="mb-4">
+            <label asp-for="Faculty_ID" class="form-label fw-bold">Faculty</label>
             <select asp-for="Faculty_ID" asp-items="ViewBag.FacultyList" class="form-select">
                 <option value="">-- Select Faculty --</option>
             </select>
-            <span asp-validation-for="Faculty_ID" class="text-danger"></span>
+            <span asp-validation-for="Faculty_ID" class="text-danger small"></span>
         </div>
-        <button type="submit" class="btn btn-main">Update</button>
-        <a asp-action="Index" class="btn">Back</a>
+
+        @* تحديث القسم الرمادي ليشمل الـ 3 حقول الجديدة *@
+        <div class="row g-3 p-3 bg-light rounded-3 mb-4">
+            @* 1. معدل القبول - تغيير الاسم لـ AcceptanceRate *@
+            <div class="col-md-4">
+                <label asp-for="AcceptanceRate" class="form-label fw-bold small text-primary text-uppercase">
+                    <i class="bi bi-graph-up-arrow me-1"></i> Acceptance Rate (%)
+                </label>
+                <input asp-for="AcceptanceRate" class="form-control shadow-sm" type="number" step="0.01" />
+                <span asp-validation-for="AcceptanceRate" class="text-danger small"></span>
+            </div>
+
+            @* 2. سعر الساعة *@
+            <div class="col-md-4">
+                <label asp-for="HourPrice" class="form-label fw-bold small text-success text-uppercase">
+                    <i class="bi bi-cash-stack me-1"></i> Hour Price (JOD)
+                </label>
+                <input asp-for="HourPrice" class="form-control shadow-sm" type="number" step="0.5" />
+                <span asp-validation-for="HourPrice" class="text-danger small"></span>
+            </div>
+
+            @* 3. عدد الساعات المعتمدة الجديد *@
+            <div class="col-md-4">
+                <label asp-for="TotalCreditHours" class="form-label fw-bold small text-warning text-uppercase">
+                    <i class="bi bi-clock-history me-1"></i> Credit Hours
+                </label>
+                <input asp-for="TotalCreditHours" class="form-control shadow-sm" type="number" />
+                <span asp-validation-for="TotalCreditHours" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 pt-2">
+            <button type="submit" class="btn btn-warning text-white px-4 shadow-sm fw-bold">
+                <i class="bi bi-cloud-arrow-up me-1"></i> Update Department
+            </button>
+            <a asp-action="Index" class="btn btn-light px-4 border">
+                Cancel
+            </a>
+        </div>
     </form>
 </div>
 

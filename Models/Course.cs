@@ -9,7 +9,7 @@ namespace JO_UNI_Guide.Models
         [Key]
         public int Course_ID { get; set; }
         [Required]
-        public string Course_Name { get; set; }
+        public string? Course_Name { get; set; }
         public string? Details { get; set; }
 
         //Realtion with Department

@@ -4,28 +4,73 @@
     Layout = "_AdminLayout";
 }
 
-<h2 class="page-title">Create Department</h2>
+<h2 class="page-title">Create New Department</h2>
 
-<div class="form-card">
+<div class="form-card shadow-sm p-4 bg-white rounded-4">
     <form asp-action="Create" method="post">
+        @* إضافة ملخص الأخطاء في الأعلى *@
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+
         <div class="mb-3">
-            <label asp-for="DepartmentName" class="form-label"></label>
-            <input asp-for="DepartmentName" class="form-control" />
-            <span asp-validation-for="DepartmentName" class="text-danger"></span>
+            <label asp-for="DepartmentName" class="form-label fw-bold">Department Name</label>
+            <input asp-for="DepartmentName" class="form-control" placeholder="e.g. Software Engineering" />
+            <span asp-validation-for="DepartmentName" class="text-danger small"></span>
         </div>
+
+        @* إذا كنتِ لا تزالين تستخدمين حقل Details في الموديل ابقيه، وإلا احذفيه *@
+        @* <div class="mb-3">
+            <label asp-for="Details" class="form-label fw-bold text-muted small">About the Department</label>
+            <textarea asp-for="Details" class="form-control" rows="3" placeholder="Brief description of the program..."></textarea>
+            <span asp-validation-for="Details" class="text-danger small"></span>
+        </div> *@
+
         <div class="mb-3">
-            <label asp-for="Details" class="form-label"></label>
-            <textarea asp-for="Details" class="form-control"></textarea>
-        </div>
-        <div class="mb-3">
-            <label asp-for="Faculty_ID" class="form-label">Faculty</label>
+            <label asp-for="Faculty_ID" class="form-label fw-bold">Faculty</label>
             <select asp-for="Faculty_ID" asp-items="ViewBag.FacultyList" class="form-select">
                 <option value="">-- Select Faculty --</option>
             </select>
-            <span asp-validation-for="Faculty_ID" class="text-danger"></span>
+            <span asp-validation-for="Faculty_ID" class="text-danger small"></span>
         </div>
-        <button type="submit" class="btn btn-main">Save</button>
-        <a asp-action="Index" class="btn">Back</a>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="AcceptanceRate" class="form-label fw-bold">Acceptance Rate (%)</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="bi bi-graph-up-arrow text-primary"></i></span>
+                    <input asp-for="AcceptanceRate" class="form-control" type="number" step="0.01" placeholder="85.5" />
+                </div>
+                <span asp-validation-for="AcceptanceRate" class="text-danger small"></span>
+            </div>
+
+            @* 2. سعر الساعة *@
+            <div class="col-md-4 mb-3">
+                <label asp-for="HourPrice" class="form-label fw-bold">Price Per Hour (JOD)</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="bi bi-cash-stack text-success"></i></span>
+                    <input asp-for="HourPrice" class="form-control" type="number" step="0.5" placeholder="45.0" />
+                </div>
+                <span asp-validation-for="HourPrice" class="text-danger small"></span>
+            </div>
+
+            @* 3. إضافة حقل عدد الساعات المعتمدة الجديد *@
+            <div class="col-md-4 mb-3">
+                <label asp-for="TotalCreditHours" class="form-label fw-bold">Credit Hours</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="bi bi-clock-history text-warning"></i></span>
+                    <input asp-for="TotalCreditHours" class="form-control" type="number" placeholder="e.g. 132" />
+                </div>
+                <span asp-validation-for="TotalCreditHours" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <hr class="my-4 opacity-25">
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                <i class="bi bi-check-circle me-1"></i> Save Department
+            </button>
+            <a asp-action="Index" class="btn btn-light px-4 border">Cancel</a>
+        </div>
     </form>
 </div>
 

@@ -15,9 +15,13 @@ namespace JO_UNI_Guide.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber)
+        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber, decimal? minRate, decimal? maxPrice)
         {
-            if (searchString != null)
+            // حفظ الفلاتر الجديدة في الـ View عشان تضل ظاهرة في المربعات النصية
+            ViewData["MinRate"] = minRate;
+            ViewData["MaxPrice"] = maxPrice;
+
+            if (searchString != null || minRate != null || maxPrice != null)
             {
                 pageNumber = 1;
             }
@@ -33,39 +37,55 @@ namespace JO_UNI_Guide.Controllers
                 .AsNoTracking()
                 .AsQueryable();
 
+            // 1. البحث النصي (الاسم أو الكلية)
             if (!string.IsNullOrEmpty(searchString))
             {
-                // البحث باسم القسم أو اسم الكلية التابع لها
                 departments = departments.Where(d => d.DepartmentName.Contains(searchString) ||
                                                      d.Faculty.Name.Contains(searchString));
             }
 
+            // 2. الفلترة حسب الحد الأدنى للمعدل (اختياري)
+            if (minRate.HasValue)
+            {
+                departments = departments.Where(d => d.AcceptanceRate >= minRate.Value);
+            }
+
+            // 3. الفلترة حسب الحد الأقصى لسعر الساعة (اختياري)
+            if (maxPrice.HasValue)
+            {
+                departments = departments.Where(d => d.HourPrice <= maxPrice.Value);
+            }
+
             departments = departments.OrderBy(d => d.DepartmentName);
 
-            int pageSize = 5; // عدد الأقسام في الصفحة الواحدة
-
+            int pageSize = 5;
             return View(await JO_UNI_Guide.Helpers.PaginatedList<Department>.CreateAsync(departments, pageNumber ?? 1, pageSize));
         }
 
         public IActionResult Create()
         {
-            ViewBag.FacultyList = new SelectList(_context.Faculties, "Faculty_ID", "Name");
+            // جلب الكليات لعرضها في القائمة المنسدلة
+            ViewBag.FacultyList = new SelectList(_context.Faculties.OrderBy(f => f.Name), "Faculty_ID", "Name");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Department department)
+        // أضفنا TotalCreditHours وتأكدنا من اسم AcceptanceRate ليتطابق مع الموديل
+        public async Task<IActionResult> Create([Bind("DepartmentName,Faculty_ID,AcceptanceRate,HourPrice,TotalCreditHours")] Department department)
         {
             if (ModelState.IsValid)
             {
                 _context.Departments.Add(department);
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Department added successfully.";
+
+                // رسالة نجاح تظهر للأدمن
+                TempData["Success"] = $"Department '{department.DepartmentName}' added successfully.";
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.FacultyList = new SelectList(_context.Faculties, "Faculty_ID", "Name", department.Faculty_ID);
+            // في حال وجود خطأ في البيانات، نرجع الكليات للقائمة المنسدلة مرة أخرى
+            ViewBag.FacultyList = new SelectList(_context.Faculties.OrderBy(f => f.Name), "Faculty_ID", "Name", department.Faculty_ID);
             return View(department);
         }
         public async Task<IActionResult> Details(int? id)
@@ -73,9 +93,9 @@ namespace JO_UNI_Guide.Controllers
             if (id == null) return NotFound();
 
             var department = await _context.Departments
-                .Include(d => d.Faculty) 
-                    .ThenInclude(f => f.University) 
-                .Include(d => d.Courses) 
+                .Include(d => d.Faculty)
+                    .ThenInclude(f => f.University)
+                .Include(d => d.Courses)
                 .FirstOrDefaultAsync(m => m.Department_ID == id);
 
             if (department == null) return NotFound();
@@ -90,28 +110,46 @@ namespace JO_UNI_Guide.Controllers
             var department = await _context.Departments.FindAsync(id);
             if (department == null) return NotFound();
 
-            ViewBag.FacultyList = new SelectList(_context.Faculties, "Faculty_ID", "Name", department.Faculty_ID);
+            // ترتيب الكليات أبجدياً يسهل العمل على الأدمن
+            ViewBag.FacultyList = new SelectList(_context.Faculties.OrderBy(f => f.Name), "Faculty_ID", "Name", department.Faculty_ID);
             return View(department);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Department department)
+        // 1. تعديل الحقول داخل الـ Bind لتطابق الموديل الجديد تماماً
+        public async Task<IActionResult> Edit(int id, [Bind("Department_ID,DepartmentName,Faculty_ID,AcceptanceRate,HourPrice,TotalCreditHours")] Department department)
         {
             if (id != department.Department_ID) return NotFound();
 
+            // هدول السطرين ممتازين، بخلوا الـ ModelState يتجاهل العلاقات عشان يضل Valid
             ModelState.Remove("Faculty");
             ModelState.Remove("Courses");
 
             if (ModelState.IsValid)
             {
-                _context.Update(department);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Department updated successfully.";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Update(department);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Changes to '{department.DepartmentName}' saved successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Departments.Any(e => e.Department_ID == department.Department_ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
             }
 
-            ViewBag.FacultyList = new SelectList(_context.Faculties, "Faculty_ID", "Name", department.Faculty_ID);
+            // إعادة تحميل القائمة المنسدلة في حال فشل الـ Validation
+            ViewBag.FacultyList = new SelectList(_context.Faculties.OrderBy(f => f.Name), "Faculty_ID", "Name", department.Faculty_ID);
             return View(department);
         }
 
@@ -133,11 +171,14 @@ namespace JO_UNI_Guide.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var department = await _context.Departments.FindAsync(id);
-            if (department == null) return NotFound();
+            if (department != null)
+            {
+                string deptName = department.DepartmentName; // حفظ الاسم قبل الحذف للرسالة
+                _context.Departments.Remove(department);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = $"The department '{deptName}' and all its associated data have been deleted.";
+            }
 
-            _context.Departments.Remove(department);
-            await _context.SaveChangesAsync();
-            TempData["Success"] = "Department deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
     }
