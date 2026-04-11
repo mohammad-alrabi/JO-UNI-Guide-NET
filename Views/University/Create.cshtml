@@ -44,6 +44,14 @@
                         <input asp-for="Rank_QS" class="form-control custom-input" placeholder="e.g. 1001-1200" />
                         <span asp-validation-for="Rank_QS" class="text-danger small"></span>
                     </div>
+                    <div class="mb-3">
+                        <label asp-for="Type" class="form-label fw-bold">University Type</label>
+                        <select asp-for="Type" class="form-select shadow-sm"
+                                asp-items="Html.GetEnumSelectList<UniversityType>()">
+                            <option value="">-- Select Type --</option>
+                        </select>
+                        <span asp-validation-for="Type" class="text-danger small"></span>
+                    </div>
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">University Logo</label>

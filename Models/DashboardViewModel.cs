@@ -7,7 +7,8 @@
         public int DepartmentsCount { get; set; }
         public int CoursesCount { get; set; }
         public int AdminsCount { get; set; }
-    
+        public int PublicUniversitiesCount { get; set; }
+        public int PrivateUniversitiesCount { get; set; }
         public List<University> LatestUniversities { get; set; }
         public List<Course> LatestCourses { get; set; }
     }

@@ -24,6 +24,10 @@ namespace JO_UNI_Guide.Controllers
             var model = new DashboardViewModel
             {
                 UniversitiesCount = await _context.Universities.CountAsync(),
+                PublicUniversitiesCount = await _context.Universities
+                    .CountAsync(u => u.Type == UniversityType.Governmental),
+                PrivateUniversitiesCount = await _context.Universities
+            .       CountAsync(u => u.Type == UniversityType.Private),
                 FacultiesCount = await _context.Faculties.CountAsync(),
                 DepartmentsCount = await _context.Departments.CountAsync(),
                 CoursesCount = await _context.Courses.CountAsync(),

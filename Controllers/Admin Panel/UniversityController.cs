@@ -27,35 +27,50 @@ namespace JO_UNI_Guide.Controllers
         }
         // هون رح نعرض كل الجامعات 
         // ورح نضيف searchString للبحث عن جامعة مثلا 
-        public async Task<IActionResult> Index(string searchString , string currentFilter , int? pageNumber) 
+        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber, UniversityType? uniType)
         {
             //اذا الادمن عمل عملية بحث جديدة رجعه للصفحة الاولى
-            if (searchString != null) 
+            // أضفنا شرط التحقق من اختيار نوع الجامعة أيضاً لإعادة الصفحة لـ 1
+            if (searchString != null || uniType != null)
             {
                 pageNumber = 1;
             }
-            else 
+            else
             {
                 searchString = currentFilter;
             }
+
             //رتب النتائج ونفذ الكويري عشان تنبعث للشاشة 
             ViewData["CurrentFilter"] = searchString;
+            // حفظ النوع المختار ليبقى ظاهراً في القائمة المنسدلة عند التنقل بين الصفحات
+            ViewData["SelectedType"] = uniType;
+
             // عشان نقدر نعدل عليه قبل ما يروح على الداتابيز بنعرف الكويري ك IQueryable
             var universities = _context.Universities
                  .AsNoTracking()
                  .AsQueryable();
+
             // عشان يتأكد هل الادمن كتب اشي بمربع البحث ؟
-            if (!string.IsNullOrEmpty(searchString)) 
+            if (!string.IsNullOrEmpty(searchString))
             {
                 //اذا كتب , بفلتر النتائج يعني بنبحث بالاسم او الموقع مثلا
                 universities = universities.Where(u => u.Name.Contains(searchString) || u.Location.Contains(searchString));
             }
+
+            // فلترة النتائج بناءً على نوع الجامعة (حكومية أو خاصة) إذا تم اختيار نوع
+            if (uniType.HasValue)
+            {
+                universities = universities.Where(u => u.Type == uniType.Value);
+            }
+
             //ترتيب الداتا ابجديا في كل صفحة مثلا في 5 جامعات
             universities = universities.OrderBy(n => n.Name);
+
             int pageSize = 3;
-            return View (await JO_UNI_Guide.Helpers.PaginatedList<University>.CreateAsync(
+
+            return View(await JO_UNI_Guide.Helpers.PaginatedList<University>.CreateAsync(
                 universities,
-                pageNumber ?? 1 ,
+                pageNumber ?? 1,
                 pageSize));
         }
         public IActionResult Create()
@@ -65,7 +80,7 @@ namespace JO_UNI_Guide.Controllers
         // to Create new Uni 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("University_ID,Name,Location,Logo,Rank_QS")] University university, IFormFile? logoFile) //OverPosting Protection
+        public async Task<IActionResult> Create([Bind("University_ID,Name,Location,Logo,Rank_QS,Type")] University university, IFormFile? logoFile) //OverPosting Protection
         {
             ModelState.Remove("Logo");
 
@@ -157,7 +172,7 @@ namespace JO_UNI_Guide.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //بعد استلام الداتا من التعديل وحفظها بالداتابيز
-        public async Task <IActionResult>Edit(int id , [Bind("University_ID,Name,Location,Logo,Rank_QS")] University university, IFormFile? logoFile) 
+        public async Task <IActionResult>Edit(int id , [Bind("University_ID,Name,Location,Logo,Rank_QS,Type")] University university, IFormFile? logoFile) 
         {
             if (id != university.University_ID)
                 return NotFound();

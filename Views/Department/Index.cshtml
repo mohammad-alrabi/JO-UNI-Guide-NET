@@ -13,31 +13,48 @@
             <h2 class="page-title mb-0">Departments</h2>
             <p class="text-muted small">Manage admission rates, tuition fees, and credit hours</p>
         </div>
-        <a asp-action="Create" class="btn btn-primary px-4 rounded-pill shadow-sm">
-            <i class="bi bi-plus-lg me-2"></i> Add Department
-        </a>
+        <div class="d-flex gap-2">
+            @* زر تحميل Excel الذي تحدثنا عنه سابقاً *@
+            <a asp-action="ExportToExcel" class="btn btn-outline-success rounded-pill px-3 shadow-sm">
+                <i class="bi bi-file-earmark-excel me-1"></i> Export
+            </a>
+            <a asp-action="Create" class="btn btn-primary px-4 rounded-pill shadow-sm">
+                <i class="bi bi-plus-lg me-2"></i> Add Department
+            </a>
+        </div>
     </div>
 
     @* Advanced Search & Filter Section *@
     <div class="card shadow-sm border-0 mb-4 rounded-4 p-3 bg-white">
         <form asp-action="Index" method="get">
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="small fw-bold text-muted">Search Name</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
                         <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control border-start-0 bg-light" placeholder="Dept or Faculty..." />
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="small fw-bold text-muted">Min Rate (%) <span class="fw-normal text-primary small">(فما فوق)</span></label>
+
+                @* الفلتر الجديد: نوع الجامعة *@
+                <div class="col-md-2">
+                    <label class="small fw-bold text-muted">Uni Type</label>
+                    <select name="uniType" class="form-select bg-light" asp-items="Html.GetEnumSelectList<UniversityType>()">
+                        <option value="">-- All --</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="small fw-bold text-muted">Min Rate (%)</label>
                     <input type="number" step="0.1" name="minRate" value="@ViewData["MinRate"]" class="form-control bg-light" placeholder="e.g. 80" />
                 </div>
-                <div class="col-md-3">
+
+                <div class="col-md-2">
                     <label class="small fw-bold text-muted">Max Price (JOD)</label>
                     <input type="number" step="0.5" name="maxPrice" value="@ViewData["MaxPrice"]" class="form-control bg-light" placeholder="e.g. 50" />
                 </div>
-                <div class="col-md-2 d-flex align-items-end gap-2">
+
+                <div class="col-md-3 d-flex align-items-end gap-2">
                     <button type="submit" class="btn btn-dark w-100 shadow-sm">Filter</button>
                     <a asp-action="Index" class="btn btn-outline-secondary w-100 shadow-sm text-center">
                         <i class="bi bi-arrow-counterclockwise"></i>
@@ -54,7 +71,7 @@
                 <thead class="table-light text-uppercase small fw-bold">
                     <tr>
                         <th class="py-3 text-start ps-4">Department Name</th>
-                        <th class="py-3">Faculty</th>
+                        <th class="py-3">Faculty / University</th>
                         <th class="py-3 text-primary"><i class="bi bi-graph-up-arrow me-1"></i> Rate</th>
                         <th class="py-3 text-success"><i class="bi bi-cash-stack me-1"></i> Price</th>
                         <th class="py-3 text-warning"><i class="bi bi-clock-history me-1"></i> Hours</th>
@@ -66,7 +83,7 @@
                     {
                         <tr>
                             <td colspan="6" class="text-center py-5 text-muted">
-                                <i class="bi bi-folder-x fs-1 d-block mb-2"></i> No departments found matching your criteria.
+                                <i class="bi bi-folder-x fs-1 d-block mb-2"></i> No departments found.
                             </td>
                         </tr>
                     }
@@ -81,9 +98,19 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <span class="badge bg-light text-dark border small">
-                                        @item.Faculty?.Name
-                                    </span>
+                                    @* عرض الكلية والجامعة مع باج لنوع الجامعة *@
+                                    <div class="d-flex flex-column align-items-center">
+                                        <span class="small fw-bold">@item.Faculty?.Name</span>
+                                        <span class="text-muted smaller">@item.Faculty?.University?.Name</span>
+                                        @if (item.Faculty?.University?.Type == UniversityType.Governmental)
+                                        {
+                                            <span class="badge bg-info text-dark smaller" style="font-size: 0.65rem;">Public</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light text-muted border smaller" style="font-size: 0.65rem;">Private</span>
+                                        }
+                                    </div>
                                 </td>
                                 <td>
                                     <span class="fw-bold text-primary">@item.AcceptanceRate%</span>
@@ -124,6 +151,7 @@
                asp-route-currentFilter="@ViewData["CurrentFilter"]"
                asp-route-minRate="@ViewData["MinRate"]"
                asp-route-maxPrice="@ViewData["MaxPrice"]"
+               asp-route-uniType="@ViewData["SelectedUniType"]"
                class="btn btn-white shadow-sm border @(Model.HasPreviousPage ? "" : "disabled text-muted")">
                 <i class="bi bi-chevron-left"></i> Previous
             </a>
@@ -137,6 +165,7 @@
                asp-route-currentFilter="@ViewData["CurrentFilter"]"
                asp-route-minRate="@ViewData["MinRate"]"
                asp-route-maxPrice="@ViewData["MaxPrice"]"
+               asp-route-uniType="@ViewData["SelectedUniType"]"
                class="btn btn-white shadow-sm border @(Model.HasNextPage ? "" : "disabled text-muted")">
                 Next <i class="bi bi-chevron-right"></i>
             </a>
@@ -155,13 +184,13 @@
             background-color: #f8f9fa;
         }
 
-        .bg-light {
-            background-color: #f8f9fa !important;
+        .smaller {
+            font-size: 0.75rem;
         }
+
         .table th, .table td {
             vertical-align: middle;
             white-space: nowrap;
         }
-
     </style>
 }

@@ -15,13 +15,15 @@ namespace JO_UNI_Guide.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber, decimal? minRate, decimal? maxPrice)
+        public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber, decimal? minRate, decimal? maxPrice, UniversityType? uniType)
         {
-            // حفظ الفلاتر الجديدة في الـ View عشان تضل ظاهرة في المربعات النصية
+            // حفظ الفلاتر الجديدة في الـ View عشان تضل ظاهرة في المربعات النصية والقائمة المنسدلة
             ViewData["MinRate"] = minRate;
             ViewData["MaxPrice"] = maxPrice;
+            ViewData["SelectedUniType"] = uniType; // حفظ النوع المختار للـ View
 
-            if (searchString != null || minRate != null || maxPrice != null)
+            // إذا تغير أي فلتر (بحث، معدل، سعر، أو نوع جامعة) نرجع للصفحة الأولى
+            if (searchString != null || minRate != null || maxPrice != null || uniType != null)
             {
                 pageNumber = 1;
             }
@@ -32,8 +34,10 @@ namespace JO_UNI_Guide.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
+            // جلب البيانات مع العلاقات الضرورية (الكلية والجامعة لفلترة النوع)
             var departments = _context.Departments
                 .Include(d => d.Faculty)
+                   .ThenInclude(f => f.University) // ضروري جداً لإضافة الجامعة عشان نفلتر بالـ Type
                 .AsNoTracking()
                 .AsQueryable();
 
@@ -47,13 +51,20 @@ namespace JO_UNI_Guide.Controllers
             // 2. الفلترة حسب الحد الأدنى للمعدل (اختياري)
             if (minRate.HasValue)
             {
-                departments = departments.Where(d => d.AcceptanceRate >= minRate.Value);
+                // تحويل minRate من decimal إلى double ليطابق نوع الحقل في قاعدة البيانات
+                departments = departments.Where(d => d.AcceptanceRate >= (decimal)minRate.Value);
             }
 
             // 3. الفلترة حسب الحد الأقصى لسعر الساعة (اختياري)
             if (maxPrice.HasValue)
             {
                 departments = departments.Where(d => d.HourPrice <= maxPrice.Value);
+            }
+
+            // 4. الفلترة حسب نوع الجامعة (حكومية/خاصة) - مضاف حديثاً
+            if (uniType.HasValue)
+            {
+                departments = departments.Where(d => d.Faculty.University.Type == uniType.Value);
             }
 
             departments = departments.OrderBy(d => d.DepartmentName);
@@ -64,41 +75,36 @@ namespace JO_UNI_Guide.Controllers
 
         public IActionResult Create()
         {
-            // جلب الكليات لعرضها في القائمة المنسدلة
-            ViewBag.FacultyList = new SelectList(_context.Faculties.OrderBy(f => f.Name), "Faculty_ID", "Name");
+            // جلب الكليات مع الجامعات الخاصة بها لتمييزها
+            var faculties = _context.Faculties.Include(f => f.University).OrderBy(f => f.Name).ToList();
+
+            // دمج اسم الكلية مع اسم الجامعة في نص واحد يظهر للأدمن
+            ViewBag.FacultyList = new SelectList(faculties.Select(f => new {
+                Faculty_ID = f.Faculty_ID,
+                DisplayName = $"{f.Name} - ({f.University.Name})"
+            }), "Faculty_ID", "DisplayName");
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // أضفنا TotalCreditHours وتأكدنا من اسم AcceptanceRate ليتطابق مع الموديل
         public async Task<IActionResult> Create([Bind("DepartmentName,Faculty_ID,AcceptanceRate,HourPrice,TotalCreditHours")] Department department)
         {
             if (ModelState.IsValid)
             {
                 _context.Departments.Add(department);
                 await _context.SaveChangesAsync();
-
-                // رسالة نجاح تظهر للأدمن
                 TempData["Success"] = $"Department '{department.DepartmentName}' added successfully.";
                 return RedirectToAction(nameof(Index));
             }
 
-            // في حال وجود خطأ في البيانات، نرجع الكليات للقائمة المنسدلة مرة أخرى
-            ViewBag.FacultyList = new SelectList(_context.Faculties.OrderBy(f => f.Name), "Faculty_ID", "Name", department.Faculty_ID);
-            return View(department);
-        }
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var department = await _context.Departments
-                .Include(d => d.Faculty)
-                    .ThenInclude(f => f.University)
-                .Include(d => d.Courses)
-                .FirstOrDefaultAsync(m => m.Department_ID == id);
-
-            if (department == null) return NotFound();
+            // إعادة جلب القائمة في حال فشل الـ Validation
+            var faculties = _context.Faculties.Include(f => f.University).OrderBy(f => f.Name).ToList();
+            ViewBag.FacultyList = new SelectList(faculties.Select(f => new {
+                Faculty_ID = f.Faculty_ID,
+                DisplayName = $"{f.Name} - ({f.University.Name})"
+            }), "Faculty_ID", "DisplayName", department.Faculty_ID);
 
             return View(department);
         }
@@ -117,7 +123,6 @@ namespace JO_UNI_Guide.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // 1. تعديل الحقول داخل الـ Bind لتطابق الموديل الجديد تماماً
         public async Task<IActionResult> Edit(int id, [Bind("Department_ID,DepartmentName,Faculty_ID,AcceptanceRate,HourPrice,TotalCreditHours")] Department department)
         {
             if (id != department.Department_ID) return NotFound();
@@ -180,6 +185,29 @@ namespace JO_UNI_Guide.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> Details(int? id)
+        {
+            // 1. التحقق إذا كان الـ ID المرسل فارغاً
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // 2. جلب القسم مع كافة العلاقات المرتبطة به
+            var department = await _context.Departments
+                .Include(d => d.Faculty)              // جلب الكلية التابع لها القسم
+                    .ThenInclude(f => f.University)   // جلب الجامعة التابعة لها الكلية (سلسلة الربط)
+                .Include(d => d.Courses)              // جلب قائمة المواد الدراسية التابعة لهذا القسم
+                .AsNoTracking()                       // تحسين الأداء لأننا فقط نعرض بيانات ولا نعدلها
+                .FirstOrDefaultAsync(m => m.Department_ID == id);
+
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            return View(department);
         }
     }
 }

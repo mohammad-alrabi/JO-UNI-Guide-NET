@@ -7,20 +7,23 @@
 
 <div class="container py-4">
 
+    @* Header Section *@
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div>
             <h2 class="page-title mb-1">Universities</h2>
-            <p class="text-muted mb-0">Manage universities easily</p>
+            <p class="text-muted mb-0">Manage university profiles and classifications</p>
         </div>
 
         <a asp-action="Create" class="btn btn-main px-4">
             <i class="bi bi-plus-lg me-2"></i> Add University
         </a>
     </div>
+
+    @* Enhanced Search & Filter Section *@
     <div class="uni-admin-card shadow-sm p-3 mb-4">
         <form asp-action="Index" method="get">
             <div class="row g-2">
-                <div class="col-md-9">
+                <div class="col-md-6">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0 text-muted">
                             <i class="bi bi-search"></i>
@@ -32,8 +35,16 @@
                                placeholder="Search by name or location..." />
                     </div>
                 </div>
+
+                @* إضافة فلتر نوع الجامعة *@
+                <div class="col-md-3">
+                    <select name="uniType" class="form-select shadow-none" asp-items="Html.GetEnumSelectList<UniversityType>()">
+                        <option value="">-- All Types --</option>
+                    </select>
+                </div>
+
                 <div class="col-md-3 d-flex gap-2">
-                    <button class="btn btn-dark w-100">Search</button>
+                    <button class="btn btn-dark w-100">Filter</button>
                     <a asp-action="Index" class="btn btn-outline-secondary w-100">Reset</a>
                 </div>
             </div>
@@ -43,7 +54,8 @@
     @if (Model.Count == 0)
     {
         <div class="text-center py-5">
-            <p class="text-muted mt-3">No universities found match your criteria.</p>
+            <i class="bi bi-building-exclamation fs-1 text-muted"></i>
+            <p class="text-muted mt-3">No universities found matching your criteria.</p>
         </div>
     }
     else
@@ -52,8 +64,24 @@
             @foreach (var item in Model)
             {
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card uni-admin-card shadow-sm h-100">
-                        
+                    <div class="card uni-admin-card shadow-sm h-100 position-relative">
+
+                        @* 1. Badge نوع الجامعة (يظهر في الزاوية) *@
+                        <div class="position-absolute top-0 end-0 m-2">
+                            @if (item.Type == UniversityType.Governmental)
+                            {
+                                <span class="badge bg-primary rounded-pill shadow-sm">
+                                    <i class="bi bi-bank me-1"></i> Public
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary rounded-pill shadow-sm">
+                                    <i class="bi bi-building me-1"></i> Private
+                                </span>
+                            }
+                        </div>
+
                         <div class="uni-logo-container">
                             <img src="@item.Logo"
                                  onerror="this.src='/images/default.png'"
@@ -62,18 +90,23 @@
 
                         <div class="card-body-content">
                             <h5 class="uni-name">@item.Name</h5>
-                            <p class="uni-location">
+
+                            <p class="uni-location mb-2">
                                 <i class="bi bi-geo-alt me-1 text-danger"></i> @item.Location
                             </p>
-                            
-                            <div class="rank-badge mb-3">
-                                <i class="bi bi-trophy me-1"></i> QS Rank: @item.Rank_QS
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="rank-badge m-0">
+                                    <i class="bi bi-trophy me-1 text-warning"></i> Rank: @item.Rank_QS
+                                </div>
+                                @* إضافة باج ثانوي يوضح النوع بجانب الرتبة *@
+                                <small class="text-muted fw-bold">@(item.Type == UniversityType.Governmental ? "حكومية" : "خاصة")</small>
                             </div>
 
                             <div class="d-flex gap-2 btn-action-group">
-                                <a asp-action="Details" asp-route-id="@item.University_ID" class="btn btn-info text-white shadow-none">Details</a>
-                                <a asp-action="Edit" asp-route-id="@item.University_ID" class="btn btn-warning text-white shadow-none">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.University_ID" class="btn btn-danger shadow-none">Delete</a>
+                                <a asp-action="Details" asp-route-id="@item.University_ID" class="btn btn-info btn-sm text-white shadow-none">Details</a>
+                                <a asp-action="Edit" asp-route-id="@item.University_ID" class="btn btn-warning btn-sm text-white shadow-none">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.University_ID" class="btn btn-danger btn-sm shadow-none">Delete</a>
                             </div>
                         </div>
 
@@ -82,11 +115,12 @@
             }
         </div>
 
+        @* Pagination Section *@
         <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
             <a asp-action="Index"
                asp-route-pageNumber="@(Model.PageIndex - 1)"
                asp-route-currentFilter="@ViewData["CurrentFilter"]"
-               class="btn btn-white shadow-sm @(Model.HasPreviousPage ? "" : "disabled text-muted")">
+               class="btn btn-white shadow-sm border @(Model.HasPreviousPage ? "" : "disabled text-muted")">
                 <i class="bi bi-chevron-left"></i> Previous
             </a>
 
@@ -97,7 +131,7 @@
             <a asp-action="Index"
                asp-route-pageNumber="@(Model.PageIndex + 1)"
                asp-route-currentFilter="@ViewData["CurrentFilter"]"
-               class="btn btn-white shadow-sm @(Model.HasNextPage ? "" : "disabled text-muted")">
+               class="btn btn-white shadow-sm border @(Model.HasNextPage ? "" : "disabled text-muted")">
                 Next <i class="bi bi-chevron-right"></i>
             </a>
         </div>
