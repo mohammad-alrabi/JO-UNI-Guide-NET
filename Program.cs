@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+// --- السطر السحري لحل مشكلة التوقيت في PostgreSQL ---
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
@@ -11,15 +14,22 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedEmail = true;
+    // ملاحظة: بما أنكِ في مرحلة التطوير، يفضل جعل هذه false 
+    // لكي لا يطلب منكِ تفعيل الإيميل حقيقةً لتتمكني من الدخول
+    options.SignIn.RequireConfirmedEmail = false;
+
+    // إعدادات الباسوورد (اختياري لجعلها أسهل للتجربة)
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
-// Seed SuperAdmin & Roles
-// Seed SuperAdmin & Roles
+// Seed SuperAdmin & Roles (كودك ممتاز ومكانه صحيح)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -29,7 +39,6 @@ using (var scope = app.Services.CreateScope())
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var configuration = services.GetRequiredService<IConfiguration>();
 
-        // 1. إنشاء الأدوار إذا لم تكن موجودة
         string[] roles = { "SuperAdmin", "Admin", "Student" };
         foreach (var role in roles)
         {
@@ -37,7 +46,6 @@ using (var scope = app.Services.CreateScope())
                 await roleManager.CreateAsync(new IdentityRole(role));
         }
 
-        // 2. جلب بيانات السوبر أدمن
         var superAdminEmail = configuration["SuperAdmin:Email"];
         var superAdminPassword = configuration["SuperAdmin:Password"];
 
@@ -53,7 +61,6 @@ using (var scope = app.Services.CreateScope())
                     EmailConfirmed = true
                 };
 
-                // 3. ننتظر نجاح العملية (Succeeded) قبل إعطاء الصلاحية
                 var result = await userManager.CreateAsync(newUser, superAdminPassword);
                 if (result.Succeeded)
                 {
@@ -64,10 +71,10 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        // هاد السطر بيمنع التطبيق إنه "يفقع" لو صار مشكلة في الداتا بيز
         Console.WriteLine("Seed Error: " + ex.Message);
     }
 }
+
 // Configure middleware
 if (!app.Environment.IsDevelopment())
 {
@@ -78,7 +85,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseAuthentication();
+
+app.UseAuthentication(); // مهم جداً أن تكون قبل Authorization
 app.UseAuthorization();
 
 app.MapControllerRoute(

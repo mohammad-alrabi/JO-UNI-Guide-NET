@@ -39,7 +39,6 @@
                         </span>
                     </div>
                 </div>
-                @* شكل ديكوري خلفي *@
                 <i class="bi bi-bank decorative-icon"></i>
             </div>
         </div>
@@ -74,25 +73,25 @@
             </div>
         </div>
 
-        @* Courses *@
+        @* Contact Messages - الكرت الجديد للرسائل *@
         <div class="col-xl-3 col-md-6">
             <div class="stat-card bg-white h-100 shadow-sm rounded-4 p-4 border-0 position-relative overflow-hidden">
-                <div class="stat-icon bg-light-danger text-danger">
-                    <i class="bi bi-book"></i>
+                <div class="stat-icon bg-light-info text-info">
+                    <i class="bi bi-chat-dots"></i>
                 </div>
                 <div class="stat-content mt-3">
-                    <h6 class="text-uppercase text-muted fw-bold mb-1 small tracking-wider">Total Courses</h6>
-                    <h2 class="fw-bold text-dark mb-0">@Model.CoursesCount</h2>
-                    <p class="text-muted small mt-2">Educational subjects listed</p>
+                    <h6 class="text-uppercase text-muted fw-bold mb-1 small tracking-wider">Messages</h6>
+                    <h2 class="fw-bold text-dark mb-0">@ViewBag.MessagesCount</h2>
+                    <p class="text-muted small mt-2">Student inquiries</p>
                 </div>
-                <i class="bi bi-book decorative-icon"></i>
+                <i class="bi bi-chat-dots decorative-icon"></i>
             </div>
         </div>
 
     </div>
 
     @* Recent Activity Row *@
-    <div class="row g-4">
+    <div class="row g-4 mb-4">
 
         @* Latest Universities *@
         <div class="col-lg-7">
@@ -144,121 +143,70 @@
             </div>
         </div>
 
-        @* Quick Actions - إضافة لمسة عملية للـ Dashboard *@
+        @* Quick Actions & Latest Messages *@
         <div class="col-lg-5">
-            <div class="card shadow-sm border-0 rounded-4 h-100 bg-white">
-                <div class="card-header bg-white border-0 pt-4 px-4">
-                    <h5 class="fw-bold text-dark m-0"><i class="bi bi-lightning-charge me-2 text-warning"></i> Quick Actions</h5>
-                </div>
-                <div class="card-body p-4">
-                    <div class="d-grid gap-3">
-                        <a asp-controller="University" asp-action="Create" class="btn btn-main py-3 rounded-3 text-start d-flex align-items-center">
-                            <i class="bi bi-plus-circle-fill fs-4 me-3"></i>
-                            <div>
-                                <div class="fw-bold">Add New University</div>
-                                <div class="small opacity-75">Enter ranking, logo, and details.</div>
-                            </div>
-                        </a>
-                        <a asp-controller="Department" asp-action="Create" class="btn btn-outline-success py-3 rounded-3 text-start d-flex align-items-center">
-                            <i class="bi bi-building-plus fs-4 me-3"></i>
-                            <div>
-                                <div class="fw-bold">Add New Department</div>
-                                <div class="small opacity-75">Define fees and admission rates.</div>
-                            </div>
-                        </a>
-                        <a asp-controller="Course" asp-action="Create" class="btn btn-outline-danger py-3 rounded-3 text-start d-flex align-items-center">
-                            <i class="bi bi-book-half fs-4 me-3"></i>
-                            <div>
-                                <div class="fw-bold">List New Course</div>
-                                <div class="small opacity-75">Assign to specific departments.</div>
-                            </div>
-                        </a>
+            <div class="d-flex flex-column gap-4">
+
+                @* Quick Actions *@
+                <div class="card shadow-sm border-0 rounded-4 bg-white">
+                    <div class="card-header bg-white border-0 pt-4 px-4">
+                        <h5 class="fw-bold text-dark m-0"><i class="bi bi-lightning-charge me-2 text-warning"></i> Quick Actions</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-grid gap-3">
+                            <a asp-controller="University" asp-action="Create" class="btn btn-main py-3 rounded-3 text-start d-flex align-items-center">
+                                <i class="bi bi-plus-circle-fill fs-4 me-3"></i>
+                                <div>
+                                    <div class="fw-bold">Add New University</div>
+                                    <div class="small opacity-75">Enter ranking, logo, and details.</div>
+                                </div>
+                            </a>
+                            <a asp-controller="Department" asp-action="Create" class="btn btn-outline-success py-3 rounded-3 text-start d-flex align-items-center">
+                                <i class="bi bi-building-plus fs-4 me-3"></i>
+                                <div>
+                                    <div class="fw-bold">Add New Department</div>
+                                    <div class="small opacity-75">Define fees and admission rates.</div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
+
+                @* Latest Messages List *@
+                <div class="card shadow-sm border-0 rounded-4 bg-white">
+                    <div class="card-header bg-white border-0 pt-4 px-4">
+                        <h5 class="fw-bold text-dark m-0"><i class="bi bi-envelope-open me-2 text-info"></i> Recent Messages</h5>
+                    </div>
+                    <div class="card-body p-4 pt-2">
+                        @if (Model.LatestMessages != null && Model.LatestMessages.Any())
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var msg in Model.LatestMessages)
+                                {
+                                    <div class="list-group-item px-0 py-3 border-0 border-bottom">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <h6 class="fw-bold mb-0 text-dark">@msg.Name</h6>
+                                            <small class="text-muted">@msg.SentDate.ToString("MMM dd")</small>
+                                        </div>
+                                        <div class="text-muted small text-truncate" style="max-width: 100%;">
+                                            <span class="text-primary fw-semibold">@msg.Subject:</span> @msg.Message
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center py-4">
+                                <i class="bi bi-inbox text-muted fs-2"></i>
+                                <p class="text-muted small mt-2">No messages received yet.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
             </div>
         </div>
 
     </div>
 </div>
-
-@* Custom CSS for the new look *@
-<style>
-    /* ألوان خفيفة خلف الأيقونات */
-    .bg-light-primary {
-        background-color: rgba(13, 110, 253, 0.1);
-    }
-
-    .bg-light-success {
-        background-color: rgba(25, 135, 84, 0.1);
-    }
-
-    .bg-light-warning {
-        background-color: rgba(255, 193, 7, 0.1);
-    }
-
-    .bg-light-danger {
-        background-color: rgba(220, 53, 69, 0.1);
-    }
-
-    .btn-light-primary {
-        background-color: rgba(13, 110, 253, 0.05);
-        color: #0d6efd;
-        border: 1px solid rgba(13, 110, 253, 0.1);
-    }
-
-        .btn-light-primary:hover {
-            background-color: rgba(13, 110, 253, 0.1);
-        }
-
-    /* تنسيق كروت الإحصائيات */
-    .stat-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-        }
-
-    .stat-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.8rem;
-    }
-
-    .tracking-wider {
-        letter-spacing: 1px;
-    }
-
-    /* أيقونات ديكورية خلفية */
-    .decorative-icon {
-        position: absolute;
-        bottom: -20px;
-        right: -10px;
-        font-size: 6rem;
-        opacity: 0.03;
-        transform: rotate(-15deg);
-        pointer-events: none;
-    }
-
-    /* تحسينات الجدول */
-    .table-hover tbody tr:hover {
-        background-color: rgba(13, 110, 253, 0.02);
-    }
-
-    /* أزرار الإجراءات السريعة */
-    .btn-main {
-        background-color: #0d6efd;
-        color: white;
-        border: none;
-    }
-
-        .btn-main:hover {
-            background-color: #0b5ed7;
-            color: white;
-        }
-</style>

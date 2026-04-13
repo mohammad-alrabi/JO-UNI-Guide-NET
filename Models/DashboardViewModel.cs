@@ -11,5 +11,7 @@
         public int PrivateUniversitiesCount { get; set; }
         public List<University> LatestUniversities { get; set; }
         public List<Course> LatestCourses { get; set; }
+        public List<ContactMessage> LatestMessages { get; set; } = new List<ContactMessage>();
+
     }
 }

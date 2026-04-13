@@ -103,17 +103,19 @@ namespace JO_UNI_Guide.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Contact(ContactMessage message)   // استقبال الرسالة من الطالب وحفظها
+        public async Task<IActionResult> Contact([Bind("Name,Email,Subject,Message")] ContactMessage contactData)   // استقبال الرسالة من الطالب وحفظها
         {
+            ModelState.Remove("SentDate");
+            ModelState.Remove("Id");
             if (ModelState.IsValid) 
             {
-                message.SentDate = DateTime.Now;
-                _context.ContactMessages.Add(message);
+                contactData.SentDate = DateTime.UtcNow;
+                _context.ContactMessages.Add(contactData);
                 await _context.SaveChangesAsync();
                 TempData["MessageSent"] = "Thank you for contacting us, we will get back to you soon!";
                 return RedirectToAction(nameof(Contact));
             }
-            return View(message);
+            return View(contactData);
 
         }
             

@@ -18,7 +18,7 @@ namespace JO_UNI_Guide.Models
         public string Message {  get; set; } = string.Empty;
 
         [ValidateNever]
-        public DateTime SentDate { get; set; } = DateTime.Now;
+        public DateTime SentDate { get; set; } = DateTime.UtcNow;
 
 
 

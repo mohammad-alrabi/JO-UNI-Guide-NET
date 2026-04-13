@@ -44,7 +44,14 @@ namespace JO_UNI_Guide.Controllers
                                   .Take(5)
                                   .ToListAsync(),
 
+                LatestMessages = await _context.ContactMessages
+                                .OrderByDescending(m => m.SentDate)
+                                .Take(5)
+                                .ToListAsync(),
+
             };
+
+            ViewBag.MessagesCount = await _context.ContactMessages.CountAsync();
             return View("~/Views/Dashboard/Dashboard.cshtml", model);
         }
     }

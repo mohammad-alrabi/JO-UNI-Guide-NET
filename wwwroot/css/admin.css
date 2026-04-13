@@ -459,3 +459,95 @@ th, td {
 .container > .uni-admin-card {
     transform: none !important;
 }
+/* ألوان خفيفة خلف الأيقونات */
+.bg-light-primary {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.bg-light-success {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+.bg-light-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.bg-light-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.bg-light-info {
+    background-color: rgba(13, 202, 240, 0.1);
+}
+
+.text-info {
+    color: #0dcaf0 !important;
+}
+
+.btn-light-primary {
+    background-color: rgba(13, 110, 253, 0.05);
+    color: #0d6efd;
+    border: 1px solid rgba(13, 110, 253, 0.1);
+}
+
+    .btn-light-primary:hover {
+        background-color: rgba(13, 110, 253, 0.1);
+    }
+
+/* تنسيق كروت الإحصائيات */
+.stat-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+.tracking-wider {
+    letter-spacing: 1px;
+}
+
+/* أيقونات ديكورية خلفية */
+.decorative-icon {
+    position: absolute;
+    bottom: -20px;
+    right: -10px;
+    font-size: 6rem;
+    opacity: 0.03;
+    transform: rotate(-15deg);
+    pointer-events: none;
+}
+
+/* تحسينات الجدول والرسائل */
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.02);
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* أزرار الإجراءات السريعة */
+.btn-main {
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+}
+
+    .btn-main:hover {
+        background-color: #0b5ed7;
+        color: white;
+    }
