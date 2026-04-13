@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace JO_UNI_Guide.Controllers
@@ -10,21 +11,24 @@ namespace JO_UNI_Guide.Controllers
     {
         // سحبنا محرك تسجيل الدخول تبع Identity
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public AccountController(SignInManager<IdentityUser> signInManager)
+        public AccountController(SignInManager<IdentityUser> signInManager , UserManager<IdentityUser> userManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         // 1. فتح شاشة تسجيل الدخول
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login()
+        public IActionResult Login(string role = "Student")
         {
             if (User.Identity.IsAuthenticated) 
             {
                 return RedirectToAction("Dashboard", "Admin");
             }
+            ViewBag.Role = role; // نرسل الدور للـ View عشان نغير النصوص
             return View();
         }
 
@@ -36,35 +40,38 @@ namespace JO_UNI_Guide.Controllers
         {
             if (ModelState.IsValid)
             {
-                // هون Identity بتشتغل سحرها وبتشيك على الإيميل والباسوورد
+                // 1. محاولة تسجيل الدخول
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
-                    // إذا الداتا صح، بندخله على لوحة التحكم
+                    // 2. إذا كان هناك رابط قديم (ReturnUrl) يرجع له
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);
                     }
-                    else
+
+                    // 3. السحر هنا: التمييز بين الأدمن والطالب
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    if (roles.Contains("SuperAdmin") || roles.Contains("Admin"))
                     {
-                        // التوجيه الافتراضي للداشبورد
                         return RedirectToAction("Dashboard", "Admin");
                     }
+                    else
+                    {
+                        // إذا كان طالب، بنبعته على الـ Student Layout اللي صممناها
+                        return RedirectToAction("Dashboard", "Student");
+                    }
                 }
-                else
-                {
-                    // إذا الباسوورد غلط
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model);
-                }
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
 
-            // إذا الفورم فيه مشكلة بنرجعه لنفس الشاشة
             return View(model);
         }
 
-        // 3. تسجيل الخروج
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -75,6 +82,46 @@ namespace JO_UNI_Guide.Controllers
 
             // بنرجعه على الصفحة الرئيسية للزوار
             return RedirectToAction("Index", "Home");
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register() 
+        {
+            // بشيك على اليوزر ليحدد هو ادمن ولا طالب 
+            if (User.Identity.IsAuthenticated)
+            {
+               //في حال كان طالب وديه على StudentController
+               //في حال كان ادمن وديه على AdminController
+                return RedirectToAction("Dashboard", User.IsInRole("Admin") ? "Admin" : "Student");
+            }
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register (RegisterViewModel model) 
+        {
+            if (ModelState.IsValid) 
+            {
+                //create new user
+                var user = new IdentityUser { UserName = model.Name, Email = model.Email };
+
+                //to save in database and try to save the password eyncrpted
+                var result = await _userManager.CreateAsync(user , model.Password);
+                if (result.Succeeded) 
+                {
+                    await _userManager.AddToRoleAsync(user, "Student");
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Dashboard", "Student");
+                }
+                // إضافة أخطاء Identity (مثل: الباسوورد ضعيفة أو الإيميل مكرر) للـ Validation
+                foreach (var error in result.Errors) 
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+            }
+                return View(model);
         }
     }
 }

@@ -2,75 +2,105 @@
 @{
     ViewData["Title"] = "Home";
     Layout = "_Layout";
-    
-
 }
 
+@* Section 1: Hero Section *@
 <section class="hero-section">
     <div class="container text-center">
         <h1 class="hero-title">Find Your Future Major <i class="bi bi-mortarboard text-warning ms-1"></i></h1>
         <p class="hero-subtitle">Explore universities, faculties, and majors in Jordan</p>
-        <a asp-controller="Home" asp-action="Universities" class="btn btn-hero mt-2 shadow-sm">
-            Get Started <i class="bi bi-arrow-right ms-2"></i>
-        </a>
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="Account" asp-action="Login" class="btn btn-hero">Get Started</a>
+        </div>
     </div>
 </section>
 
-<section class="stats-section">
+@* Section 2: Stats Section (4 Columns) *@
+<section class="stats-section py-5">
     <div class="container">
         <div class="row text-center g-4">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stat-card">
-                    <i class="bi bi-buildings-fill display-4 text-primary mb-3 d-block opacity-75"></i>
-                    <h2>@ViewBag.UniversitiesCount+</h2>
-                    <p class="fw-bold mb-0">Universities</p>
+                    <i class="bi bi-buildings-fill display-5 text-primary mb-3 d-block"></i>
+                    <h2 class="fw-bold">@ViewBag.UniversitiesCount+</h2>
+                    <p class="text-muted fw-bold mb-0">Universities</p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stat-card">
-                    <i class="bi bi-diagram-3-fill display-4 text-primary mb-3 d-block opacity-75"></i>
-                    <h2>@ViewBag.FacultiesCount+</h2>
-                    <p class="fw-bold mb-0">Faculties</p>
+                    <i class="bi bi-diagram-3-fill display-5 text-primary mb-3 d-block"></i>
+                    <h2 class="fw-bold">@ViewBag.FacultiesCount+</h2>
+                    <p class="text-muted fw-bold mb-0">Faculties</p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="stat-card">
-                    <i class="bi bi-journal-bookmark-fill display-4 text-primary mb-3 d-block opacity-75"></i>
-                    <h2>@ViewBag.Courses+</h2>
-                    <p class="fw-bold mb-0">Courses</p>
+                    <i class="bi bi-journal-bookmark-fill display-5 text-primary mb-3 d-block"></i>
+                    <h2 class="fw-bold">@ViewBag.Courses+</h2>
+                    <p class="text-muted fw-bold mb-0">Courses</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card bg-primary text-white">
+                    <i class="bi bi-eye-fill display-5 text-warning mb-3 d-block"></i>
+                    <h2 class="fw-bold">@ViewBag.VisitorCount</h2>
+                    <p class="fw-bold mb-0">Total Visits</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="universities-section">
+@* Section 3: Top Universities *@
+<section class="universities-section py-5 bg-light">
     <div class="container">
-        <h2 class="section-title">Top Universities</h2>
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div class="header-container mb-5" style="padding-left:24rem;">
+                <div class="d-flex align-items-center justify-content-center gap-3 mb-2">
+                    <div class="title-line"></div>
+                    <h2 class="section-title-modern">Top Universities</h2>
+                    <div class="title-line"></div>
+                </div>
+                <p class="section-subtitle">
+                    <i class="bi bi-stars text-warning me-1"></i>
+                    Explore the highest-ranked universities in Jordan
+                </p>
+            </div>
+            <a asp-action="Universities" class="btn btn-link text-primary text-decoration-none fw-bold">
+                View All <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+
         <div class="row g-4">
             @foreach (var university in Model)
             {
                 <div class="col-md-4 mb-4">
-                    <div class="uni-card h-100 d-flex flex-column">
-                        <div class="bg-light text-center border-bottom">
+                    <div class="uni-card h-100 d-flex flex-column bg-white shadow-sm border-0">
+                        <div class="bg-light text-center border-bottom position-relative">
+                            @* Badge لتمييز النوع *@
+                            <span class="badge @(university.Type == UniversityType.Governmental ? "bg-primary" : "bg-secondary") position-absolute top-0 start-0 m-3 shadow-sm">
+                                @university.Type
+                            </span>
+
                             <img src="@university.Logo"
                                  alt="@university.Name"
-                                 class="p-3"
-                                 style="height: 180px; object-fit: contain;"
+                                 class="p-4"
+                                 style="height: 200px; object-fit: contain;"
                                  onerror="this.src='/images/default.png'" />
                         </div>
-                        <div class="uni-card-body text-center d-flex flex-column flex-grow-1">
+                        <div class="uni-card-body p-4 text-center d-flex flex-grow-1 flex-column">
                             <h5 class="fw-bold mb-2">@university.Name</h5>
-                            <p class="text-muted small mb-4">
-                                <i class="bi bi-geo-alt-fill text-danger me-1"></i> @university.Location
-                            </p>
+                            <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+                                <span class="small text-muted"><i class="bi bi-geo-alt-fill text-danger"></i> @university.Location</span>
+                                <span class="small text-muted border-start ps-2"><i class="bi bi-star-fill text-warning"></i> Rank: @university.Rank_QS</span>
+                            </div>
 
                             <div class="mt-auto">
                                 <a asp-controller="Home"
                                    asp-action="UniversityDetails"
                                    asp-route-id="@university.University_ID"
-                                   class="btn btn-explore w-100 shadow-sm">
-                                    Explore <i class="bi bi-arrow-right-short fs-5 align-middle"></i>
+                                   class="btn btn-explore w-100 py-2 fw-bold">
+                                    Explore Program <i class="bi bi-arrow-right-short fs-5"></i>
                                 </a>
                             </div>
                         </div>
@@ -78,11 +108,81 @@
                 </div>
             }
         </div>
+    </div>
+</section>
+@* --- قسم About Us (تحت الجامعات مباشرة) --- *@
+@* Section: Our Story (About Us) *@
+<section id="about-section" class="about-story-section py-5">
+    <div class="container">
+        @* 1. من نحن؟ *@
+        <div class="row align-items-center mb-5 pb-5 mt-4">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="story-image-wrapper">
+                    <img src="~/images/whoWeAre.jpeg" class="img-fluid rounded-4 shadow-lg" alt="About Us">
+                    <div class="experience-badge">
+                        <span class="fs-2 fw-bold d-block"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 ps-md-5">
+                <h6 class="text-brand text-uppercase fw-bold mb-3 ls-1">Who We Are</h6>
+                <h2 class="display-5 fw-bold mb-4 text-dark">Jordan's Premier Student Guide</h2>
+                <p class="lead text-muted">
+                    نحن فريق من المطورين والطلاب الأردنيين الذين مروا بنفس تجربتك. أطلقنا <strong>JO-UNI Guide</strong> لنكون المرجع الأول والأساسي لكل طالب ناجح في الثانوية العامة يبحث عن التميز في مستقبله الأكاديمي.
+                </p>
+            </div>
+        </div>
 
-        <div class="text-center mt-5">
-            <a asp-controller="Home" asp-action="Universities" class="btn btn-view-all">
-                <i class="bi bi-grid-fill me-2"></i> View All Universities
-            </a>
+        @* 2. هدفنا؟ (العكس: نص يمين صورة يسار) *@
+        <div class="row align-items-center mb-5 pb-5 flex-row-reverse">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="story-image-wrapper">
+                    <img src="~/images/ourMission.jpeg" class="img-fluid rounded-4 shadow-lg" alt="Our Goal">
+                </div>
+            </div>
+            <div class="col-md-6 pe-md-5">
+                <h6 class="text-brand text-uppercase fw-bold mb-3 ls-1">Our Mission</h6>
+                <h2 class="display-5 fw-bold mb-4 text-dark">Simplifying Your Academic Path</h2>
+                <p class="lead text-muted">
+                    هدفنا هو تبسيط عملية اختيار التخصص الجامعي المعقدة. من خلال توفير بيانات دقيقة ومحدثة عن الجامعات الأردنية، نسعى لتقليل فجوة الحيرة بين الطالب وتخصصه المستقبلي، وضمان اتخاذ القرار الصحيح في الوقت المناسب.
+                </p>
+            </div>
+        </div>
+
+        @* 3. لماذا نحن؟ *@
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="story-image-wrapper">
+                    <img src="~/images/whyUs.jpeg" class="img-fluid rounded-4 shadow-lg" alt="Why Us">
+                </div>
+            </div>
+            <div class="col-md-6 ps-md-5">
+                <h6 class="text-brand text-uppercase fw-bold mb-3 ls-1">Why Choose Us?</h6>
+                <h2 class="display-5 fw-bold mb-4 text-dark">Data-Driven Decisions</h2>
+                <ul class="list-unstyled">
+                    <li class="mb-4 d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-brand fs-4 me-3"></i>
+                        <div>
+                            <h5 class="fw-bold mb-1">Accurate Data</h5>
+                            <p class="text-muted">بيانات دقيقة ومحدثة من المصادر الرسمية للجامعات الأردنية.</p>
+                        </div>
+                    </li>
+                    <li class="mb-4 d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-brand fs-4 me-3"></i>
+                        <div>
+                            <h5 class="fw-bold mb-1">Smart Search</h5>
+                            <p class="text-muted">نظام بحث ذكي يربط معدلك في التوجيهي بالتخصصات التي تناسبك.</p>
+                        </div>
+                    </li>
+                    <li class="mb-4 d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-brand fs-4 me-3"></i>
+                        <div>
+                            <h5 class="fw-bold mb-1">Time Saver</h5>
+                            <p class="text-muted">نوفر عليك عناء البحث الطويل في المواقع المشتتة، كل شيء هنا في مكان واحد.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>

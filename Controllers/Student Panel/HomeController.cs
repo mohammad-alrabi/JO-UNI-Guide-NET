@@ -22,10 +22,25 @@ namespace JO_UNI_Guide.Controllers
             ViewBag.FacultiesCount = await _context.Faculties.CountAsync();
             ViewBag.Courses = await _context.Courses.CountAsync();
 
+            //عدد الزيارات داخل الموقع
+            var stats = await _context.SiteStatistics.FirstOrDefaultAsync();
+            if (stats == null)
+            {
+                stats = new SiteStatistic { VisitorCount = 1 };
+                _context.SiteStatistics.Add(stats);
+            }
+            else 
+            {
+                stats.VisitorCount++;
+                _context.Update(stats);
+            }
+            await _context.SaveChangesAsync();
+            ViewBag.VisitorCount = stats.VisitorCount;
+
             //جلب افضل 3 جامعات مثلا حسب الترتيب او التصنيف لعرضهم بالصفحة الرظيسية 
             var topUniversities = await _context.Universities
                                     .AsNoTracking()
-                                    .OrderBy(n => n.Name)
+                                    .OrderBy(n => n.Rank_QS)
                                     .Take(3)
                                     .ToListAsync();
             return View(topUniversities);
@@ -48,7 +63,7 @@ namespace JO_UNI_Guide.Controllers
             }
 
             universities = universities.OrderBy(u => u.Name);
-            int pageSize = 5; // عرض 6 جامعات (كروت) في كل صفحة
+            int pageSize = 5; // عرض 5 جامعات (كروت) في كل صفحة
 
             return View(await JO_UNI_Guide.Helpers.PaginatedList<University>.CreateAsync(universities, pageNumber ?? 1, pageSize));
         }
@@ -76,5 +91,32 @@ namespace JO_UNI_Guide.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        // for info about us 
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
+        public ActionResult Contact()    // صفحة تواصل معنا (عرض الفورم)
+        {
+            return View();  
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Contact(ContactMessage message)   // استقبال الرسالة من الطالب وحفظها
+        {
+            if (ModelState.IsValid) 
+            {
+                message.SentDate = DateTime.Now;
+                _context.ContactMessages.Add(message);
+                await _context.SaveChangesAsync();
+                TempData["MessageSent"] = "Thank you for contacting us, we will get back to you soon!";
+                return RedirectToAction(nameof(Contact));
+            }
+            return View(message);
+
+        }
+            
     }
+    
 }

@@ -1,0 +1,95 @@
+﻿@model JO_UNI_Guide.Models.ContactMessage
+@{
+    ViewData["Title"] = "Contact Us";
+    Layout = "_Layout";
+}
+
+<div class="contact-header py-5 text-white mb-5" style="background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold">Get In Touch</h1>
+        <p class="lead opacity-75">We are here to answer your questions and guide you to your future.</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row g-5">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100 p-4 rounded-4 bg-light">
+                <h4 class="fw-bold mb-4 text-brand">Contact Information</h4>
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="contact-icon-circle bg-white shadow-sm me-3 text-brand">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <div>
+                        <p class="mb-0 fw-bold">Location</p>
+                        <small class="text-muted">Amman, Jordan</small>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="contact-icon-circle bg-white shadow-sm me-3 text-brand">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                    <div>
+                        <p class="mb-0 fw-bold">Email Support</p>
+                        <small class="text-muted">info@jouni-guide.com</small>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="contact-icon-circle bg-white shadow-sm me-3 text-brand">
+                        <i class="bi bi-clock-fill"></i>
+                    </div>
+                    <div>
+                        <p class="mb-0 fw-bold">Working Hours</p>
+                        <small class="text-muted">Sun - Thu: 9:00 AM - 5:00 PM</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4">
+                <h4 class="fw-bold mb-4">Send us a Message</h4>
+
+                <form asp-action="Contact" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label fw-bold small text-uppercase">Full Name</label>
+                            <input asp-for="Name" class="form-control custom-input" placeholder="Enter your name" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label fw-bold small text-uppercase">Email Address</label>
+                            <input asp-for="Email" class="form-control custom-input" placeholder="email@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Subject" class="form-label fw-bold small text-uppercase">Subject</label>
+                            <input asp-for="Subject" class="form-control custom-input" placeholder="How can we help?" />
+                            <span asp-validation-for="Subject" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Message" class="form-label fw-bold small text-uppercase">Message</label>
+                            <textarea asp-for="Message" class="form-control custom-input" rows="5" placeholder="Write your message here..."></textarea>
+                            <span asp-validation-for="Message" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12 mt-4 text-end">
+                            <button type="submit" class="btn btn-hero px-5 py-3 shadow-sm rounded-pill">
+                                Send Message <i class="bi bi-send-fill ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

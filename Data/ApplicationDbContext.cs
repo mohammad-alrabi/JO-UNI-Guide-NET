@@ -15,6 +15,8 @@ namespace JO_UNI_Guide.Data
         public DbSet<Faculty> Faculties { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Course> Courses  { get; set; }
+        public DbSet<SiteStatistic> SiteStatistics { get; set; }
+        public DbSet <ContactMessage> ContactMessages { get; set; }
 
         //Flunt Api (use in Relations)
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -15,6 +15,7 @@
 
     <!-- ===== Navbar ===== -->
     <nav class="navbar navbar-expand-lg">
+
         <div class="container">
 
             <!-- Logo -->
@@ -35,17 +36,12 @@
             <!-- Links -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
-
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Home" asp-action="Universities">Universities</a>
+                        <a class="nav-link" asp-controller ="Home" asp-action="Contact">Contact Us</a>
                     </li>
 
                     <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-                        <a class="nav-link admin-btn px-4 shadow-sm" asp-controller="Account" asp-action="Login">
+                        <a class="nav-link admin-btn" asp-controller="Account" asp-action="Login" asp-route-role="Admin">
                             <i class="bi bi-person-lock me-1"></i> Admin Panel
                         </a>
                     </li>

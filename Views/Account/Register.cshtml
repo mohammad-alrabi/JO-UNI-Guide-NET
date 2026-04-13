@@ -1,0 +1,72 @@
+﻿@model RegisterViewModel
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Create New Account";
+}
+
+<div class="login-container">
+    <div class="login-horizontal-card shadow-lg border-0">
+        <div class="row g-0 h-100">
+            <div class="col-md-5 login-branding d-none d-md-flex flex-column align-items-center justify-content-center text-white p-5">
+                <img src="~/images/joUniGuideLogo-removebg-preview.png" alt="Logo" class="login-side-logo mb-4">
+                <h3 class="fw-bold">JO-UNI-Guide</h3>
+                <p class="text-center opacity-75 small">Join our community and start planning your academic future in Jordan today.</p>
+            </div>
+
+            <div class="col-md-7 bg-white p-5 d-flex flex-column justify-content-center">
+                <div class="form-header mb-4">
+                    <h2 class="fw-bold text-dark">Create Account</h2>
+                    <p class="text-muted">Sign up to access smart search and university guides.</p>
+                </div>
+
+                <form asp-action="Register" asp-controller="Account" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small border-0"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-bold text-secondary small">EMAIL ADDRESS</label>
+                        <div class="custom-input-group">
+                            <i class="bi bi-envelope icon"></i>
+                            <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-bold text-secondary small">PASSWORD</label>
+                        <div class="custom-input-group">
+                            <i class="bi bi-lock icon"></i>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ConfirmPassword" class="form-label fw-bold text-secondary small">CONFIRM PASSWORD</label>
+                        <div class="custom-input-group">
+                            <i class="bi bi-shield-check icon"></i>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="••••••••" />
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-login-modern w-100 shadow-sm py-3">
+                        CREATE MY ACCOUNT
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="small text-muted mb-0">
+                        Already have an account?
+                        <a asp-action="Login" class="text-brand fw-bold text-decoration-none ms-1">Sign In</a>
+                    </p>
+                    <div class="mt-3">
+                        <a href="/" class="text-decoration-none text-muted small hover-primary">
+                            <i class="bi bi-arrow-left me-1"></i> Return to Homepage
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
