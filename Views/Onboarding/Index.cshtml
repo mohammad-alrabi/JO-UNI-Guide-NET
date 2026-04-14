@@ -1,0 +1,65 @@
+﻿<link rel="stylesheet" href="~/css/Student.css" />
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4 mx-auto" style="max-width:500px;">
+
+        <h3 class="text-center mb-4">🎓 Student Setup</h3>
+
+        <form method="post" asp-action="Index">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <!-- GPA -->
+            <div class="mb-3">
+                <label>GPA</label>
+                <input type="number" name="gpa" class="form-control" required />
+                <span class="text-danger" id="gpaError"></span>
+            </div>
+
+            <!-- Track -->
+            <div class="mb-3">
+                <label>Tawjihi Track</label>
+                <select class="form-control" name="track">
+                    <option value="">Select</option>
+                    <option>Scientific</option>
+                    <option>Literary</option>
+                    <option>IT</option>
+                </select>
+            </div>
+
+            <!-- University -->
+            <div class="mb-3">
+                <label>university Type</label>
+                <select class="form-control" name="UniversityType">
+                    <option>Public</option>
+                    <option>Private</option>
+                </select>
+            </div>
+
+            <!-- Button -->
+            <button type="submit" class="btn btn-primary"
+                    onclick="setTimeout(() => { this.innerText='Loading...'; this.disabled=true; }, 100);">
+                Submit
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+    document.querySelector("form").addEventListener("submit", function (e) {
+
+        let gpa = document.querySelector("input[name='GPA']").value;
+
+        if (gpa < 50 || gpa > 100) {
+            e.preventDefault();
+            document.getElementById("gpaError").innerText = "GPA must be between 50 and 100";
+        }
+
+        // loading
+        let btn = document.getElementById("btnSubmit");
+        btn.innerHTML = "Loading...";
+        btn.disabled = true;
+    });
+</script>

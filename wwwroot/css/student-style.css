@@ -108,3 +108,30 @@ body {
         background: var(--brand-dark-red);
         color: var(--accent);
     }
+.stat-card {
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+.major-card {
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+    .major-card:hover {
+        transform: scale(1.05);
+    }
+    .stat-card:hover,
+    .major-card:hover {
+        transform: translateY(-5px);
+        transition: 0.3s;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+.btn:hover {
+    transform: scale(1.05);
+    transition: 0.2s;
+} 
