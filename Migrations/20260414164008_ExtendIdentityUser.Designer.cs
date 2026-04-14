@@ -3,6 +3,7 @@ using System;
 using JO_UNI_Guide.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JO_UNI_Guide.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260414164008_ExtendIdentityUser")]
+    partial class ExtendIdentityUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,9 +188,6 @@ namespace JO_UNI_Guide.Migrations
                     b.Property<decimal>("HourPrice")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("MinGPA")
-                        .HasColumnType("double precision");
-
                     b.Property<int>("TotalCreditHours")
                         .HasColumnType("integer");
 
@@ -227,33 +227,6 @@ namespace JO_UNI_Guide.Migrations
                     b.HasIndex("University_ID");
 
                     b.ToTable("Faculties");
-                });
-
-            modelBuilder.Entity("JO_UNI_Guide.Models.Favorite", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("SavedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("JO_UNI_Guide.Models.SiteStatistic", b =>
@@ -477,25 +450,6 @@ namespace JO_UNI_Guide.Migrations
                         .IsRequired();
 
                     b.Navigation("University");
-                });
-
-            modelBuilder.Entity("JO_UNI_Guide.Models.Favorite", b =>
-                {
-                    b.HasOne("JO_UNI_Guide.Models.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("JO_UNI_Guide.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Department");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

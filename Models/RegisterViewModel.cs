@@ -21,5 +21,7 @@ namespace JO_UNI_Guide.Models
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string? ConfirmPassword { get; set; }
+        public string? Governorate { get; set; }
+
     }
 }

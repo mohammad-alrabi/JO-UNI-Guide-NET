@@ -10,10 +10,10 @@ namespace JO_UNI_Guide.Controllers
     public class AccountController : Controller
     {
         // سحبنا محرك تسجيل الدخول تبع Identity
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AccountController(SignInManager<IdentityUser> signInManager , UserManager<IdentityUser> userManager)
+        public AccountController(SignInManager<ApplicationUser> signInManager , UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -22,56 +22,97 @@ namespace JO_UNI_Guide.Controllers
         // 1. فتح شاشة تسجيل الدخول
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login(string role = "Student")
+        public async Task<IActionResult> Login(string role = "Student")
         {
-            if (User.Identity.IsAuthenticated) 
+            // إذا كان المستخدم مسجل دخوله أصلاً، ليش نخليه يشوف صفحة الـ Login؟
+            if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Dashboard", "Admin");
+                // نتحقق من دوره ونوجهه لمكانه الصح فوراً
+                if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                {
+                    return RedirectToAction("Dashboard", "Admin");
+                }
+                else if (User.IsInRole("Student"))
+                {
+                    return RedirectToAction("Dashboard", "Student");
+                }
             }
-            ViewBag.Role = role; // نرسل الدور للـ View عشان نغير النصوص
+
+            // إذا لم يكن مسجلاً، نرسل الدور للـ View لتجهيز النصوص والأزرار
+            ViewBag.Role = role;
             return View();
         }
 
         // 2. تنفيذ عملية الدخول لما الأدمن يكبس "Login"
+        // 1. بوابة دخول الطالب
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> LoginSt(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // 1. محاولة تسجيل الدخول
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
-                    // 2. إذا كان هناك رابط قديم (ReturnUrl) يرجع له
-                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                    {
-                        return Redirect(returnUrl);
-                    }
-
-                    // 3. السحر هنا: التمييز بين الأدمن والطالب
                     var user = await _userManager.FindByEmailAsync(model.Email);
                     var roles = await _userManager.GetRolesAsync(user);
 
-                    if (roles.Contains("SuperAdmin") || roles.Contains("Admin"))
+                    // منع الأدمن من دخول بوابة الطلاب (كودك الأصلي ممتاز)
+                    if (roles.Contains("Admin") || roles.Contains("SuperAdmin"))
+                    {
+                        await _signInManager.SignOutAsync();
+                        ModelState.AddModelError(string.Empty, "This login is for students only.");
+                        ViewBag.Role = "Student";
+                        return View("Login", model);
+                    }
+
+                    if (!user.IsOnboarded)
+                    {
+                        return RedirectToAction("Onboarding", "Student");
+                    }
+
+                    return RedirectToAction("Dashboard", "Student");
+                }
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            }
+            ViewBag.Role = "Student";
+            return View("Login", model);
+        }
+
+        // 2. بوابة دخول الإدارة (Admin & SuperAdmin)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginAdmin(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+                if (result.Succeeded)
+                {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    // التحقق: يجب أن يكون أدمن أو سوبر أدمن
+                    if (roles.Contains("Admin") || roles.Contains("SuperAdmin"))
                     {
                         return RedirectToAction("Dashboard", "Admin");
                     }
-                    else
-                    {
-                        // إذا كان طالب، بنبعته على الـ Student Layout اللي صممناها
-                        return RedirectToAction("Dashboard", "Student");
-                    }
+
+                    // إذا كان طالب يحاول الدخول من هنا
+                    await _signInManager.SignOutAsync();
+                    ModelState.AddModelError(string.Empty, "Access denied. You do not have administrative privileges.");
+                    ViewBag.Role = "Admin";
+                    return View("Login", model);
                 }
-
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, "Invalid admin credentials.");
             }
-
-            return View(model);
+            ViewBag.Role = "Admin";
+            return View("Login", model);
         }
-
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -99,29 +140,36 @@ namespace JO_UNI_Guide.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register (RegisterViewModel model) 
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
-                //create new user
-                var user = new IdentityUser { UserName = model.Name, Email = model.Email };
+                // إنشاء المستخدم مع الحقول الجديدة (الاسم والمحافظة)
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    Name = model.Name,
+                    Governorate = model.Governorate, 
+                    IsOnboarded = false // القيمة الافتراضية
+                };
 
-                //to save in database and try to save the password eyncrpted
-                var result = await _userManager.CreateAsync(user , model.Password);
-                if (result.Succeeded) 
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "Student");
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Dashboard", "Student");
+
+                    // 🚀 بعد التسجيل مباشرة نرسله للـ Onboarding ليكمل بياناته
+                    return RedirectToAction("Onboarding", "Student");
                 }
-                // إضافة أخطاء Identity (مثل: الباسوورد ضعيفة أو الإيميل مكرر) للـ Validation
-                foreach (var error in result.Errors) 
+
+                foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-
             }
-                return View(model);
+            return View(model);
         }
     }
 }

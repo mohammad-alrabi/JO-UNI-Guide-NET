@@ -1,4 +1,5 @@
 ﻿using JO_UNI_Guide.Data;
+using JO_UNI_Guide.Models; // 1. أضفنا هاد الـ namespace لاستخدام ApplicationUser
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,13 +13,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+// 2. تعديل IdentityUser إلى ApplicationUser في إعدادات الخدمات
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    // ملاحظة: بما أنكِ في مرحلة التطوير، يفضل جعل هذه false 
-    // لكي لا يطلب منكِ تفعيل الإيميل حقيقةً لتتمكني من الدخول
     options.SignIn.RequireConfirmedEmail = false;
-
-    // إعدادات الباسوورد (اختياري لجعلها أسهل للتجربة)
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
@@ -29,13 +27,14 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 
 var app = builder.Build();
 
-// Seed SuperAdmin & Roles (كودك ممتاز ومكانه صحيح)
+// Seed SuperAdmin & Roles
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
-        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        // 3. تعديل UserManager للتعامل مع الموديل المطور
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var configuration = services.GetRequiredService<IConfiguration>();
 
@@ -54,11 +53,14 @@ using (var scope = app.Services.CreateScope())
             var user = await userManager.FindByEmailAsync(superAdminEmail);
             if (user == null)
             {
-                var newUser = new IdentityUser
+                // 4. إنشاء السوبر أدمن باستخدام الكلاس الجديد
+                var newUser = new ApplicationUser
                 {
                     UserName = superAdminEmail,
                     Email = superAdminEmail,
-                    EmailConfirmed = true
+                    Name = "System Super Admin", // حقل جديد من ApplicationUser
+                    EmailConfirmed = true,
+                    IsOnboarded = true // السوبر أدمن معفي من الـ Onboarding
                 };
 
                 var result = await userManager.CreateAsync(newUser, superAdminPassword);
@@ -86,7 +88,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication(); // مهم جداً أن تكون قبل Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

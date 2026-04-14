@@ -1,13 +1,18 @@
 ﻿@model LoginViewModel
 @{
     Layout = "_LoginLayout";
+    // التحقق إذا كان الداخل من طرف الإدارة
     var isManagement = ViewBag.Role == "Admin" || ViewBag.Role == "SuperAdmin";
     ViewData["Title"] = isManagement ? "Management Login" : "Student Login";
+
+    // تحديد الأكشن (الميثود) التي سيذهب إليها الفورم
+    var targetAction = isManagement ? "LoginAdmin" : "LoginSt";
 }
 
 <div class="login-container">
     <div class="login-horizontal-card shadow-lg border-0">
         <div class="row g-0 h-100">
+            @* الجزء الجانبي (البراندينج) - الستايل كما هو *@
             <div class="col-md-5 login-branding d-none d-md-flex flex-column align-items-center justify-content-center text-white p-5">
                 <img src="~/images/joUniGuideLogo-removebg-preview.png" alt="Logo" class="login-side-logo mb-4">
                 <h3 class="fw-bold">JO-UNI-Guide</h3>
@@ -16,14 +21,22 @@
                 </p>
             </div>
 
+            @* الجزء الخاص بالفورم *@
             <div class="col-md-7 bg-white p-5 d-flex flex-column justify-content-center">
                 <div class="form-header mb-4">
                     <h2 class="fw-bold text-dark">@(isManagement ? "Admin Login" : "Sign In Student")</h2>
-                    <p class="text-muted small">@isManagement? "Enter secure credentials to manage the system." : "Enter your details to access your student dashboard.")</p>
+                    <p class="text-muted small">
+                        @(isManagement ? "Enter secure credentials to manage the system." : "Enter your details to access your student dashboard.")
+                    </p>
                 </div>
 
-                <form asp-action="Login" asp-controller="Account" method="post">
+                @* التعديل هنا: نستخدم targetAction للتوجه للميثود الصح *@
+                <form asp-action="@targetAction" asp-controller="Account" method="post">
                     @Html.AntiForgeryToken()
+
+                    @* نرسل الـ Role مخفي عشان يضل الكنترولر عارف إحنا وين في حال فشل الدخول *@
+                    <input type="hidden" name="role" value="@ViewBag.Role" />
+
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small border-0"></div>
 
                     <div class="mb-4">
@@ -57,7 +70,7 @@
                 </form>
 
                 <div class="text-center mt-5">
-                    @* السحر هنا: كبسة الـ Register تظهر فقط للطالب *@
+                    @* كبسة الـ Register تظهر فقط للطالب *@
                     @if (!isManagement)
                     {
                         <p class="small text-muted mb-3">

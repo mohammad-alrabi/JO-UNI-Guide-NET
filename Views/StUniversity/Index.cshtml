@@ -1,0 +1,60 @@
+﻿@model IEnumerable<JO_UNI_Guide.Models.University>
+@{
+    ViewData["Title"] = "Explore Universities";
+    Layout = "_StudentLayout";
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-primary">Explore Jordanian Universities</h1>
+        <p class="text-muted">Find the best academic institution that fits your future goals.</p>
+    </div>
+
+    @* Search & Filter Section *@
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <div class="input-group shadow-sm">
+                <input type="text" id="uniSearch" class="form-control py-3" placeholder="Search by university name or city...">
+                <button class="btn btn-primary px-4"><i class="bi bi-search"></i></button>
+            </div>
+        </div>
+    </div>
+
+    @* Universities Grid *@
+    <div class="row g-4" id="uniCards">
+        @foreach (var uni in Model)
+        {
+            <div class="col-lg-4 col-md-6 uni-card-item">
+                <div class="card h-100 shadow-sm border-0 rounded-4 transition-hover">
+                    <div class="position-relative">
+                        <img src="@uni.Logo" class="card-img-top p-4" alt="@uni.Name" style="height: 200px; object-fit: contain;">
+                        <span class="badge @(uni.Type == UniversityType.Governmental ? "bg-primary" : "bg-success") position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill">
+                            @uni.Type
+                        </span>
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold">@uni.Name</h5>
+                        <p class="text-muted small mb-3"><i class="bi bi-geo-alt-fill me-1"></i> @uni.Location</p>
+
+                        <div class="d-flex justify-content-around border-top pt-3">
+                            <div>
+                                <small class="text-muted d-block">QS Rank</small>
+                                <span class="fw-bold text-warning"><i class="bi bi-trophy-fill"></i> #@uni.Rank_QS</span>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Faculties</small>
+                                <span class="fw-bold">@uni.Faculties?.Count</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 p-3">
+                        <a asp-action="Details" asp-route-id="@uni.University_ID" class="btn btn-outline-primary w-100 rounded-pill fw-bold">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

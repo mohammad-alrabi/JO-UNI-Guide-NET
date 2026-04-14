@@ -17,6 +17,10 @@ namespace JO_UNI_Guide.Models
         public string? Logo { get; set; }
         public string? Location { get; set; }
         public string? Rank_QS { get; set; }
+        public string? Description { get; set; }
+        public string? WebsiteUrl { get; set; } 
+        public string? Email { get; set; }
+        public string? ContactPhone { get; set; }
         [Required]
         [Display(Name = "University Type")]
         public UniversityType Type { get; set; }

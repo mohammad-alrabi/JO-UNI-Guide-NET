@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 
-namespace JO_UNI_Guide.Controllers
+namespace JO_UNI_Guide.Controllers.Admin_Panel
 {
     [Authorize(Roles = "SuperAdmin, Admin")] //عشان ما حدا من المستخدمين او الطلاب يقدر يفوت على صفحة الادمن 
+    [Route("Admin/University")] 
     public class UniversityController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -27,6 +28,7 @@ namespace JO_UNI_Guide.Controllers
         }
         // هون رح نعرض كل الجامعات 
         // ورح نضيف searchString للبحث عن جامعة مثلا 
+        [Route("Index")]
         public async Task<IActionResult> Index(string searchString, string currentFilter, int? pageNumber, UniversityType? uniType)
         {
             //اذا الادمن عمل عملية بحث جديدة رجعه للصفحة الاولى
@@ -73,6 +75,7 @@ namespace JO_UNI_Guide.Controllers
                 pageNumber ?? 1,
                 pageSize));
         }
+        [Route("Create")]
         public IActionResult Create()
         {
             return View();
@@ -80,7 +83,8 @@ namespace JO_UNI_Guide.Controllers
         // to Create new Uni 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("University_ID,Name,Location,Logo,Rank_QS,Type")] University university, IFormFile? logoFile) //OverPosting Protection
+        [Route("Create")]
+        public async Task<IActionResult> Create([Bind("University_ID,Name,Logo,Location,Rank_QS,Description,WebsiteUrl,Email,ContactPhone,Type")] University university, IFormFile? logoFile) //OverPosting Protection
         {
             ModelState.Remove("Logo");
 
@@ -145,6 +149,7 @@ namespace JO_UNI_Guide.Controllers
 
         }
         // لعرض التفاصيل details جامعة وحدة 
+        [Route("Details/{id}")] 
         public async Task<IActionResult> Details (int? id) 
         {
             if(id == null) 
@@ -159,6 +164,7 @@ namespace JO_UNI_Guide.Controllers
             return View(university); 
         }
         //لفتح شاشة التعديل على حسب الid 
+        [Route("Edit/{id}")]
         public async Task<IActionResult> Edit (int? id) 
         {
             if (id == null)
@@ -171,8 +177,9 @@ namespace JO_UNI_Guide.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Edit/{id}")]
         //بعد استلام الداتا من التعديل وحفظها بالداتابيز
-        public async Task <IActionResult>Edit(int id , [Bind("University_ID,Name,Location,Logo,Rank_QS,Type")] University university, IFormFile? logoFile) 
+        public async Task <IActionResult>Edit(int id , [Bind("University_ID,Name,Logo,Location,Rank_QS,Description,WebsiteUrl,Email,ContactPhone,Type")] University university, IFormFile? logoFile) 
         {
             if (id != university.University_ID)
                 return NotFound();
@@ -254,6 +261,7 @@ namespace JO_UNI_Guide.Controllers
             return View(university); // لو في اخطأ ارجع لنفس الفورم 
         }
         //شاشة لتعرض تأكيد الحذف 
+        [Route("Delete/{id}")]
         public async Task<IActionResult>Delete(int? id) 
         {
             if (id == null) return NotFound();
@@ -265,6 +273,7 @@ namespace JO_UNI_Guide.Controllers
         //شاشة لتنفيذ عملية الحذف بعد التأكيد
         [HttpPost , ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Route("Delete/{id}")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var university = await _context.Universities.FindAsync(id);

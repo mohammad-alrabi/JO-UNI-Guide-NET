@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JO_UNI_Guide.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext <ApplicationUser>
     {
         public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -17,6 +17,7 @@ namespace JO_UNI_Guide.Data
         public DbSet<Course> Courses  { get; set; }
         public DbSet<SiteStatistic> SiteStatistics { get; set; }
         public DbSet <ContactMessage> ContactMessages { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
 
         //Flunt Api (use in Relations)
         protected override void OnModelCreating(ModelBuilder modelBuilder)

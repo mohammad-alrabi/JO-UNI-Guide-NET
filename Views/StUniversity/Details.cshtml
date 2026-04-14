@@ -1,0 +1,137 @@
+﻿@model JO_UNI_Guide.Models.University
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "_Layout";
+}
+
+@* 1. Premium Hero Header *@
+<div class="uni-hero-header">
+    <div class="container">
+        <div class="hero-content text-white pt-5 pb-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb custom-breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-800">@Model.Name</h1>
+            <p class="opacity-75 mb-0"><i class="bi bi-geo-alt-fill"></i> @Model.Location, Jordan</p>
+        </div>
+    </div>
+</div>
+
+@* 2. Floating Info Bar (لوغو الجامعة والمعلومات السريعة) *@
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="info-floating-card shadow-lg bg-white p-4 rounded-4 d-flex align-items-center flex-wrap gap-4">
+                <div class="uni-logo-wrapper shadow">
+                    <img src="@Model.Logo" alt="@Model.Name" onerror="this.src='/images/default-uni.png'">
+                </div>
+                <div class="uni-quick-stats flex-grow-1">
+                    <div class="row g-3">
+                        <div class="col-6 col-md-3 border-end-md">
+                            <div class="ps-md-3">
+                                <small class="text-muted d-block text-uppercase fw-bold ls-1">QS World Rank</small>
+                                <span class="fw-bold text-dark fs-5"><i class="bi bi-trophy-fill text-warning me-1"></i> #@Model.Rank_QS</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 border-end-md">
+                            <div class="ps-md-3">
+                                <small class="text-muted d-block text-uppercase fw-bold ls-1">Sector</small>
+                                <span class="fw-bold text-dark fs-5">@Model.Type</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 border-end-md">
+                            <div class="ps-md-3">
+                                <small class="text-muted d-block text-uppercase fw-bold ls-1">Faculties</small>
+                                <span class="fw-bold text-dark fs-5">@Model.Faculties?.Count Units</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="ps-md-3 text-center">
+                                <a href="@Model.WebsiteUrl" target="_blank" class="btn btn-outline-brand rounded-pill btn-sm fw-bold">
+                                    <i class="bi bi-link-45deg"></i> Website
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-4">
+        @* 3. Main Content *@
+        <div class="col-lg-8">
+            <div class="section-card p-4 mb-4">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-circle me-3"><i class="bi bi-info-lg"></i></div>
+                    <h3 class="fw-bold m-0">Overview</h3>
+                </div>
+                <div class="description-text">
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        @Model.Description
+                    }
+                    else
+                    {
+                        <p>Experience excellence at @Model.Name. Known for its academic rigor and diverse community, it offers a comprehensive environment for personal and professional growth.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="section-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-circle me-3"><i class="bi bi-grid-3x3-gap-fill"></i></div>
+                        <h3 class="fw-bold m-0">Colleges & Faculties</h3>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    @if (Model.Faculties != null && Model.Faculties.Any())
+                    {
+                        @foreach (var faculty in Model.Faculties)
+                        {
+                            <div class="col-md-6">
+                                <div class="faculty-mini-card">
+                                    <i class="bi bi-chevron-right text-brand me-2"></i>
+                                    <span>@faculty.Name</span>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        @* 4. Sidebar *@
+        <div class="col-lg-4">
+            <div class="sticky-sidebar">
+                <div class="cta-card p-4 text-center mb-4">
+                    <div class="mb-3"><i class="bi bi-search-heart display-4 text-accent"></i></div>
+                    <h4 class="fw-bold">Your Major Awaits</h4>
+                    <p class="text-white-50 small mb-4">Let our AI engine check if your GPA qualifies for this university's programs.</p>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-accent w-100 py-3 fw-bold shadow">
+                        START SMART SEARCH
+                    </a>
+                </div>
+
+                <div class="section-card p-4">
+                    <h5 class="fw-bold mb-4 border-bottom pb-2">Direct Contact</h5>
+                    <div class="contact-item mb-3">
+                        <i class="bi bi-envelope-fill"></i>
+                        <span>@Model.Email</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-telephone-plus-fill"></i>
+                        <span>@Model.ContactPhone</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

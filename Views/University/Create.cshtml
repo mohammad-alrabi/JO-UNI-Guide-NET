@@ -52,6 +52,35 @@
                         </select>
                         <span asp-validation-for="Type" class="text-danger small"></span>
                     </div>
+                    @* حقل الوصف *@
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-bold">University Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Write about the university..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        @* حقل الموقع الإلكتروني *@
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="WebsiteUrl" class="form-label fw-bold">Website URL</label>
+                            <input asp-for="WebsiteUrl" class="form-control" placeholder="https://example.edu.jo" />
+                            <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
+                        </div>
+
+                        @* حقل الإيميل *@
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label fw-bold">Official Email</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="info@university.edu.jo" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    @* حقل رقم الهاتف *@
+                    <div class="mb-3 col-md-6">
+                        <label asp-for="ContactPhone" class="form-label fw-bold">Contact Phone</label>
+                        <input asp-for="ContactPhone" class="form-control" placeholder="+962 6 XXXXXXX" />
+                        <span asp-validation-for="ContactPhone" class="text-danger"></span>
+                    </div>
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">University Logo</label>

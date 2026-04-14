@@ -1,115 +1,110 @@
-﻿/* --- متغيرات لوحة الطالب --- */
+﻿/* استخدام نفس المتغيرات الخاصة بالبراند الخاص بك */
 :root {
-    --sidebar-width: 260px;
-    --sidebar-bg: #1e1b4b; /* كحلي غامق جداً */
-    --content-bg: #f1f5f9; /* رمادي فاتح جداً للخلفية */
-    --active-link: #4f46e5; /* لون أزرق للروابط النشطة */
-    --text-muted: #94a3b8;
+    --brand-red: #830303;
+    --brand-dark-red: #4e0000;
+    --accent: #F59E0B; /* اللون الذهبي/البرتقالي */
+    --dark: #1E1B4B;
+    --light: #F8FAFC;
 }
 
-/* --- الهيكل العام --- */
 body {
-    background-color: var(--content-bg);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4; /* خلفية رمادية فاتحة جداً لإبراز الكروت */
 }
 
-.d-flex {
-    display: flex;
-}
-
-/* --- القائمة الجانبية (Sidebar) --- */
+/* --- Sidebar بنظام ألوان البراند --- */
 .student-sidebar {
-    background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
     width: 280px;
+    /* استخدام التدرج الماروني الخاص بالهيرو والنابار */
+    background: linear-gradient(180deg, var(--brand-red) 0%, var(--brand-dark-red) 100%);
+    min-height: 100vh;
+    transition: all 0.3s;
     z-index: 1000;
 }
 
-    .student-sidebar .nav-link {
-        color: rgba(255,255,255,0.7);
-        padding: 12px 20px;
-        border-radius: 12px;
-        transition: 0.3s;
+.sidebar-header {
+    padding: 25px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* التنسيق الخاص بالروابط في السايدبار */
+.student-sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    padding: 14px 20px;
+    border-radius: 12px;
+    margin: 5px 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    /* عند تمرير الماوس: يتحول للذهبي (Accent) */
+    .student-sidebar .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--accent) !important;
+        transform: translateX(8px);
     }
 
-        .student-sidebar .nav-link:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
+    /* الحالة النشطة (الصفحة الحالية) */
+    .student-sidebar .nav-link.active {
+        background: var(--accent) !important;
+        color: var(--brand-dark-red) !important; /* نص غامق على خلفية ذهبية لوضوح عالٍ */
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
 
-        .student-sidebar .nav-link.active {
-            background: #4f46e5;
-            color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+    .student-sidebar .nav-link i {
+        font-size: 1.25rem;
+    }
 
+/* --- Navbar العلوي --- */
+.navbar {
+    background: white !important;
+    border-bottom: 2px solid #eee;
+}
+
+.navbar-brand {
+    color: var(--brand-red) !important;
+    font-weight: 800;
+}
+
+/* دائرة البروفايل بألوان البراند */
 .user-profile-circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px; /* زوايا منحنية قليلاً لتناسب الستايل */
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
+    color: white;
+    box-shadow: 0 4px 10px rgba(131, 3, 3, 0.2);
     cursor: pointer;
 }
 
+/* --- Main Content Area --- */
 .main-content {
     min-height: 100vh;
 }
-/* --- المحتوى الرئيسي (Main Content) --- */
-.main-content-wrapper {
-    flex-grow: 1;
-    overflow-x: hidden;
-}
 
-.top-navbar {
-    background-color: white;
-    padding: 15px 30px;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.page-container {
-    padding: 30px;
-}
-
-/* --- كروت لوحة الطالب (Dashboard Cards) --- */
-.student-card {
-    background: white;
+/* تحسين شكل الكروت داخل لوحة الطالب */
+.card {
     border: none;
-    border-radius: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
 }
 
-    .student-card:hover {
-        transform: translateY(-5px);
-    }
-
-/* --- تخصيص شريط التمرير (Scrollbar) --- */
-::-webkit-scrollbar {
-    width: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+.btn-student-primary {
+    background: var(--brand-red);
+    color: white;
     border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    border: none;
+    transition: 0.3s;
 }
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--brand-red); /* لمسة البراند عند التمرير */
+    .btn-student-primary:hover {
+        background: var(--brand-dark-red);
+        color: var(--accent);
     }
-
-/* --- الجوانب المتجاوبة (Responsive) --- */
-@media (max-width: 992px) {
-    .student-sidebar {
-        margin-left: calc(-1 * var(--sidebar-width)); /* إخفاء القائمة في الموبايل */
-    }
-
-        .student-sidebar.active {
-            margin-left: 0;
-        }
-}

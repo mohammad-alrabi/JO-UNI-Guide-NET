@@ -598,3 +598,148 @@
         border: 1px solid #e9ecef;
         height: 50px;
     }
+/* ============================================================ */
+/* --- Premium University Details Section (New Additions) --- */
+/* ============================================================ */
+
+/* 1. الـ Hero Header المتدرج */
+.uni-hero-header {
+    background: linear-gradient(135deg, var(--brand-red) 0%, var(--brand-dark-red) 100%);
+    padding: 80px 0 120px 0; /* مساحة إضافية تحت عشان الكرت يركب عليها */
+    position: relative;
+    border-bottom: 4px solid var(--accent);
+}
+
+.custom-breadcrumb .breadcrumb-item,
+.custom-breadcrumb .breadcrumb-item a {
+    color: rgba(255,255,255,0.7) !important;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+/* 2. الكرت العائم (The Floating Card) - حل مشكلة التنسيق */
+.info-floating-card {
+    margin-top: -80px; /* سحب الكرت لفوق ليتداخل مع الهيدر */
+    border-radius: 24px !important;
+    border: 1px solid rgba(0,0,0,0.05);
+    background: white;
+    z-index: 10;
+    position: relative;
+}
+
+.uni-logo-wrapper {
+    width: 140px;
+    height: 140px;
+    background: white;
+    border-radius: 20px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+    .uni-logo-wrapper img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+/* 3. تفاصيل المعلومات السريعة (Stats) */
+.uni-quick-stats .border-end-md {
+    border-right: 1px solid #edf2f7;
+}
+
+@media (max-width: 768px) {
+    .uni-quick-stats .border-end-md {
+        border-right: none;
+        border-bottom: 1px solid #edf2f7;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .info-floating-card {
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+/* 4. كروت المحتوى (Overview & Faculties) */
+.section-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    border: 1px solid #f1f5f9;
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    background: rgba(131, 3, 3, 0.1); /* شفافية من لون البراند */
+    color: var(--brand-red);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.faculty-mini-card {
+    padding: 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+    font-weight: 600;
+    color: var(--dark);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+    .faculty-mini-card:hover {
+        background: var(--brand-red);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(131, 3, 3, 0.2);
+    }
+
+/* 5. الـ Sidebar والـ CTA */
+.cta-card {
+    background: linear-gradient(135deg, var(--brand-dark-red), #2d0000);
+    color: white;
+    border-radius: 24px;
+    border-bottom: 4px solid var(--accent);
+}
+
+.btn-accent {
+    background: var(--accent);
+    color: var(--dark) !important;
+    border-radius: 15px;
+    font-weight: 700;
+    transition: all 0.3s;
+    border: none;
+}
+
+    .btn-accent:hover {
+        background: white;
+        color: var(--brand-red) !important;
+        transform: scale(1.03);
+    }
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+}
+
+    .contact-item i {
+        color: var(--brand-red);
+        font-size: 1.2rem;
+    }
+
+.sticky-sidebar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 20px;
+}

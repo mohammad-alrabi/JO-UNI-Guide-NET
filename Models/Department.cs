@@ -26,6 +26,7 @@ namespace JO_UNI_Guide.Models
         public decimal HourPrice { get; set; }
         [Display(Name = "Total Credit Hours")]
         public int TotalCreditHours { get; set; }
+        public double MinGPA { get; set; }
         //Realtion => القسم الواحد بحتوي على عدة مواد 
         [ValidateNever]
         public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
