@@ -115,7 +115,9 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
             var query = _context.Departments
                 .Include(d => d.Faculty)
                 .ThenInclude(f => f.University)
-                .Where(d => d.MinGPA <= (double)user.GPA) 
+                .Where(d => d.MinGPA <= (double)user.GPA)
+                .Where(d => d.MinGPA <= (double)user.GPA
+                && (d.RequiredTrack == null || d.RequiredTrack == user.TawjihiTrack))
                 .AsQueryable();
 
             // فلترة إضافية بناءً على "تفضيل الجامعة" (حكومي/خاص) الذي حدده في الـ Onboarding

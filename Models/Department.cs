@@ -4,6 +4,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JO_UNI_Guide.Models
 {
+    public enum TawjihiTrack
+    {
+        [Display(Name = "صحي")]
+        Health,
+
+        [Display(Name = "هندسي")]
+        Engineering,
+
+        [Display(Name = "علوم وتكنولوجيا")]
+        ScienceAndTechnology,
+
+        [Display(Name = "لغات وعلوم اجتماعية")]
+        Humanities,
+
+        [Display(Name = "أعمال")]
+        Business,
+
+        [Display(Name = "قانون وشرعي")]
+        LawAndSharia
+    }
     public class Department
     {
         [Key]
@@ -27,6 +47,7 @@ namespace JO_UNI_Guide.Models
         [Display(Name = "Total Credit Hours")]
         public int TotalCreditHours { get; set; }
         public double MinGPA { get; set; }
+        public TawjihiTrack? RequiredTrack { get; set; }
         //Realtion => القسم الواحد بحتوي على عدة مواد 
         [ValidateNever]
         public virtual ICollection<Course> Courses { get; set; } = new List<Course>();

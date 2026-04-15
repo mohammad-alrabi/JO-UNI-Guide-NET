@@ -1,0 +1,158 @@
+﻿@model StudentDashboardViewModel
+@{
+    ViewData["Title"] = "لوحة التحكم";
+    Layout = "_StudentLayout";
+
+    // منطق الـ Extra Task: تحديد مستوى المعدل واللون الخاص به
+    string gpaLevel = "Low";
+    string gpaColorClass = "bg-danger"; // أحمر للضعيف
+
+    if (Model.GPA >= 90)
+    {
+        gpaLevel = "High";
+        gpaColorClass = "bg-success"; // أخضر للممتاز
+    }
+    else if (Model.GPA >= 75)
+    {
+        gpaLevel = "Medium";
+        gpaColorClass = "bg-warning text-dark"; // أصفر للجيد
+    }
+}
+
+<div class="page-content">
+    <div class="row mb-4 animate__animated animate__fadeIn">
+        <div class="col-12">
+            <h2 class="fw-bold text-dark mb-1">لوحة التحكم 📊</h2>
+            <p class="text-muted">مرحباً بك مجدداً في JO-UNI-Guide، إليك ملخص سريع لخياراتك.</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-4">
+            <div class="card stat-card h-100 border-0">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon me-3">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="stat-label uppercase">اسم الطالب</div>
+                        <div class="stat-value text-truncate" title="@Model.Name">@Model.Name</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card stat-card h-100 border-0">
+                <div class="d-flex align-items-center justify-content-between w-100">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <div>
+                            <div class="stat-label uppercase">معدل التوجيهي</div>
+                            <div class="stat-value">@Model.GPA?.ToString("F1")%</div>
+                        </div>
+                    </div>
+                    <span class="badge @gpaColorClass rounded-pill px-3 py-2 shadow-sm">
+                        @gpaLevel
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card stat-card h-100 border-0">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon me-3">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+                    <div>
+                        <div class="stat-label uppercase">تخصصات مقترحة</div>
+                        <div class="stat-value">@Model.MatchingMajorsCount</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="section-title mb-0">
+                    <i class="bi bi-fire me-2"></i> أفضل الخيارات المقترحة لك
+                </h5>
+                <a asp-action="ProposedMajors" class="btn btn-student-outline btn-sm">
+                    استعراض الكل <i class="bi bi-arrow-left ms-1"></i>
+                </a>
+            </div>
+
+            @if (Model.TopMajors != null && Model.TopMajors.Any())
+            {
+                <div class="row g-3">
+                    @foreach (var major in Model.TopMajors)
+                    {
+                        <div class="col-12 animate__animated animate__fadeInUp">
+                            <div class="card major-card p-3 border-0">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <div class="p-2 bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width:60px; height:60px; border: 1px solid #f1f1f1;">
+                                            <img src="~/images/unis/@(major.Faculty?.University?.Logo ?? "default-uni.png")"
+                                                 class="img-fluid" alt="Uni Logo" style="max-height: 40px;">
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <h6 class="fw-bold mb-1 text-dark">@major.Name</h6>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span class="text-muted small">
+                                                <i class="bi bi-bank me-1"></i> @major.Faculty?.University?.Name
+                                            </span>
+                                            <span class="uni-badge @(major.Faculty?.University?.Type.ToString().ToLower() == "governmental" ? "governmental" : "private")">
+                                                @(major.Faculty?.University?.Type.ToString() == "Governmental" ? "حكومية" : "خاصة")
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-auto text-end">
+                                        <div class="mb-1">
+                                            <span class="small text-muted">الحد الأدنى:</span>
+                                            <span class="fw-bold text-maroon ms-1">@major.MinGPA%</span>
+                                        </div>
+                                        <button class="btn btn-sm p-0 text-muted hover-maroon" onclick="toggleFavorite(@major.Department_ID)">
+                                            <i class="bi bi-heart fs-5"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="card border-0 shadow-sm p-5 text-center mt-4">
+                    <div class="mb-3">
+                        <i class="bi bi-emoji-frown fs-1 text-muted"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">لا توجد نتائج مطابقة لمعدلك!</h5>
+                    <p class="text-muted mb-4">بناءً على معدل @Model.GPA%، لم نجد تخصصات مطابقة حالياً. يمكنك تجربة خيارات أخرى أو تحديث بياناتك.</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a asp-action="Onboarding" class="btn btn-student-primary">تعديل البيانات</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // دالة بسيطة للتفاعل مع زر القلب (سيتم ربطها بالـ Ajax لاحقاً)
+        function toggleFavorite(id) {
+            console.log("Toggling favorite for department:", id);
+            // هنا نضع كود الـ AJAX الخاص بالـ FavoriteController
+        }
+    </script>
+}

@@ -9,7 +9,7 @@ namespace JO_UNI_Guide.Models
         public double GPA { get; set; }
 
         [Required(ErrorMessage = "Please select your Tawjihi track")]
-        public string TawjihiTrack { get; set; }
+        public TawjihiTrack? TawjihiTrack { get; set; }
 
         [Required(ErrorMessage = "Please select your preferred university type")]
         public string PreferredUniType { get; set; }

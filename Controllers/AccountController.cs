@@ -34,7 +34,7 @@ namespace JO_UNI_Guide.Controllers
                 }
                 else if (User.IsInRole("Student"))
                 {
-                    return RedirectToAction("Dashboard", "Student");
+                    return RedirectToAction("Onboarding", "Student");
                 }
             }
 
