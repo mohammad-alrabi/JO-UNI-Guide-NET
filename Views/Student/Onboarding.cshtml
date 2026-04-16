@@ -1,56 +1,59 @@
 ﻿@model JO_UNI_Guide.Models.OnboardingViewModel
 @{
     ViewData["Title"] = "Student Setup";
-    Layout = "_studentLayout";
+    Layout = "_StudentLayout";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-lg p-4 mx-auto border-0" style="max-width:550px; border-radius: 15px;">
+<div class="container mt-5 mb-5 animate__animated animate__fadeInUp">
+    <div class="card shadow-lg p-4 mx-auto border-0" style="max-width:480px; border-radius: 20px;">
+
         <div class="text-center mb-4">
-            <h3 class="fw-bold">🎓 Student Setup</h3>
-            <p class="text-muted small">أكمل بياناتك لنقترح لك أفضل التخصصات</p>
+            <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3" style="width: 65px; height: 65px;">
+                <i class="bi bi-rocket-takeoff-fill fs-2 text-maroon"></i>
+            </div>
+            <h3 class="fw-bold" style="color: var(--text-main);">Welcome Aboard! 🎓</h3>
+            <p class="text-muted small">Complete your profile to get the best major recommendations.</p>
         </div>
 
         <form asp-action="Onboarding" method="post" id="onboardingForm">
             @Html.AntiForgeryToken()
 
-            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 rounded-3 small mb-3"></div>
 
-         
-            <div class="mb-4">
-                <label asp-for="GPA" class="form-label fw-bold">معدل التوجيهي</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-white"><i class="bi bi-percent"></i></span>
-                    <input asp-for="GPA" class="form-control" placeholder="مثلاً: 85.5" step="0.1" />
+            <div class="mb-3">
+                <label asp-for="GPA" class="form-label fw-bold small" style="color: var(--text-main);">High School GPA (Tawjihi)</label>
+                <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                    <span class="input-group-text bg-white border-end-0 text-muted">
+                        <i class="bi bi-percent"></i>
+                    </span>
+                    <input asp-for="GPA" class="form-control border-start-0 ps-0" placeholder="e.g., 85.5" step="0.1" />
                 </div>
-                <span asp-validation-for="GPA" class="text-danger small"></span>
+                <span asp-validation-for="GPA" class="text-danger small mt-1 d-block"></span>
             </div>
 
-           
-            <div class="mb-4">
-                <label asp-for="TawjihiTrack" class="form-label fw-bold">الفرع الدراسي</label>
-                <select asp-for="TawjihiTrack" class="form-select"
+            <div class="mb-3">
+                <label asp-for="TawjihiTrack" class="form-label fw-bold small" style="color: var(--text-main);">Academic Track</label>
+                <select asp-for="TawjihiTrack" class="form-select shadow-sm"
                         asp-items="Html.GetEnumSelectList<JO_UNI_Guide.Models.TawjihiTrack>()">
-                    <option value="">-- اختر الفرع --</option>
+                    <option value="">-- Select your track --</option>
                 </select>
-                <span asp-validation-for="TawjihiTrack" class="text-danger small"></span>
+                <span asp-validation-for="TawjihiTrack" class="text-danger small mt-1 d-block"></span>
             </div>
 
-           
             <div class="mb-4">
-                <label asp-for="PreferredUniType" class="form-label fw-bold">نوع الجامعة المفضّل</label>
-                <select asp-for="PreferredUniType" class="form-select">
-                    <option value="">-- اختر --</option>
-                    <option value="All">الكل (حكومي وخاص)</option>
-                    <option value="Public">حكومي فقط</option>
-                    <option value="Private">خاص فقط</option>
+                <label asp-for="PreferredUniType" class="form-label fw-bold small" style="color: var(--text-main);">Preferred University Type</label>
+                <select asp-for="PreferredUniType" class="form-select shadow-sm">
+                    <option value="">-- Select preference --</option>
+                    <option value="All">All (Public & Private)</option>
+                    <option value="Public">Public Universities Only</option>
+                    <option value="Private">Private Universities Only</option>
                 </select>
-                <span asp-validation-for="PreferredUniType" class="text-danger small"></span>
+                <span asp-validation-for="PreferredUniType" class="text-danger small mt-1 d-block"></span>
             </div>
 
-            <div class="d-grid shadow-sm">
-                <button type="submit" id="btnSubmit" class="btn btn-primary py-2 fw-bold">
-                    حفظ البيانات والدخول <i class="bi bi-arrow-right-short"></i>
+            <div class="d-grid mt-2">
+                <button type="submit" id="btnSubmit" class="btn btn-student-primary rounded-pill fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2 py-2">
+                    Save & Continue <i class="bi bi-arrow-right-circle-fill fs-5"></i>
                 </button>
             </div>
         </form>
@@ -67,7 +70,7 @@
             $form.on('submit', function () {
                 if ($form.valid()) {
                     $btn.prop('disabled', true);
-                    $btn.html('<span class="spinner-border spinner-border-sm"></span> جاري التحميل...');
+                    $btn.html('<span class="spinner-border spinner-border-sm me-2"></span> Saving...');
                 } else {
                     return false;
                 }

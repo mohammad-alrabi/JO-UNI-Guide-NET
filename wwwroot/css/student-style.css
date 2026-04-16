@@ -1,38 +1,30 @@
 ﻿/* ============================================================
-   JO-UNI Guide — Student Panel Stylesheet
+   JO-UNI Guide — Premium Student Panel Stylesheet (LTR)
    ============================================================ */
 
-/* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
 
-/* --- Variables --- */
 :root {
     --brand-red: #830303;
-    --brand-dark-red: #4e0000;
+    --brand-dark-red: #4a0000;
     --accent: #D4AF37;
     --accent-hover: #F59E0B;
-    --bg-light: #f8fafc;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --glass-white: rgba(255, 255, 255, 0.1);
+    --bg-light: #f4f7fe;
+    --text-main: #2b3674;
+    --text-muted: #a3aed1;
+    --glass-white: rgba(255, 255, 255, 0.08);
     --sidebar-width: 280px;
-    --navbar-height: 70px;
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
-    --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* --- Reset & Base --- */
-*, *::before, *::after {
-    box-sizing: border-box;
+    --navbar-height: 80px;
+    --shadow-sm: 0 4px 6px rgba(0,0,0,0.02);
+    --shadow-md: 0 10px 20px rgba(0,0,0,0.05);
+    --shadow-hover: 0 15px 25px rgba(131, 3, 3, 0.08);
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
-    font-family: 'Cairo', 'Poppins', sans-serif;
+    font-family: 'Poppins', 'Cairo', sans-serif;
     background-color: var(--bg-light);
     color: var(--text-main);
     overflow-x: hidden;
@@ -40,120 +32,73 @@ body {
 }
 
 /* ============================================================
-   SIDEBAR
+   SIDEBAR (Left for LTR)
    ============================================================ */
 .student-sidebar {
     width: var(--sidebar-width);
-    background: linear-gradient(180deg, var(--brand-red) 0%, var(--brand-dark-red) 100%);
+    background: linear-gradient(195deg, var(--brand-dark-red) 0%, var(--brand-red) 100%);
     min-height: 100vh;
-    height: 100vh;
     position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
     z-index: 1000;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
 }
-
-    /* تمنع الـ sidebar من الانكماش */
-    .student-sidebar::-webkit-scrollbar {
-        width: 4px;
-    }
-
-    .student-sidebar::-webkit-scrollbar-thumb {
-        background: var(--glass-white);
-        border-radius: 10px;
-    }
 
 .sidebar-header {
-    padding: 30px 20px 20px;
+    padding: 35px 20px 20px;
     text-align: center;
     border-bottom: 1px solid var(--glass-white);
-    flex-shrink: 0;
 }
 
-    .sidebar-header h5 {
-        margin-bottom: 0;
-        letter-spacing: 0.5px;
+    .sidebar-header img {
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
     }
 
-/* Nav Links */
 .student-sidebar .nav {
-    padding: 12px 0;
+    padding: 20px 15px;
     flex: 1;
 }
 
 .student-sidebar .nav-link {
-    color: rgba(255, 255, 255, 0.75) !important;
-    padding: 11px 20px;
-    margin: 4px 12px;
-    border-radius: var(--radius-sm);
-    font-size: 0.92rem;
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7) !important;
+    padding: 12px 20px;
+    margin-bottom: 8px;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 10px;
     transition: var(--transition);
-    white-space: nowrap;
-    text-decoration: none;
 }
 
+    /* ⚠️ تم تعديل الهامش ليكون على اليمين بدلاً من اليسار لأن الأيقونة تأتي قبل النص في الإنجليزي */
     .student-sidebar .nav-link i {
-        font-size: 1.05rem;
-        width: 20px;
-        text-align: center;
-        flex-shrink: 0;
+        font-size: 1.2rem;
+        margin-right: 15px;
     }
 
     .student-sidebar .nav-link:hover {
         background: var(--glass-white);
         color: var(--accent) !important;
-        padding-left: 26px;
+        transform: translateX(5px);
     }
 
     .student-sidebar .nav-link.active {
         background: var(--accent) !important;
         color: var(--brand-dark-red) !important;
-        font-weight: 700;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 8px 16px rgba(212, 175, 55, 0.2);
     }
-
-/* Logout Button */
-.sidebar-logout {
-    margin-top: auto;
-    padding: 12px;
-    border-top: 1px solid var(--glass-white);
-    flex-shrink: 0;
-}
-
-    .sidebar-logout form {
-        width: 100%;
-    }
-
-    .sidebar-logout .nav-link {
-        color: rgba(255, 100, 100, 0.85) !important;
-        margin: 0 !important;
-        width: 100%;
-        background: none;
-        border: none;
-        cursor: pointer;
-        text-align: left;
-    }
-
-        .sidebar-logout .nav-link:hover {
-            background: rgba(255, 80, 80, 0.15) !important;
-            color: #ff6b6b !important;
-            padding-left: 26px;
-        }
 
 /* ============================================================
-   MAIN CONTENT — ينزاح بمقدار الـ Sidebar
+   MAIN CONTENT
    ============================================================ */
 .main-content {
-    margin-right: var(--sidebar-width);
+    margin-left: var(--sidebar-width);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -165,273 +110,118 @@ body {
    ============================================================ */
 .main-navbar {
     height: var(--navbar-height);
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid #e2e8f0;
-    padding: 0 28px;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 0 30px;
     position: sticky;
     top: 0;
     z-index: 999;
-    box-shadow: var(--shadow-sm);
-    display: flex;
-    align-items: center;
 }
 
-    .main-navbar .navbar-brand {
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: var(--text-main);
-    }
-
-/* User Avatar */
 .user-profile-circle {
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
     background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
     color: white;
-    font-weight: 700;
-    font-size: 1rem;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(131, 3, 3, 0.2);
     transition: var(--transition);
-    cursor: pointer;
-    user-select: none;
-    flex-shrink: 0;
 }
 
     .user-profile-circle:hover {
-        transform: rotate(5deg) scale(1.1);
-        box-shadow: 0 4px 12px rgba(131, 3, 3, 0.3);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 15px rgba(131, 3, 3, 0.3);
     }
 
 /* ============================================================
-   PAGE CONTENT AREA
-   ============================================================ */
-.page-content {
-    flex: 1;
-    padding: 28px;
-    overflow-y: auto;
-}
-
-/* ============================================================
-   CARDS
+   CARDS & STATS
    ============================================================ */
 .card {
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: none;
     border-radius: var(--radius-lg);
     background: #ffffff;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
     transition: var(--transition);
 }
 
-    .card:hover {
-        box-shadow: var(--shadow-md);
-    }
-
-/* Stat Cards */
 .stat-card {
-    border-left: 5px solid var(--brand-red);
-    padding: 20px;
-}
-
-    .stat-card:hover {
-        transform: translateY(-6px);
-        box-shadow: var(--shadow-lg);
-        border-left-color: var(--accent);
-    }
-
-    .stat-card .stat-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: var(--radius-sm);
-        background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.3rem;
-        flex-shrink: 0;
-    }
-
-    .stat-card .stat-value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--text-main);
-        line-height: 1;
-    }
-
-    .stat-card .stat-label {
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        margin-top: 4px;
-    }
-
-/* Major Cards */
-.major-card {
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(0,0,0,0.06);
-    transition: var(--transition);
+    padding: 25px;
+    position: relative;
     overflow: hidden;
 }
 
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    /* ⚠️ الخط التجميلي تم نقله لليسار (Left: 0) ليتناسب مع الإنجليزي */
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background: var(--brand-red);
+        border-radius: 10px 0 0 10px;
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .stat-card:hover::before {
+        opacity: 1;
+    }
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: rgba(131, 3, 3, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--brand-red);
+    font-size: 1.8rem;
+}
+
+.major-card {
+    padding: 15px 20px;
+}
+
+    /* ⚠️ تم تعديل الـ Border ليكون على اليسار (Border-left) للإنجليزي */
     .major-card:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--shadow-md);
-        border-color: var(--accent);
+        transform: translateX(5px);
+        border-left: 4px solid var(--accent);
     }
 
-    .major-card .uni-badge {
-        font-size: 0.75rem;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-weight: 600;
-    }
-
-        .major-card .uni-badge.governmental {
-            background: rgba(131, 3, 3, 0.1);
-            color: var(--brand-red);
-        }
-
-        .major-card .uni-badge.private {
-            background: rgba(212, 175, 55, 0.15);
-            color: #92680a;
-        }
-
-/* ============================================================
-   BUTTONS
-   ============================================================ */
 .btn-student-primary {
     background: var(--brand-red);
     color: white;
     border: none;
-    border-radius: var(--radius-sm);
-    padding: 10px 22px;
-    font-weight: 600;
-    font-family: 'Cairo', sans-serif;
     transition: var(--transition);
 }
 
     .btn-student-primary:hover {
         background: var(--brand-dark-red);
-        box-shadow: 0 4px 12px rgba(131, 3, 3, 0.35);
         color: var(--accent);
-        transform: translateY(-1px);
-    }
-
-.btn-student-accent {
-    background: var(--accent);
-    color: var(--brand-dark-red);
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 10px 22px;
-    font-weight: 700;
-    font-family: 'Cairo', sans-serif;
-    transition: var(--transition);
-}
-
-    .btn-student-accent:hover {
-        background: var(--accent-hover);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-        color: var(--brand-dark-red);
-    }
-
-.btn-student-outline {
-    background: transparent;
-    color: var(--brand-red);
-    border: 2px solid var(--brand-red);
-    border-radius: var(--radius-sm);
-    padding: 8px 20px;
-    font-weight: 600;
-    transition: var(--transition);
-}
-
-    .btn-student-outline:hover {
-        background: var(--brand-red);
-        color: white;
     }
 
 /* ============================================================
-   UTILITIES
+   RESPONSIVE
    ============================================================ */
-.text-maroon {
-    color: var(--brand-red) !important;
-}
-
-.text-gold {
-    color: var(--accent) !important;
-}
-
-.bg-maroon {
-    background-color: var(--brand-red) !important;
-}
-
-.bg-gold {
-    background-color: var(--accent) !important;
-}
-
-.section-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-main);
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--accent);
-    display: inline-block;
-}
-
-/* GPA Badge */
-.gpa-badge {
-    background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
-    color: white;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.9rem;
-}
-
-/* ============================================================
-   SCROLLBAR
-   ============================================================ */
-::-webkit-scrollbar {
-    width: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--brand-red);
-    border-radius: 10px;
-}
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--brand-dark-red);
-    }
-
-/* ============================================================
-   RESPONSIVE — إخفاء الـ Sidebar على الشاشات الصغيرة
-   ============================================================ */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .student-sidebar {
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
+        transform: translateX(-100%);
+        border-radius: 0;
     }
-
-        .student-sidebar.open {
-            transform: translateX(0);
-        }
 
     .main-content {
-        margin-right: 0;
+        margin-left: 0;
         width: 100%;
-    }
-
-    .page-content {
-        padding: 16px;
     }
 }
