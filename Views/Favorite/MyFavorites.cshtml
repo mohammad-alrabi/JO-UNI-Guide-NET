@@ -1,0 +1,130 @@
+@model List<JO_UNI_Guide.Models.Favorite>
+
+<div class="container mt-5">
+
+    <h2 class="section-title">My Favorites</h2>
+
+    <!-- Error Message -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["Error"]
+        </div>
+    }
+
+    <!-- Empty -->
+    @if (!Model.Any())
+    {
+        <div class="text-center mt-5">
+            <h4>No favorites yet </h4>
+        </div>
+    }
+    else
+    {
+        <!-- Compare Button -->
+        <div class="mb-3 text-end">
+            <button id="compareBtn" class="btn btn-primary" disabled>
+                ⚔️ Compare (0)
+            </button>
+        </div>
+
+        <table class="table table-bordered table-hover text-center">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>Select</th>
+                    <th>Department</th>
+                    <th>University</th>
+                    <th>Faculty</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="favorite-row" data-id="@item.DepartmentId">
+
+                    <td>
+                        <input type="checkbox"
+                               class="compare-checkbox"
+                               value="@item.DepartmentId" />
+                    </td>
+
+                    <td>@item.Department.DepartmentName</td>
+
+                    <td>@item.Department.Faculty?.University?.Name</td>
+
+                    <td>@item.Department.Faculty?.Name</td>
+
+                    <td>
+                        <button class="btn btn-danger btn-sm toggle-fav"
+                                data-id="@item.DepartmentId">
+                          
+                        </button>
+                    </td>
+
+                </tr>
+            }
+            </tbody>
+
+        </table>
+    }
+
+</div>
+
+<script>
+
+
+document.querySelectorAll(".toggle-fav").forEach(btn => {
+    btn.addEventListener("click", function () {
+
+        const depId = this.dataset.id;
+        const row = this.closest(".favorite-row");
+
+        fetch('/Favorite/ToggleFavorite?depId=' + depId, {
+            method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+
+                row.style.opacity = "0";
+                setTimeout(() => row.remove(), 300);
+
+            }
+        });
+
+    });
+});
+
+
+
+const checkboxes = document.querySelectorAll(".compare-checkbox");
+const compareBtn = document.getElementById("compareBtn");
+
+function updateCompare() {
+    const selected = document.querySelectorAll(".compare-checkbox:checked");
+
+    compareBtn.disabled = selected.length < 2;
+    compareBtn.innerText = ' Compare (${selected.length})`;
+}
+
+checkboxes.forEach(cb => {
+    cb.addEventListener("change", updateCompare);
+});
+
+compareBtn.addEventListener("click", () => {
+
+    const selected = Array.from(document.querySelectorAll(".compare-checkbox:checked"))
+        .map(cb => cb.value);
+
+    if (selected.length < 2) {
+        alert("Select at least 2 departments");
+        return;
+    }
+
+    window.location.href = '/Favorite/Compare?departmentIds=' + selected.join("&departmentIds=");
+});
+
+</script>

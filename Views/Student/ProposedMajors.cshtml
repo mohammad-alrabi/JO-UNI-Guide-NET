@@ -1,0 +1,171 @@
+@model List<JO_UNI_Guide.Models.Department>
+
+@{
+    //  GPA الطالب من الـ Controller
+    var userGPA = ViewBag.UserGPA ?? 0;
+}
+
+<div class="container mt-5">
+
+    <!--  عنوان الصفحة -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title">🎯 Recommended Majors For You</h2>
+    </div>
+
+    <!--  الفلاتر -->
+    <div class="row mb-4">
+
+        <!--  فلتر الجامعة -->
+        <div class="col-md-4">
+            <select class="form-select" id="uniFilter">
+                <option value="">All Universities</option>
+                <option value="Governmental">Government</option>
+                <option value="Private">Private</option>
+            </select>
+        </div>
+
+        <!--  ترتيب GPA -->
+        <div class="col-md-4">
+            <select class="form-select" id="sortFilter">
+                <option value="gpa_desc">Highest GPA</option>
+                <option value="gpa_asc">Lowest GPA</option>
+            </select>
+        </div>
+
+    </div>
+
+    <!--  Empty State Validation -->
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center">
+            No recommended majors found for your profile 
+        </div>
+    }
+    else
+    {
+        <div class="row" id="majorsContainer">
+
+            @foreach (var item in Model)
+            {
+                <!--  Card لكل تخصص -->
+                <div class="col-md-4 mb-4 major-card"
+                     data-gpa="@item.MinGPA"
+                     data-type="@item.Faculty?.University?.Type">
+
+                    <div class="uni-card p-3 h-100 fade-in">
+
+                       
+                        <span class="badge bg-primary mb-2">
+                             Recommended for you
+                        </span>
+
+                        
+                        <h5>@item.DepartmentName</h5>
+
+                        
+                        <p>
+                            <strong>University:</strong>
+                            @(item.Faculty?.University?.Name ?? "N/A")
+                        </p>
+
+                        <p>
+                            <strong>Faculty:</strong>
+                            @(item.Faculty?.Name ?? "N/A")
+                        </p>
+
+                      
+                        <p>
+                            <strong>GPA Required:</strong>
+                            @item.MinGPA
+                        </p>
+
+                        <!--  Validation (Match / Strong Match) -->
+                        @if (item.MinGPA <= userGPA)
+                        {
+                            <span class="badge bg-success">Strong Match </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Match </span>
+                        }
+
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+
+<style>
+
+.fade-in {
+    animation: fadeInUp 0.6s ease;
+}
+
+/*  Animation */
+keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+</style>
+
+
+<script>
+
+//  فلتر الجامعة
+document.getElementById("uniFilter").addEventListener("change", function () {
+
+    const value = this.value;
+    const cards = document.querySelectorAll(".major-card");
+
+    cards.forEach(card => {
+
+        const type = card.dataset.type;
+
+        if (!value || type === value) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+});
+
+//  ترتيب GPA
+document.getElementById("sortFilter").addEventListener("change", function () {
+
+    const container = document.getElementById("majorsContainer");
+    const cards = Array.from(document.querySelectorAll(".major-card"));
+
+    const order = this.value;
+
+    if (!order) {
+        alert("Invalid sort option");
+        return;
+    }
+
+    cards.sort((a, b) => {
+
+        const gpaA = parseFloat(a.dataset.gpa);
+        const gpaB = parseFloat(b.dataset.gpa);
+
+        return order === "gpa_desc"
+            ? gpaB - gpaA
+            : gpaA - gpaB;
+    });
+
+    container.innerHTML = "";
+    cards.forEach(c => container.appendChild(c));
+});
+
+</script>
