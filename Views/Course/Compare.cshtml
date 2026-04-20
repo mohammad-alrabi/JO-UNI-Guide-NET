@@ -1,0 +1,53 @@
+﻿@model List<JO_UNI_Guide.Models.Course>
+
+<h1 style="margin-bottom:20px;">🟪 Compare Majors</h1>
+
+<table class="table table-bordered table-hover">
+
+    <thead style="background:#1e1b4b; color:white;">
+        <tr>
+            <th>Department</th>
+            <th>University</th>
+            <th>Faculty</th>
+            <th>GPA Requirement</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            var gpa = 80; // مؤقت
+
+            string rowClass = "";
+
+            if (gpa >= 85)
+                rowClass = "table-success";   // easy / best
+            else if (gpa >= 75)
+                rowClass = "table-warning";   // متوسط
+            else
+                rowClass = "table-danger";    // صعب
+
+            <tr class="@rowClass">
+
+                <td>@item.Course_Name</td>
+
+                <td>@item.Department.Faculty.University.Name</td>
+
+                <td>@item.Department.Faculty.Name</td>
+
+                <td>
+                    @gpa%
+
+                    @if (gpa >= 85)
+                    {
+                        <span class="badge bg-success">Best Choice</span>
+                    }
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
