@@ -1,5 +1,6 @@
 ﻿using JO_UNI_Guide.Data;
 using JO_UNI_Guide.Models; // 1. أضفنا هاد الـ namespace لاستخدام ApplicationUser
+using JO_UNI_Guide.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<ChatbotService>();
 
 var app = builder.Build();
 

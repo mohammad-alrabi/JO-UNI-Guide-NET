@@ -1,0 +1,150 @@
+﻿<div id="chatbot-container" class="chatbot-container">
+    <div id="chatbot-window" class="chatbot-window shadow-lg d-none">
+
+        <div class="chatbot-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <div class="bg-white text-danger rounded-circle d-flex justify-content-center align-items-center shadow-sm" style="width: 35px; height: 35px;">
+                    <i class="bi bi-robot fs-5"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold text-white">GuideBot (AI)</h6>
+                    <small class="text-white-50" style="font-size: 0.7rem;">Powered by Gemini <span class="text-success">●</span></small>
+                </div>
+            </div>
+            <button id="close-chatbot" class="btn btn-link text-white p-0">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div id="chatbot-messages" class="chatbot-messages p-3">
+            <div class="bot-message mb-3">
+                <div class="message-bubble bg-light text-dark shadow-sm">
+                    Hello! 👋 I'm your AI Academic Advisor. Ask me anything about universities, majors, or how to navigate this platform.
+                </div>
+                <div class="message-time">Just now</div>
+            </div>
+        </div>
+
+        <div class="chatbot-input-area border-top bg-white p-2">
+            <div class="input-group">
+                <input type="text" id="chatbot-input" class="form-control border-0 bg-light shadow-none rounded-pill ps-3" placeholder="Ask me anything..." autocomplete="off">
+                <button id="send-chatbot" class="btn text-danger bg-transparent border-0" type="button">
+                    <i class="bi bi-send-fill fs-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <button id="chatbot-toggle" class="btn btn-danger chatbot-fab shadow-lg">
+        <i class="bi bi-chat-dots-fill fs-4"></i>
+    </button>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.getElementById("chatbot-toggle");
+        const closeBtn = document.getElementById("close-chatbot");
+        const chatWindow = document.getElementById("chatbot-window");
+        const inputField = document.getElementById("chatbot-input");
+        const sendBtn = document.getElementById("send-chatbot");
+        const messagesArea = document.getElementById("chatbot-messages");
+
+        toggleBtn.addEventListener("click", () => {
+            chatWindow.classList.toggle("d-none");
+            if (!chatWindow.classList.contains("d-none")) {
+                inputField.focus();
+            }
+        });
+
+        closeBtn.addEventListener("click", () => {
+            chatWindow.classList.add("d-none");
+        });
+
+        // 🔴 دالة الحماية من XSS Injection
+        function escapeHtml(text) {
+            const d = document.createElement('div');
+            d.textContent = text;
+            return d.innerHTML;
+        }
+
+        function addMessage(text, sender) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const isUser = sender === "user";
+
+            // 🔴 استخدام الـ Sanitization قبل الـ replace
+            const formattedText = escapeHtml(text).replace(/\n/g, '<br>');
+
+            const msgHtml = `
+                <div class="${isUser ? 'user-message' : 'bot-message'} mb-3">
+                    <div class="message-bubble ${isUser ? '' : 'shadow-sm'}">
+                        ${formattedText}
+                    </div>
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+
+            messagesArea.insertAdjacentHTML('beforeend', msgHtml);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        function handleSend() {
+            const userText = inputField.value.trim();
+            if (!userText) return;
+
+            sendBtn.disabled = true;
+            inputField.disabled = true;
+
+            addMessage(userText, "user");
+            inputField.value = "";
+
+            const typingId = "typing-" + Date.now();
+            const typingHtml = `
+                <div id="${typingId}" class="bot-message mb-3">
+                    <div class="message-bubble bg-light text-dark shadow-sm">
+                        <span class="spinner-grow spinner-grow-sm text-danger" role="status" aria-hidden="true"></span>
+                        Thinking...
+                    </div>
+                </div>`;
+            messagesArea.insertAdjacentHTML('beforeend', typingHtml);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+            fetch('/api/Chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token 
+                },
+                body: JSON.stringify({ message: userText })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Network Error");
+                return res.json();
+            })
+            .then(data => {
+                document.getElementById(typingId).remove();
+                if (data.success && data.reply) {
+                    addMessage(data.reply, "bot");
+                } else {
+                    addMessage(data.reply || "Sorry, I encountered an error. Please try again.", "bot");
+                }
+            })
+            .catch(err => {
+                console.error("Chat API Error:", err);
+                document.getElementById(typingId)?.remove();
+                addMessage("Connection error. Ensure the server is running.", "bot");
+            })
+            .finally(() => {
+                sendBtn.disabled = false;
+                inputField.disabled = false;
+                inputField.focus();
+            });
+        }
+
+        sendBtn.addEventListener("click", handleSend);
+        inputField.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") handleSend();
+        });
+    });
+</script>

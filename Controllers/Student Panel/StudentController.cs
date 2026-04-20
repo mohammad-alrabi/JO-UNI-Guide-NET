@@ -133,5 +133,22 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
 
             return View(result);
         }
+
+        // for universities : 
+        // Task for Bhaa 
+        [HttpGet]
+        public async Task<IActionResult> Universities()
+        {
+            var allUniversities = await _context.Universities
+                .AsNoTracking()
+                .ToListAsync();
+
+            var model = new UniversitiesListViewModel 
+            {
+                PublicUniversities = allUniversities.Where(u => u.Type == UniversityType.Governmental).ToList(),
+                PrivateUniversities = allUniversities.Where(u =>u.Type == UniversityType.Private).ToList(),
+            };
+            return View(model);
+        }
     }
 }
