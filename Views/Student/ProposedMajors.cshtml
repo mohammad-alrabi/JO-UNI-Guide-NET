@@ -1,171 +1,193 @@
 @model List<JO_UNI_Guide.Models.Department>
-
 @{
-    //  GPA الطالب من الـ Controller
-    var userGPA = ViewBag.UserGPA ?? 0;
+    ViewData["Title"] = "Proposed Majors";
+    Layout = "_StudentLayout";
 }
 
-<div class="container mt-5">
+@Html.AntiForgeryToken()
 
-    <!--  عنوان الصفحة -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="section-title">🎯 Recommended Majors For You</h2>
+<div class="animate__animated animate__fadeIn">
+
+    <div class="mb-4 d-flex justify-content-between align-items-end flex-wrap gap-3">
+        <div>
+            <h3 class="fw-bold" style="color: var(--brand-red);">🎯 Recommended For You</h3>
+            <p class="text-muted mb-0">Based on your GPA and preferences, here are the best matching majors.</p>
+        </div>
+        <div class="badge bg-white text-dark border shadow-sm px-3 py-2 fs-6 rounded-pill">
+            <i class="bi bi-mortarboard-fill text-warning me-1"></i>
+            <span id="resultsCount">@Model.Count</span> Majors Found
+        </div>
     </div>
 
-    <!--  الفلاتر -->
-    <div class="row mb-4">
-
-        <!--  فلتر الجامعة -->
-        <div class="col-md-4">
-            <select class="form-select" id="uniFilter">
-                <option value="">All Universities</option>
-                <option value="Governmental">Government</option>
-                <option value="Private">Private</option>
-            </select>
+    <div class="card border-0 shadow-sm rounded-4 p-3 mb-5 bg-white">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted mb-1"><i class="bi bi-funnel"></i> Filter by University Type</label>
+                <select class="form-select shadow-sm border-0 bg-light" id="uniFilter">
+                    <option value="">All Universities (Public & Private)</option>
+                    <option value="Governmental">Public Universities Only</option>
+                    <option value="Private">Private Universities Only</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted mb-1"><i class="bi bi-sort-numeric-down"></i> Sort by Acceptance Rate</label>
+                <select class="form-select shadow-sm border-0 bg-light" id="sortFilter">
+                    <option value="gpa_desc">Highest GPA Required First</option>
+                    <option value="gpa_asc">Lowest GPA Required First</option>
+                </select>
+            </div>
         </div>
-
-        <!--  ترتيب GPA -->
-        <div class="col-md-4">
-            <select class="form-select" id="sortFilter">
-                <option value="gpa_desc">Highest GPA</option>
-                <option value="gpa_asc">Lowest GPA</option>
-            </select>
-        </div>
-
     </div>
 
-    <!--  Empty State Validation -->
     @if (!Model.Any())
     {
-        <div class="alert alert-warning text-center">
-            No recommended majors found for your profile 
+        <div class="card border-0 shadow-sm p-5 text-center mt-4 rounded-4">
+            <img src="~/images/empty-box.svg" width="120" class="mb-3 mx-auto opacity-50" alt="No data" />
+            <h5 class="fw-bold text-dark">No matching majors found!</h5>
+            <p class="text-muted mb-4">Try updating your preferences or high school track to see more results.</p>
+            <div>
+                <a asp-action="Onboarding" class="btn btn-student-primary rounded-pill px-4">Update Profile</a>
+            </div>
         </div>
     }
     else
     {
-        <div class="row" id="majorsContainer">
-
+        <div class="row g-4" id="majorsContainer">
             @foreach (var item in Model)
             {
-                <!--  Card لكل تخصص -->
-                <div class="col-md-4 mb-4 major-card"
+                var dbLogo = item.Faculty?.University?.Logo;
+                var finalLogoSrc = string.IsNullOrWhiteSpace(dbLogo) ? "/images/logo.png" : (dbLogo.Contains("images") ? "/" + dbLogo.TrimStart('/') : "/images/" + dbLogo.TrimStart('/'));
+
+                // 2. فحص ذكي: هل هذا التخصص موجود بمفضلة الطالب؟
+                var userFavorites = ViewBag.UserFavorites as List<int> ?? new List<int>();
+                bool isFav = userFavorites.Contains(item.Department_ID);
+                string heartIconClass = isFav ? "bi-heart-fill text-danger" : "bi-heart";
+
+                <div class="col-xl-4 col-md-6 major-card-item"
                      data-gpa="@item.MinGPA"
-                     data-type="@item.Faculty?.University?.Type">
+                     data-type="@item.Faculty?.University?.Type.ToString()">
 
-                    <div class="uni-card p-3 h-100 fade-in">
+                    <div class="card h-100 border-0 shadow-sm major-card position-relative" style="border-radius: var(--radius-md);">
 
-                       
-                        <span class="badge bg-primary mb-2">
-                             Recommended for you
-                        </span>
+                        <button class="btn btn-light text-danger rounded-circle shadow-sm position-absolute toggle-fav"
+                                style="top: 15px; right: 15px; z-index: 10; width: 40px; height: 40px;"
+                                data-id="@item.Department_ID" title="Add to Favorites">
+                            <i class="bi @heartIconClass fs-5"></i>
+                        </button>
 
-                        
-                        <h5>@item.DepartmentName</h5>
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-white p-2 rounded-circle shadow-sm me-3 border" style="width: 60px; height: 60px;">
+                                    <img src="@finalLogoSrc" class="img-fluid w-100 h-100" style="object-fit: contain;" alt="Uni Logo">
+                                </div>
+                                <div>
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill mb-1 small">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Eligible Match
+                                    </span>
+                                </div>
+                            </div>
 
-                        
-                        <p>
-                            <strong>University:</strong>
-                            @(item.Faculty?.University?.Name ?? "N/A")
-                        </p>
+                            <h5 class="fw-bold text-dark mb-1">@item.DepartmentName</h5>
+                            <p class="text-muted small mb-3 fw-bold">
+                                <i class="bi bi-building me-1"></i> @(item.Faculty?.University?.Name ?? "N/A")
+                            </p>
 
-                        <p>
-                            <strong>Faculty:</strong>
-                            @(item.Faculty?.Name ?? "N/A")
-                        </p>
-
-                      
-                        <p>
-                            <strong>GPA Required:</strong>
-                            @item.MinGPA
-                        </p>
-
-                        <!--  Validation (Match / Strong Match) -->
-                        @if (item.MinGPA <= userGPA)
-                        {
-                            <span class="badge bg-success">Strong Match </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning text-dark">Match </span>
-                        }
-
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                                <div class="small text-muted">
+                                    <i class="bi bi-diagram-3 me-1"></i> @(item.Faculty?.Name ?? "N/A")
+                                </div>
+                                <div class="text-end">
+                                    <span class="d-block small text-muted" style="font-size: 0.75rem;">Min GPA</span>
+                                    <span class="fw-bold text-danger fs-5">@item.MinGPA%</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             }
-
         </div>
     }
-
 </div>
 
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-<style>
+            // Filtering Logic
+            const uniFilter = document.getElementById("uniFilter");
+            const sortFilter = document.getElementById("sortFilter");
+            const container = document.getElementById("majorsContainer");
+            const resultsCount = document.getElementById("resultsCount");
 
-.fade-in {
-    animation: fadeInUp 0.6s ease;
+            function applyFilters() {
+                if (!container) return;
+
+                const typeValue = uniFilter.value;
+                const sortOrder = sortFilter.value;
+                let cards = Array.from(document.querySelectorAll(".major-card-item"));
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const cardType = card.dataset.type;
+                    if (!typeValue || cardType === typeValue) {
+                        card.style.display = "";
+                        visibleCount++;
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+
+                cards.sort((a, b) => {
+                    const gpaA = parseFloat(a.dataset.gpa);
+                    const gpaB = parseFloat(b.dataset.gpa);
+                    return sortOrder === "gpa_desc" ? gpaB - gpaA : gpaA - gpaB;
+                });
+
+                container.innerHTML = "";
+                cards.forEach(c => container.appendChild(c));
+                resultsCount.innerText = visibleCount;
+            }
+
+            if(uniFilter && sortFilter) {
+                uniFilter.addEventListener("change", applyFilters);
+                sortFilter.addEventListener("change", applyFilters);
+            }
+
+            // 3. Add to Favorites Logic with Antiforgery Token
+            document.querySelectorAll(".toggle-fav").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const depId = this.dataset.id;
+                    const icon = this.querySelector("i");
+
+                    // قراءة التوكن الأمني المخفي
+                    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+                    const token = tokenElement ? tokenElement.value : '';
+
+                    icon.className = "spinner-border spinner-border-sm text-danger";
+
+                    fetch(`/Favorite/ToggleFavorite?depId=${depId}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': token // إرسال التوكن لضمان الأمان
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            if (data.isAdded) {
+                                icon.className = "bi bi-heart-fill text-danger fs-5 animate__animated animate__heartBeat";
+                            } else {
+                                icon.className = "bi bi-heart fs-5 text-danger";
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        icon.className = "bi bi-heart fs-5 text-danger";
+                    });
+                });
+            });
+
+        });
+    </script>
 }
-
-/*  Animation */
-keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-</style>
-
-
-<script>
-
-//  فلتر الجامعة
-document.getElementById("uniFilter").addEventListener("change", function () {
-
-    const value = this.value;
-    const cards = document.querySelectorAll(".major-card");
-
-    cards.forEach(card => {
-
-        const type = card.dataset.type;
-
-        if (!value || type === value) {
-            card.style.display = "block";
-        } else {
-            card.style.display = "none";
-        }
-
-    });
-});
-
-//  ترتيب GPA
-document.getElementById("sortFilter").addEventListener("change", function () {
-
-    const container = document.getElementById("majorsContainer");
-    const cards = Array.from(document.querySelectorAll(".major-card"));
-
-    const order = this.value;
-
-    if (!order) {
-        alert("Invalid sort option");
-        return;
-    }
-
-    cards.sort((a, b) => {
-
-        const gpaA = parseFloat(a.dataset.gpa);
-        const gpaB = parseFloat(b.dataset.gpa);
-
-        return order === "gpa_desc"
-            ? gpaB - gpaA
-            : gpaA - gpaB;
-    });
-
-    container.innerHTML = "";
-    cards.forEach(c => container.appendChild(c));
-});
-
-</script>

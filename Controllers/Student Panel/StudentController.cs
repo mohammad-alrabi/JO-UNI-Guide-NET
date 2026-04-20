@@ -123,6 +123,13 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
                 query = query.Where(d => d.Faculty.University.Type == UniversityType.Private);
 
             var result = await query.OrderByDescending(d => d.MinGPA).ToListAsync();
+            var userId = _userManager.GetUserId(User);
+            var userFavorites = await _context.Favorites
+                .Where(f => f.UserId == userId)
+                .Select(f => f.DepartmentId)
+                .ToListAsync();
+
+            ViewBag.UserFavorites = userFavorites; 
 
             return View(result);
         }
