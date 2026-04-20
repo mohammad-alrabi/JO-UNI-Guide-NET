@@ -160,5 +160,45 @@ namespace JO_UNI_Guide.Controllers
             return RedirectToAction(nameof(Index));
 
         }
+        public async Task<IActionResult> Recommendations(string type, string sort)
+        {
+            var courses = _context.Courses
+                .Include(c => c.Department)
+                .ThenInclude(d => d.Faculty)
+                .ThenInclude(f => f.University)
+                .AsQueryable();
+
+            // ===== Filter =====
+            if (!string.IsNullOrEmpty(type))
+            {
+                if (type == "gov")
+                {
+                    courses = courses.Where(c => c.Department.Faculty.University.Type == UniversityType.Government);
+                }
+                else if (type == "private")
+                {
+                    courses = courses.Where(c => c.Department.Faculty.University.Type == UniversityType.Private);
+                }
+            }
+
+            // ===== Sorting =====
+            switch (sort)
+            {
+                case "name":
+                    courses = courses.OrderBy(c => c.Course_Name);
+                    break;
+
+                case "gpa":
+                    courses = courses.OrderByDescending(c => c.Course_ID); // placeholder
+                    break;
+
+                default:
+                    courses = courses.OrderBy(c => c.Course_Name);
+                    break;
+            }
+
+            return View(await courses.ToListAsync());
+        }
+
     }
 }
