@@ -11,8 +11,8 @@ namespace JO_UNI_Guide.Controllers
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
-        public AdminController (ApplicationDbContext context , UserManager<IdentityUser> userManager) 
+        private readonly UserManager<ApplicationUser> _userManager;
+        public AdminController (ApplicationDbContext context , UserManager<ApplicationUser> userManager) 
         {
             _context = context;
             _userManager = userManager;
