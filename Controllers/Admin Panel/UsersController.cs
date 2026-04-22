@@ -10,11 +10,11 @@ namespace JO_UNI_Guide.Controllers
     [Authorize(Roles = "SuperAdmin")] 
     public class UsersController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         // حقن الخدمات الجاهزة من Identity
-        public UsersController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -44,7 +44,7 @@ namespace JO_UNI_Guide.Controllers
             if (ModelState.IsValid)
             {
                 // بنجهز حساب جديد
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
 
                 // بنحفظه بالداتا بيز مع الباسوورد (النظام لحاله بيشفر الباسوورد!)
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -136,7 +136,7 @@ namespace JO_UNI_Guide.Controllers
             var isSuperAdmin = await _userManager.IsInRoleAsync(user, "SuperAdmin");
             if (isSuperAdmin)
             {
-                TempData["Error"] = "Cannot delete SuperAdmin.";
+                //TempData["Error"] = "Cannot delete SuperAdmin.";
                 return RedirectToAction(nameof(Index));
             }
             await _userManager.DeleteAsync(user);

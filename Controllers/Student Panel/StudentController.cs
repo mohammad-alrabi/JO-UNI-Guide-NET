@@ -12,11 +12,13 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<StudentController> _logger;
 
-        public StudentController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public StudentController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, ILogger<StudentController> logger)
         {
             _userManager = userManager;
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -129,7 +131,11 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
                 .Select(f => f.DepartmentId)
                 .ToListAsync();
 
-            ViewBag.UserFavorites = userFavorites; 
+            ViewBag.UserFavorites = userFavorites;
+            foreach (var item in result)
+            {
+                _logger.LogInformation($"Department: {item.DepartmentName}, MinGPA: {item.MinGPA}");
+            }
 
             return View(result);
         }

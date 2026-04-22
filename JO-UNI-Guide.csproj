@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>JO_UNI_Guide</RootNamespace>
+    <UserSecretsId>ed52b2ab-3d64-4916-b297-1bd741e9cb24</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

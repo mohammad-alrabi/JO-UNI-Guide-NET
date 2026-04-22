@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 
 namespace JO_UNI_Guide.Service
 {
@@ -12,58 +13,79 @@ namespace JO_UNI_Guide.Service
         {
             _httpClient = client;
             _logger = logger;
-            _apiKey = config["GeminiApi:Key"] ?? throw new Exception("Gemini API Key missing");
-            _httpClient.Timeout = TimeSpan.FromSeconds(30); 
+
+            _apiKey = config["Gemini:ApiKey"]
+                ?? throw new Exception("Gemini API Key is missing");
+
+            _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
-        public async Task<string> AskAsync(string message)
+        public async Task<string> AskAsync(string userMessage, string studentName)
         {
             var requestBody = new
             {
-                system_instruction = new
-                {
-                    parts = new[] { new { text = "You are GuideBot, a professional academic advisor for JO-UNI Guide platform in Jordan. Keep answers concise." } }
-                },
                 contents = new[]
                 {
-                    new {
-                        parts = new[] { new { text = message } }
+                    new
+                    {
+                        parts = new[]
+                        {
+                            new
+                            {
+                                text = $@"
+You are GuideBot for JO-UNI Guide (Jordan University system).
+
+Rules:
+1. Respond ONLY in Arabic (Jordanian dialect preferred).
+2. If user writes English, still respond in Arabic.
+3. Be concise and student-friendly.
+4. Give academic guidance only.
+
+Student: {studentName}
+Message: {userMessage}
+"                                        
+                            }
+                        }
                     }
                 }
             };
 
             try
             {
-                var response = await _httpClient.PostAsJsonAsync(
-                    $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={_apiKey}",
-                    requestBody
+                var requestJson = JsonSerializer.Serialize(requestBody);
+
+                var response = await _httpClient.PostAsync(
+                    $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={_apiKey}",
+                    new StringContent(requestJson, Encoding.UTF8, "application/json")
                 );
 
                 var responseString = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    _logger.LogError("Gemini API failed: {Status} {Response}", response.StatusCode, responseString);
-                    throw new Exception("AI service temporarily unavailable.");
+                    _logger.LogError("Gemini Error: {Status} {Body}", response.StatusCode, responseString);
+                    return "AI service is currently unavailable.";
                 }
 
                 using var doc = JsonDocument.Parse(responseString);
 
-                if (!doc.RootElement.TryGetProperty("candidates", out var candidates) || candidates.GetArrayLength() == 0)
-                {
-                    return "I couldn't get a reply right now, please try again.";
-                }
-
-                return candidates[0]
+                return doc.RootElement
+                    .GetProperty("candidates")[0]
                     .GetProperty("content")
                     .GetProperty("parts")[0]
                     .GetProperty("text")
-                    .GetString() ?? "There is no response at the moment.";
+                    .GetString()
+                    ?.Trim() ?? "No response.";
             }
             catch (TaskCanceledException)
             {
-                _logger.LogWarning("Gemini API request timed out.");
-                return "I'm taking too long to think! Please try asking again.";
+                _logger.LogWarning("Gemini timeout");
+                return "The request took too long. Try again.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error");
+                return "Unexpected error occurred.";
             }
         }
     }

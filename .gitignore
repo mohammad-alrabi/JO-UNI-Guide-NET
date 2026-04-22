@@ -12,3 +12,9 @@ Desktop.ini
 
 ## ملفات الربط مع قاعدة البيانات الشخصية
 appsettings.Development.json
+
+bin/
+obj/
+.vs/
+*.log
+secrets.json
