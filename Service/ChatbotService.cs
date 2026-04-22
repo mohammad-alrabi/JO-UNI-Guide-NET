@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 
 namespace JO_UNI_Guide.Service
 {
@@ -6,64 +7,74 @@ namespace JO_UNI_Guide.Service
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<ChatbotService> _logger;
-        private readonly string _apiKey;
 
         public ChatbotService(HttpClient client, IConfiguration config, ILogger<ChatbotService> logger)
         {
             _httpClient = client;
             _logger = logger;
-            _apiKey = config["GeminiApi:Key"] ?? throw new Exception("Gemini API Key missing");
+
+            var apiKey = config["OpenAI:ApiKey"]
+                ?? throw new Exception("Open Ai Key is missing");
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
             _httpClient.Timeout = TimeSpan.FromSeconds(30); 
         }
 
-        public async Task<string> AskAsync(string message)
+        public async Task<string> AskAsync(string userMessage , string studentName)
         {
             var requestBody = new
             {
-                system_instruction = new
-                {
-                    parts = new[] { new { text = "You are GuideBot, a professional academic advisor for JO-UNI Guide platform in Jordan. Keep answers concise." } }
-                },
-                contents = new[]
-                {
-                    new {
-                        parts = new[] { new { text = message } }
-                    }
-                }
+               model = "gpt-4o-mini",
+               messages = new object[]
+               {
+                 new {
+                     role = "system",
+                     content = $"You are GuideBot, an academic advisor for JO-UNI Guide. You are talking to a student named {studentName}. Be friendly, concise, and helpful."
+                 },
+                 new {
+                      role = "user",
+                      content = userMessage
+                 }
+               },
+                temperature = 0.7,
+                max_tokens = 300
             };
 
             try
             {
-                var response = await _httpClient.PostAsJsonAsync(
-                    $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={_apiKey}",
-                    requestBody
+                var requestJson = JsonSerializer.Serialize(requestBody);
+
+                var response = await _httpClient.PostAsync(
+                    "https://api.openai.com/v1/chat/completions",
+                    new StringContent(requestJson, Encoding.UTF8, "application/json")
                 );
 
                 var responseString = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    _logger.LogError("Gemini API failed: {Status} {Response}", response.StatusCode, responseString);
-                    throw new Exception("AI service temporarily unavailable.");
+                    _logger.LogError("OpenAI Error: {Status} {Body}", response.StatusCode, responseString);
+                    return "AI service is currently unavailable.";
                 }
 
                 using var doc = JsonDocument.Parse(responseString);
 
-                if (!doc.RootElement.TryGetProperty("candidates", out var candidates) || candidates.GetArrayLength() == 0)
-                {
-                    return "I couldn't get a reply right now, please try again.";
-                }
-
-                return candidates[0]
+                return doc.RootElement
+                    .GetProperty("choices")[0]
+                    .GetProperty("message")
                     .GetProperty("content")
-                    .GetProperty("parts")[0]
-                    .GetProperty("text")
-                    .GetString() ?? "There is no response at the moment.";
+                    .GetString()
+                    ?.Trim() ?? "No response.";
             }
             catch (TaskCanceledException)
             {
-                _logger.LogWarning("Gemini API request timed out.");
-                return "I'm taking too long to think! Please try asking again.";
+                _logger.LogWarning("OpenAI timeout");
+                return "The request took too long. Try again.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error");
+                return "Unexpected error occurred.";
             }
         }
     }
