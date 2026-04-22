@@ -7,37 +7,47 @@ namespace JO_UNI_Guide.Service
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<ChatbotService> _logger;
+        private readonly string _apiKey;
 
         public ChatbotService(HttpClient client, IConfiguration config, ILogger<ChatbotService> logger)
         {
             _httpClient = client;
             _logger = logger;
 
-            var apiKey = config["OpenAI:ApiKey"]
-                ?? throw new Exception("Open Ai Key is missing");
-            _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-            _httpClient.Timeout = TimeSpan.FromSeconds(30); 
+            _apiKey = config["Gemini:ApiKey"]
+                ?? throw new Exception("Gemini API Key is missing");
+
+            _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
-        public async Task<string> AskAsync(string userMessage , string studentName)
+        public async Task<string> AskAsync(string userMessage, string studentName)
         {
             var requestBody = new
             {
-               model = "gpt-4o-mini",
-               messages = new object[]
-               {
-                 new {
-                     role = "system",
-                     content = $"You are GuideBot, an academic advisor for JO-UNI Guide. You are talking to a student named {studentName}. Be friendly, concise, and helpful."
-                 },
-                 new {
-                      role = "user",
-                      content = userMessage
-                 }
-               },
-                temperature = 0.7,
-                max_tokens = 300
+                contents = new[]
+                {
+                    new
+                    {
+                        parts = new[]
+                        {
+                            new
+                            {
+                                text = $@"
+You are GuideBot for JO-UNI Guide (Jordan University system).
+
+Rules:
+1. Respond ONLY in Arabic (Jordanian dialect preferred).
+2. If user writes English, still respond in Arabic.
+3. Be concise and student-friendly.
+4. Give academic guidance only.
+
+Student: {studentName}
+Message: {userMessage}
+"                                        
+                            }
+                        }
+                    }
+                }
             };
 
             try
@@ -45,7 +55,7 @@ namespace JO_UNI_Guide.Service
                 var requestJson = JsonSerializer.Serialize(requestBody);
 
                 var response = await _httpClient.PostAsync(
-                    "https://api.openai.com/v1/chat/completions",
+                    $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={_apiKey}",
                     new StringContent(requestJson, Encoding.UTF8, "application/json")
                 );
 
@@ -53,22 +63,23 @@ namespace JO_UNI_Guide.Service
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    _logger.LogError("OpenAI Error: {Status} {Body}", response.StatusCode, responseString);
+                    _logger.LogError("Gemini Error: {Status} {Body}", response.StatusCode, responseString);
                     return "AI service is currently unavailable.";
                 }
 
                 using var doc = JsonDocument.Parse(responseString);
 
                 return doc.RootElement
-                    .GetProperty("choices")[0]
-                    .GetProperty("message")
+                    .GetProperty("candidates")[0]
                     .GetProperty("content")
+                    .GetProperty("parts")[0]
+                    .GetProperty("text")
                     .GetString()
                     ?.Trim() ?? "No response.";
             }
             catch (TaskCanceledException)
             {
-                _logger.LogWarning("OpenAI timeout");
+                _logger.LogWarning("Gemini timeout");
                 return "The request took too long. Try again.";
             }
             catch (Exception ex)

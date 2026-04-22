@@ -1,139 +1,151 @@
-﻿body {
-}
-/* ================= CHATBOT STYLES (chatbot.css) ================= */
+﻿/* ================= CHATBOT STYLES (Modern & Large) ================= */
 
-/* الحاوية الرئيسية للشات (موقعها في الزاوية) */
 .chatbot-container {
     position: fixed;
     bottom: 30px;
     right: 30px;
     z-index: 1050;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* الزر الدائري العائم */
+/* الزر العائم - تم تكبيره قليلاً مع ظل أنعم */
 .chatbot-fab {
-    width: 60px;
-    height: 60px;
+    width: 65px;
+    height: 65px;
     border-radius: 50%;
-    /* استخدمنا ألوان قريبة للـ Premium، بتقدر تغيرها لمتغيراتك إذا حابب */
-    background: linear-gradient(135deg, #8b0000, #5c0000);
+    background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
     border: none;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
+    box-shadow: 0 8px 25px rgba(139, 0, 0, 0.3);
 }
 
     .chatbot-fab:hover {
-        transform: scale(1.1);
-        box-shadow: 0 10px 20px rgba(139, 0, 0, 0.4) !important;
+        transform: scale(1.08) rotate(5deg);
+        box-shadow: 0 12px 30px rgba(139, 0, 0, 0.5) !important;
     }
 
-/* نافذة الشات نفسها */
+/* نافذة الشات - تم تكبير العرض والارتفاع */
 .chatbot-window {
     position: absolute;
-    bottom: 80px;
+    bottom: 85px;
     right: 0;
-    width: 350px;
-    height: 480px;
-    background: #fff;
-    border-radius: 20px;
+    width: 400px; /* كبرنا العرض من 350 لـ 400 */
+    height: 580px; /* كبرنا الارتفاع من 480 لـ 580 */
+    background: #ffffff;
+    border-radius: 24px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    animation: slideUp 0.3s ease;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    animation: slideUp 0.4s ease-out;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
-/* الترويسة (Header) */
+/* الترويسة - تصميم أنحف وأرقى */
 .chatbot-header {
     background: linear-gradient(135deg, #5c0000 0%, #8b0000 100%);
-    padding: 15px 20px;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-/* منطقة الرسائل (Scrollable) */
+/* منطقة الرسائل - تحسين الـ Padding والـ Background */
 .chatbot-messages {
     flex: 1;
     overflow-y: auto;
-    background: #f8f9fa;
+    background: #fdfdfd;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: #8b0000 #f1f1f1;
 }
 
-/* فقاعة الرسالة (Bubble) */
+/* فقاعة الرسالة - زوايا أنعم وحجم خط أوضح */
 .message-bubble {
-    max-width: 85%;
-    padding: 12px 16px;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    word-wrap: break-word;
+    max-width: 88%;
+    padding: 14px 18px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    letter-spacing: 0.3px;
 }
 
-/* رسالة البوت (يسار/رمادي فاتح) */
-.bot-message {
-    align-self: flex-start;
+.bot-message .message-bubble {
+    background: #f1f3f5;
+    color: #212529;
+    border-bottom-left-radius: 4px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.02);
 }
 
-    .bot-message .message-bubble {
-        background: white;
-        border: 1px solid #eee;
-        border-bottom-left-radius: 0;
-        color: #333;
-    }
-
-/* رسالة المستخدم (يمين/أحمر) */
-.user-message {
-    align-self: flex-end;
+.user-message .message-bubble {
+    background: #8b0000;
+    background: linear-gradient(135deg, #a50000 0%, #8b0000 100%);
+    color: white;
+    border-bottom-right-radius: 4px;
+    box-shadow: -2px 4px 10px rgba(139, 0, 0, 0.2);
 }
 
-    .user-message .message-bubble {
-        background: #8b0000;
-        color: white;
-        border-bottom-right-radius: 0;
-    }
-
-/* وقت الرسالة */
-.message-time {
-    font-size: 0.65rem;
-    color: #adb5bd;
-    margin-top: 4px;
-}
-
-.bot-message .message-time {
-    margin-left: 5px;
-    text-align: left;
-}
-
-.user-message .message-time {
-    margin-right: 5px;
-    text-align: right;
-}
-
-/* منطقة إدخال النص */
+/* منطقة الإدخال - تحسين التصميم والـ Input */
 .chatbot-input-area {
+    padding: 15px 20px;
     background: #fff;
-    padding: 10px;
+    border-top: 1px solid #eee;
 }
 
-    .chatbot-input-area input:focus {
-        box-shadow: none;
-        border-color: #8b0000;
+    .chatbot-input-area .input-group {
+        background: #f8f9fa;
+        border-radius: 30px;
+        padding-right: 5px;
+        border: 1px solid #eee;
+        transition: all 0.3s ease;
     }
 
-/* حركة ظهور الشات (Animation) */
+        .chatbot-input-area .input-group:focus-within {
+            border-color: #8b0000;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
+        }
+
+#chatbot-input {
+    background: transparent !important;
+    font-size: 0.95rem;
+    padding: 12px 15px;
+}
+
+/* أزرار الإغلاق والإرسال */
+#send-chatbot {
+    color: #8b0000 !important;
+    transition: transform 0.2s ease;
+}
+
+    #send-chatbot:hover {
+        transform: scale(1.2);
+    }
+
+/* Animation */
 @keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px) scale(0.95);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* استجابة للهواتف */
+@media (max-width: 450px) {
+    .chatbot-window {
+        width: 90vw;
+        height: 70vh;
+        right: -10px;
     }
 }
