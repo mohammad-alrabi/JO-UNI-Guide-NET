@@ -1,0 +1,45 @@
+﻿@model List<JO_UNI_Guide.Models.Department>
+
+<h1 style="margin-bottom:20px;">🟪 Compare Majors</h1>
+
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+    <table class="table table-bordered table-hover mb-0">
+        <thead style="background:#1e1b4b; color:white;">
+            <tr class="text-center">
+                <th>Department</th>
+                <th>University</th>
+                <th>Faculty</th>
+                <th style="width: 200px;">GPA Requirement</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                // نستخدم AcceptanceRate اللي وحدناها بالتيكت
+                var gpa = item.AcceptanceRate;
+                string rowClass = "";
+
+                if (gpa <= 70)
+                    rowClass = "table-success";   // سهل القبول
+                else if (gpa <= 85)
+                    rowClass = "table-warning";   // متوسط
+                else
+                    rowClass = "table-danger";    // تنافس عالي
+
+                <tr class="@rowClass text-center align-middle">
+                    <td class="fw-bold">@item.DepartmentName</td>
+                    <td>@item.Faculty?.University?.Name</td>
+                    <td>@item.Faculty?.Name</td>
+                    <td>
+                        <span class="fw-bold">@gpa%</span>
+                        @if (gpa <= 75)
+                        {
+                            <br />
+                            <span class="badge bg-success">Good Chance</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
