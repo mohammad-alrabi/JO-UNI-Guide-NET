@@ -1,0 +1,163 @@
+﻿@model JO_UNI_Guide.Models.SmartSearchViewModel
+@using JO_UNI_Guide.Helpers
+@{
+    ViewData["Title"] = "Smart Search";
+    Layout = "_StudentLayout";
+}
+
+<div class="row g-4 mt-2">
+    <div class="col-lg-3">
+        <div class="search-sidebar shadow-sm">
+            <h5 class="filter-title mb-4">
+                <i class="bi bi-sliders2-vertical me-2"></i>Smart Filter
+            </h5>
+            <form asp-action="SmartSearch" method="get">
+                <div class="smart-input-group position-relative">
+                    <label class="small fw-bold text-muted">Keywords</label>
+                    <input type="text" id="autoCompleteInput" name="Keyword" value="@Model.Keyword"
+                           class="form-control" placeholder="Major, University..." autocomplete="off">
+                    <div id="suggestionsBox" class="list-group position-absolute w-100 shadow-lg d-none" style="z-index: 1000; top: 100%;"></div>
+                </div>
+
+                <div class="smart-input-group mt-3">
+                    <label class="small fw-bold text-muted">Max Price / Hour (JOD)</label>
+                    <input type="number" name="MaxHourPrice" value="@Model.MaxHourPrice"
+                           class="form-control" placeholder="e.g. 50">
+                </div>
+
+                <div class="smart-input-group mt-3">
+                    <label class="small fw-bold text-muted">Your GPA</label>
+                    <input type="number" step="0.1" name="StudentGPA" value="@Model.StudentGPA"
+                           class="form-control" placeholder="e.g. 85.5">
+                </div>
+
+                <div class="smart-input-group mt-3">
+                    <label class="small fw-bold text-muted">University Type</label>
+                    <select name="UniType" class="form-select">
+                        <option value="">All Types</option>
+                        <option value="Governmental">Public (Governmental)</option>
+                        <option value="Private">Private</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-search w-100 mt-4 py-2 shadow-sm">
+                    <i class="bi bi-search me-2"></i>Apply Search
+                </button>
+
+                <a asp-action="SmartSearch" class="btn btn-light w-100 mt-2 border py-2">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-9">
+        @if (Model.Results != null && Model.Results.Any())
+        {
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <p class="results-count mb-0">
+                    Showing <span>@Model.Results.Count</span> best matches for you
+                </p>
+            </div>
+
+            <div class="row g-4">
+                @foreach (var item in Model.Results)
+                {
+                    <div class="col-md-6">
+                        <div class="card result-card border-0 shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="uni-name">@item.Faculty?.University?.Name</span>
+                                    <span class="badge @(item.Faculty?.University?.Type.ToString() == "Governmental" ? "bg-info text-dark" : "bg-light text-muted border")" style="font-size: 10px;">
+                                        @(item.Faculty?.University?.Type)
+                                    </span>
+                                </div>
+
+                                <h5 class="dept-name">@item.DepartmentName</h5>
+                                <p class="text-muted small mb-3">
+                                    <i class="bi bi-building me-1"></i>@item.Faculty?.Name
+                                </p>
+
+                                @if (item.RequiredTrack.HasValue)
+                                {
+                                    <span class="badge mb-3 track-badge">
+                                        <i class="bi bi-journal-bookmark me-1"></i>
+                                        @item.RequiredTrack.Value.GetDisplayName()
+                                    </span>
+                                }
+
+                                <hr class="opacity-25 my-3">
+
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <span class="price-tag">
+                                        <i class="bi bi-cash-stack me-1"></i>@item.HourPrice JOD
+                                    </span>
+                                    <span class="rate-tag">
+                                        <i class="bi bi-graph-up-arrow me-1"></i>@item.AcceptanceRate%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state text-center py-5 shadow-sm rounded-4 bg-white mt-4">
+                <i class="bi bi-search-heart mb-3 d-block text-muted" style="font-size: 4rem; opacity: 0.5;"></i>
+                <h5 class="fw-bold">No results found</h5>
+                <p class="text-muted px-5">We couldn't find any departments matching your current filters. Try relaxing your GPA or Price requirements.</p>
+                <a asp-action="SmartSearch" class="btn btn-danger rounded-pill px-4 mt-2">View All Departments</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.getElementById("autoCompleteInput");
+            const box = document.getElementById("suggestionsBox");
+
+            input.addEventListener("input", async function () {
+                const term = input.value.trim();
+                if (term.length < 2) {
+                    box.classList.add("d-none");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/Department/GetSuggestions?term=${encodeURIComponent(term)}`);
+                    const data = await response.json();
+
+                    if (data.length > 0) {
+                        box.innerHTML = data.map(item => `
+                            <button type="button" class="list-group-item list-group-item-action py-2">
+                                <i class="bi bi-search me-2 text-muted" style="font-size: 0.8rem;"></i>${item.name}
+                            </button>
+                        `).join('');
+                        box.classList.remove("d-none");
+                    } else {
+                        box.classList.add("d-none");
+                    }
+                } catch (error) {
+                    console.error("Suggestions error:", error);
+                }
+            });
+
+            box.addEventListener("click", function (e) {
+                const btn = e.target.closest(".list-group-item");
+                if (btn) {
+                    input.value = btn.textContent.trim();
+                    box.classList.add("d-none");
+                    input.closest("form").submit();
+                }
+            });
+
+            document.addEventListener("click", (e) => {
+                if (e.target !== input) box.classList.add("d-none");
+            });
+        });
+    </script>
+}

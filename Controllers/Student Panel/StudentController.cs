@@ -76,16 +76,16 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
 
             // FIX: نفس منطق ProposedMajors — يأخذ Track بعين الاعتبار عشان الأرقام تتطابق
             var matchingMajorsCount = await _context.Departments
-                .CountAsync(d => d.MinGPA <= user.GPA
+                .CountAsync(d => d.AcceptanceRate <= user.GPA
                     && (d.RequiredTrack == null || d.RequiredTrack == user.TawjihiTrack));
 
             // FIX: Include موجود + نفس شرط الـ Track
             var topMajors = await _context.Departments
                 .Include(d => d.Faculty)
                     .ThenInclude(f => f.University)
-                .Where(d => d.MinGPA <= user.GPA
+                .Where(d => d.AcceptanceRate <= user.GPA
                     && (d.RequiredTrack == null || d.RequiredTrack == user.TawjihiTrack))
-                .OrderByDescending(d => d.MinGPA)
+                .OrderByDescending(d => d.AcceptanceRate)
                 .Take(5)
                 .ToListAsync();
 
@@ -115,7 +115,7 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
             var query = _context.Departments
                 .Include(d => d.Faculty)
                     .ThenInclude(f => f.University)
-                .Where(d => d.MinGPA <= user.GPA.Value
+                .Where(d => d.AcceptanceRate <= user.GPA.Value
                     && (d.RequiredTrack == null || d.RequiredTrack == user.TawjihiTrack))
                 .AsQueryable();
 
@@ -124,7 +124,7 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
             else if (user.PreferredUniType == "Private")
                 query = query.Where(d => d.Faculty.University.Type == UniversityType.Private);
 
-            var result = await query.OrderByDescending(d => d.MinGPA).ToListAsync();
+            var result = await query.OrderByDescending(d => d.AcceptanceRate).ToListAsync();
             var userId = _userManager.GetUserId(User);
             var userFavorites = await _context.Favorites
                 .Where(f => f.UserId == userId)
@@ -134,7 +134,7 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
             ViewBag.UserFavorites = userFavorites;
             foreach (var item in result)
             {
-                _logger.LogInformation($"Department: {item.DepartmentName}, MinGPA: {item.MinGPA}");
+                _logger.LogInformation($"Department: {item.DepartmentName}, MinGPA: {item.AcceptanceRate}");
             }
 
             return View(result);
@@ -155,6 +155,66 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
                 PrivateUniversities = allUniversities.Where(u =>u.Type == UniversityType.Private).ToList(),
             };
             return View(model);
+        }
+        [Authorize]
+        public async Task<IActionResult> UniversityDetails(int id)
+        {
+            var university = await _context.Universities
+                .Include(u => u.Faculties)
+                    .ThenInclude(f => f.Departments)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.University_ID == id);
+
+            if (university == null) return NotFound();
+
+            return View(university);
+        }
+        public async Task<IActionResult> SmartSearch(SmartSearchViewModel searchViewModel) 
+        {
+            var query = _context.Departments
+                .Include(d => d.Faculty)
+                    .ThenInclude(f => f.University)
+                .AsQueryable();
+
+            //  الفلترة حسب النص (اسم التخصص أو الجامعة أو الكلية)
+            if (!string.IsNullOrEmpty(searchViewModel.Keyword)) 
+            {
+                query = query.Where(d=>d.DepartmentName.Contains(searchViewModel.Keyword)||
+                                     d.Faculty.University.Name.Contains(searchViewModel.Keyword));
+            }
+            //  الفلترة حسب سعر الساعة
+            if (searchViewModel.MaxHourPrice.HasValue) 
+            {
+                query = query.Where(d => d.HourPrice <= searchViewModel.MaxHourPrice.Value);
+            }
+            //  الفلترة حسب المعدل (ليش هو سمارت؟ لأنه بطلع بس اللي بقبله الطالب)
+            if (searchViewModel.StudentGPA.HasValue) 
+            {
+                query = query.Where(d =>d.AcceptanceRate <= searchViewModel.StudentGPA.Value);
+            }
+            //  الفلترة حسب نوع الجامعة
+            if (searchViewModel.UniType.HasValue) 
+            {
+                query = query.Where(d => d.Faculty.University.Type == searchViewModel.UniType.Value);
+            }
+            searchViewModel.Results = await query
+                .OrderBy(d => d.AcceptanceRate)
+                .ToListAsync();
+            return View(searchViewModel);
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetSuggestions(string term)
+        {
+            if (string.IsNullOrEmpty(term) || term.Length < 2)
+                return Json(new List<object>());
+
+            var suggestions = await _context.Departments
+                .Where(d => d.DepartmentName.Contains(term))
+                .Select(d => new { id = d.Department_ID, name = d.DepartmentName })
+                .Take(5) // نكتفي بـ 5 اقتراحات
+                .ToListAsync();
+
+            return Json(suggestions);
         }
     }
 }

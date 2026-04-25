@@ -40,13 +40,13 @@ namespace JO_UNI_Guide.Models
 
         // معدل القبول 
         [Display(Name = "Acceptance Rate (%)")]
-        public decimal AcceptanceRate { get; set; }
+        public double AcceptanceRate { get; set; }
         //سعر الساعه 
         [Display(Name = "Price Per Hour (JOD)")]
         public decimal HourPrice { get; set; }
         [Display(Name = "Total Credit Hours")]
         public int TotalCreditHours { get; set; }
-        public double MinGPA { get; set; }
+        //public double MinGPA { get; set; }
         public TawjihiTrack? RequiredTrack { get; set; }
         //Realtion => القسم الواحد بحتوي على عدة مواد 
         [ValidateNever]

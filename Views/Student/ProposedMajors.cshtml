@@ -42,7 +42,7 @@
     @if (!Model.Any())
     {
         <div class="card border-0 shadow-sm p-5 text-center mt-4 rounded-4">
-            <img src="~/images/empty-box.svg" width="120" class="mb-3 mx-auto opacity-50" alt="No data" />
+            <img src="~/images/3d9a7129-07b3-4b05-9460-0faffd8eee74.png" width="120" class="mb-3 mx-auto opacity-50" alt="No data" />
             <h5 class="fw-bold text-dark">No matching majors found!</h5>
             <p class="text-muted mb-4">Try updating your preferences or high school track to see more results.</p>
             <div>
@@ -64,7 +64,7 @@
                 string heartIconClass = isFav ? "bi-heart-fill text-danger" : "bi-heart";
 
                 <div class="col-xl-4 col-md-6 major-card-item"
-                     data-gpa="@item.MinGPA"
+                     data-gpa="@item.AcceptanceRate"
                      data-type="@item.Faculty?.University?.Type.ToString()">
 
                     <div class="card h-100 border-0 shadow-sm major-card position-relative" style="border-radius: var(--radius-md);">
@@ -97,8 +97,8 @@
                                     <i class="bi bi-diagram-3 me-1"></i> @(item.Faculty?.Name ?? "N/A")
                                 </div>
                                 <div class="text-end">
-                                    <span class="d-block small text-muted" style="font-size: 0.75rem;">Min GPA</span>
-                                    <span class="fw-bold text-danger fs-5">@item.MinGPA%</span>
+                                    <span class="d-block small text-muted" style="font-size: 0.75rem;">AcceptanceRate</span>
+                                    <span class="fw-bold text-danger fs-5">@item.AcceptanceRate%</span>
                                 </div>
                             </div>
                         </div>

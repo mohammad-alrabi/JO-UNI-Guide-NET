@@ -52,7 +52,7 @@ namespace JO_UNI_Guide.Controllers
             if (minRate.HasValue)
             {
                 // تحويل minRate من decimal إلى double ليطابق نوع الحقل في قاعدة البيانات
-                departments = departments.Where(d => d.AcceptanceRate >= (decimal)minRate.Value);
+                departments = departments.Where(d => d.AcceptanceRate >= (double)minRate.Value);
             }
 
             // 3. الفلترة حسب الحد الأقصى لسعر الساعة (اختياري)

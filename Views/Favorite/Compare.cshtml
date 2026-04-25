@@ -1,45 +1,67 @@
-﻿@model List<JO_UNI_Guide.Models.Department>
+﻿@model JO_UNI_Guide.Models.ComparisonViewModel
+@using JO_UNI_Guide.Helpers
+@{
+    ViewData["Title"] = "Compare Departments";
+    Layout = "_StudentLayout";
+}
 
-<h1 style="margin-bottom:20px;">🟪 Compare Majors</h1>
+<div class="container mt-4">
+    <h2 class="page-title mb-4">Department Comparison</h2>
 
-<div class="card shadow-sm border-0 rounded-4 overflow-hidden">
-    <table class="table table-bordered table-hover mb-0">
-        <thead style="background:#1e1b4b; color:white;">
-            <tr class="text-center">
-                <th>Department</th>
-                <th>University</th>
-                <th>Faculty</th>
-                <th style="width: 200px;">GPA Requirement</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                // نستخدم AcceptanceRate اللي وحدناها بالتيكت
-                var gpa = item.AcceptanceRate;
-                string rowClass = "";
+    <div style="display: grid; grid-template-columns: repeat(@Model.SelectedDepartments.Count, minmax(0, 1fr)); gap: 16px;">
+        @foreach (var dept in Model.SelectedDepartments)
+        {
+            <div style="background: var(--bs-body-bg); border: 1px solid #dee2e6; border-radius: 12px; padding: 1.25rem;">
 
-                if (gpa <= 70)
-                    rowClass = "table-success";   // سهل القبول
-                else if (gpa <= 85)
-                    rowClass = "table-warning";   // متوسط
-                else
-                    rowClass = "table-danger";    // تنافس عالي
+                <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #dee2e6;">
+                    <h5 class="mb-1">@dept.DepartmentName</h5>
+                    <span class="text-muted" style="font-size: 13px;">@dept.Faculty?.Name</span><br />
+                    <span class="text-muted" style="font-size: 12px;">@dept.Faculty?.University?.Name</span>
+                </div>
 
-                <tr class="@rowClass text-center align-middle">
-                    <td class="fw-bold">@item.DepartmentName</td>
-                    <td>@item.Faculty?.University?.Name</td>
-                    <td>@item.Faculty?.Name</td>
-                    <td>
-                        <span class="fw-bold">@gpa%</span>
-                        @if (gpa <= 75)
+                <table class="table table-sm mb-0">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted">Acceptance Rate</td>
+                            <td><strong>@dept.AcceptanceRate%</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Price/Hour</td>
+                            <td><strong>@dept.HourPrice JOD</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Credit Hours</td>
+                            <td><strong>@dept.TotalCreditHours</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Required Track</td>
+                            <td>
+                                @if (dept.RequiredTrack.HasValue)
+                                {
+                                    <span class="badge bg-info text-dark">
+                                        @dept.RequiredTrack.Value.GetDisplayName()
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Any</span>
+                                }
+                            </td>
+                        </tr>
+                        @if (!string.IsNullOrEmpty(dept.Details))
                         {
-                            <br />
-                            <span class="badge bg-success">Good Chance</span>
+                            <tr>
+                                <td class="text-muted">Details</td>
+                                <td style="font-size: 13px;">@dept.Details</td>
+                            </tr>
                         }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="MyFavorites" asp-controller="Favorite" class="btn btn-secondary">Back to Favorites</a>
+    </div>
 </div>

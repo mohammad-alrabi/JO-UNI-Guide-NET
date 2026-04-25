@@ -32,7 +32,7 @@ body {
 }
 
 /* ============================================================
-   SIDEBAR (Left for LTR)
+   SIDEBAR
    ============================================================ */
 .student-sidebar {
     width: var(--sidebar-width);
@@ -76,7 +76,6 @@ body {
     transition: var(--transition);
 }
 
-    /* ⚠️ تم تعديل الهامش ليكون على اليمين بدلاً من اليسار لأن الأيقونة تأتي قبل النص في الإنجليزي */
     .student-sidebar .nav-link i {
         font-size: 1.2rem;
         margin-right: 15px;
@@ -159,7 +158,6 @@ body {
         box-shadow: var(--shadow-hover);
     }
 
-    /* ⚠️ الخط التجميلي تم نقله لليسار (Left: 0) ليتناسب مع الإنجليزي */
     .stat-card::before {
         content: '';
         position: absolute;
@@ -193,7 +191,6 @@ body {
     padding: 15px 20px;
 }
 
-    /* ⚠️ تم تعديل الـ Border ليكون على اليسار (Border-left) للإنجليزي */
     .major-card:hover {
         transform: translateX(5px);
         border-left: 4px solid var(--accent);
@@ -212,16 +209,572 @@ body {
     }
 
 /* ============================================================
-   RESPONSIVE
+   SMART SEARCH
    ============================================================ */
-@media (max-width: 992px) {
-    .student-sidebar {
-        transform: translateX(-100%);
-        border-radius: 0;
+.search-sidebar {
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    padding: 28px 22px;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 100px;
+}
+
+.filter-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--brand-red);
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 2px dashed rgba(131,3,3,0.12);
+}
+
+.smart-input-group {
+    margin-bottom: 18px;
+}
+
+    .smart-input-group label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        display: block;
     }
 
-    .main-content {
+    .smart-input-group .form-control {
+        border-radius: 12px;
+        border: 1.5px solid #e8eaf6;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        color: var(--text-main);
+        transition: var(--transition);
+        background: #f8f9ff;
+    }
+
+        .smart-input-group .form-control:focus {
+            border-color: var(--brand-red);
+            box-shadow: 0 0 0 3px rgba(131,3,3,0.08);
+            background: #fff;
+            outline: none;
+        }
+
+.btn-search {
+    background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 11px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    letter-spacing: 0.3px;
+    transition: var(--transition);
+    box-shadow: 0 4px 14px rgba(131,3,3,0.25);
+}
+
+    .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(131,3,3,0.3);
+        color: var(--accent);
+    }
+
+.result-card {
+    border-radius: var(--radius-lg) !important;
+    border: none !important;
+    box-shadow: var(--shadow-md) !important;
+    transition: var(--transition) !important;
+    overflow: hidden;
+    position: relative;
+}
+
+    .result-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--brand-red), var(--accent));
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .result-card:hover {
+        transform: translateY(-6px) !important;
+        box-shadow: var(--shadow-hover) !important;
+    }
+
+        .result-card:hover::before {
+            opacity: 1;
+        }
+
+    .result-card .card-body {
+        padding: 22px !important;
+    }
+
+.uni-name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--brand-red);
+    background: rgba(131,3,3,0.07);
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.dept-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.price-tag {
+    background: rgba(212,175,55,0.12);
+    color: #7a5c00;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+.rate-tag {
+    background: rgba(131,3,3,0.07);
+    color: var(--brand-red);
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+/* ============================================================
+   EMPTY STATE & RESULTS COUNT
+   ============================================================ */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+}
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 16px;
+        display: block;
+        opacity: 0.4;
+    }
+
+.results-count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+    .results-count span {
+        color: var(--brand-red);
+        font-weight: 700;
+    }
+
+/* ============================================================
+   NAV PILLS
+   ============================================================ */
+.nav-pills .nav-link {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    padding: 10px 24px;
+    border-radius: 20px;
+    transition: var(--transition);
+    border: 1.5px solid transparent;
+}
+
+    .nav-pills .nav-link:hover {
+        color: var(--brand-red);
+        border-color: rgba(131,3,3,0.15);
+        background: rgba(131,3,3,0.05);
+    }
+
+    .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red)) !important;
+        color: white !important;
+        box-shadow: 0 4px 14px rgba(131,3,3,0.25);
+        border-color: transparent;
+    }
+
+/* ============================================================
+   UNIVERSITIES
+   ============================================================ */
+.uni-card {
+    border: none !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-md) !important;
+    transition: var(--transition) !important;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+}
+
+    .uni-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--brand-red), var(--accent));
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .uni-card:hover {
+        transform: translateY(-8px) !important;
+        box-shadow: var(--shadow-hover) !important;
+    }
+
+        .uni-card:hover::before {
+            opacity: 1;
+        }
+
+.uni-logo-wrapper {
+    height: 160px;
+    background-color: #fcfcfc;
+    border-bottom: 1px solid #f1f1f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.uni-logo-img {
+    max-height: 100px;
+    max-width: 80%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.uni-card:hover .uni-logo-img {
+    transform: scale(1.1);
+}
+
+.uni-logo-placeholder {
+    color: #dee2e6;
+    font-size: 2.5rem;
+}
+
+.uni-location {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.btn-uni {
+    background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 9px 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(131,3,3,0.2);
+    width: 100%;
+}
+
+    .btn-uni:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(131,3,3,0.3);
+        color: var(--accent);
+    }
+
+/* ============================================================
+   UNIVERSITY DETAILS — STUDENT PANEL STYLES
+   ============================================================ */
+/* ============================================================
+   UNIVERSITY DETAILS — FINAL PREMIUM STYLE
+   ============================================================ */
+
+/* HERO SECTION */
+.uni-hero-modern {
+    position: relative;
+    background: linear-gradient(135deg, var(--brand-dark-red), var(--brand-red));
+    border-radius: var(--radius-lg);
+    padding: 70px 30px 40px;
+    margin-bottom: 40px;
+    overflow: hidden;
+}
+
+    /* glow effect */
+    .uni-hero-modern::before {
+        content: '';
+        position: absolute;
+        width: 280px;
+        height: 280px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+        top: -60px;
+        right: -60px;
+    }
+
+/* CONTENT CARD */
+.uni-hero-box {
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    padding: 30px 25px 25px;
+    box-shadow: var(--shadow-md);
+    position: relative;
+}
+
+/* LOGO */
+.uni-logo-floating {
+    position: absolute;
+    top: -45px;
+    left: 25px;
+    width: 95px;
+    height: 95px;
+    border-radius: 20px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    overflow: hidden;
+    border: 3px solid #fff;
+}
+
+    .uni-logo-floating img {
+        width: 90%;
+        height: 90%;
+        object-fit: contain;
+    }
+
+/* TITLE */
+.uni-title-modern {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--brand-dark-red);
+    margin-left: 115px;
+    margin-bottom: 5px;
+}
+
+/* TOP ROW */
+.uni-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 115px;
+    margin-bottom: 10px;
+}
+
+/* TYPE */
+.uni-type-modern {
+    background: rgba(131,3,3,0.08);
+    color: var(--brand-red);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* RANK */
+.uni-rank-modern {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--brand-red);
+}
+
+/* INFO GRID */
+.uni-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* INFO ITEM */
+.uni-info-item {
+    background: #f8f9ff;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-main);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+    .uni-info-item i {
+        color: var(--brand-red);
+        font-size: 1rem;
+    }
+
+    .uni-info-item:hover {
+        transform: translateY(-3px);
+        background: rgba(131,3,3,0.06);
+        color: var(--brand-red);
+    }
+
+/* DESCRIPTION */
+.uni-desc-modern {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #fafbff;
+    border-left: 4px solid var(--brand-red);
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* ============================================================
+   SECTION TITLE
+   ============================================================ */
+.section-heading {
+    font-weight: 800;
+    color: var(--brand-dark-red);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.heading-line {
+    width: 40px;
+    height: 3px;
+    background: var(--brand-red);
+    border-radius: 10px;
+}
+
+/* ============================================================
+   ACCORDION
+   ============================================================ */
+.custom-accordion .accordion-item {
+    border: none;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.custom-accordion .accordion-button {
+    background: #ffffff;
+    font-weight: 700;
+    color: var(--text-main);
+    padding: 18px;
+    transition: var(--transition);
+}
+
+    .custom-accordion .accordion-button:not(.collapsed) {
+        background: rgba(131,3,3,0.05);
+        color: var(--brand-red);
+    }
+
+    .custom-accordion .accordion-button:focus {
+        box-shadow: none;
+    }
+
+/* FACULTY ICON */
+.faculty-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(131,3,3,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--brand-red);
+    font-size: 1.1rem;
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+.premium-table thead {
+    background: #fafbff;
+}
+
+.premium-table th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    border: none;
+}
+
+.premium-table td {
+    vertical-align: middle;
+    border-top: 1px solid #f1f1f1;
+}
+
+.premium-table tbody tr {
+    transition: var(--transition);
+}
+
+    .premium-table tbody tr:hover {
+        background: rgba(131,3,3,0.03);
+    }
+
+/* RATE BADGE */
+.rate-badge-alt {
+    background: rgba(131,3,3,0.08);
+    color: var(--brand-red);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+/* BUTTON */
+.btn-view-major {
+    background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
+    color: white;
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: none;
+    transition: var(--transition);
+}
+
+    .btn-view-major:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(131,3,3,0.25);
+        color: var(--accent);
+    }
+
+/* EMPTY */
+.empty-faculties {
+    border-radius: var(--radius-lg);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+
+    .uni-title-modern,
+    .uni-top-row {
         margin-left: 0;
-        width: 100%;
+    }
+
+    .uni-logo-floating {
+        position: static;
+        margin-bottom: 15px;
+    }
+
+    .uni-hero-box {
+        padding-top: 20px;
     }
 }
