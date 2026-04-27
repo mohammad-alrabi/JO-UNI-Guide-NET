@@ -37,6 +37,19 @@
                         <input asp-for="Location" class="form-control custom-input" />
                         <span asp-validation-for="Location" class="text-danger"></span>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Latitude" class="form-label fw-bold">Latitude</label>
+                            <input asp-for="Latitude" class="form-control custom-input" placeholder="e.g. 31.9634" />
+                            <span asp-validation-for="Latitude" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Longitude" class="form-label fw-bold">Longitude</label>
+                            <input asp-for="Longitude" class="form-control custom-input" placeholder="e.g. 35.9306" />
+                            <span asp-validation-for="Longitude" class="text-danger small"></span>
+                        </div>
+                    </div>
+
 
                     <div class="mb-3">
                         <label asp-for="Rank_QS" class="form-label"></label>

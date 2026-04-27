@@ -11,7 +11,6 @@
     </div>
 
     <div class="row g-4 mb-5">
-
         <div class="col-xl-4 col-md-6">
             <div class="card stat-card h-100">
                 <div class="d-flex align-items-center gap-3">
@@ -60,6 +59,31 @@
         </div>
     </div>
 
+    @* ✅ فيديو القبول الموحد *@
+    <div class="row mb-5 justify-content-center">
+        <div class="col-lg-7 col-md-9 col-12">
+            <div class="card p-4">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="stat-icon" style="background: rgba(255,0,0,0.08); color: red;">
+                        <i class="bi bi-play-circle-fill"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0" style="color: var(--text-main);">
+                            How to Apply — Unified Admission
+                        </h5>
+                        <p class="text-muted small mb-0">Step-by-step guide for the Jordanian unified admission system</p>
+                    </div>
+                </div>
+                <div class="ratio ratio-16x9" style="border-radius: var(--radius-md); overflow: hidden;">
+                    <iframe src="https://www.youtube.com/embed/G3kPvbcRT1I"
+                            title="Unified Admission Guide"
+                            allowfullscreen
+                            style="border: none;">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-12">
             <div class="card p-4">
@@ -87,10 +111,10 @@
                                                 ? "/images/logo.png"
                                                 : (dbLogo.Contains("images") ? "/" + dbLogo.TrimStart('/') : "/images/" + dbLogo.TrimStart('/'));
                                             }
-                                            <img src="@finalSrc" class="img-fluid w-100 h-100" style="object-fit: contain;" alt="University Logo">
+                                            <img src="@finalSrc" class="img-fluid w-100 h-100"
+                                                 style="object-fit: contain;" alt="University Logo">
                                         </div>
                                     </div>
-
                                     <div class="col">
                                         <h6 class="fw-bold fs-5 mb-1 text-dark">@major.DepartmentName</h6>
                                         <p class="text-muted small mb-0 fw-bold">
@@ -101,7 +125,7 @@
                                         <span class="d-block small text-muted mb-1 fw-bold">Min. GPA</span>
                                         <span class="badge bg-white text-danger border border-danger px-3 py-2 rounded-pill fs-6 shadow-sm">
                                             @major.AcceptanceRate%
-                                        </span> 
+                                        </span>
                                     </div>
                                 </div>
                             </div>

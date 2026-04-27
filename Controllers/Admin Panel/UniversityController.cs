@@ -84,7 +84,7 @@ namespace JO_UNI_Guide.Controllers.Admin_Panel
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Create")]
-        public async Task<IActionResult> Create([Bind("University_ID,Name,Logo,Location,Rank_QS,Description,WebsiteUrl,Email,ContactPhone,Type")] University university, IFormFile? logoFile) //OverPosting Protection
+        public async Task<IActionResult> Create([Bind("University_ID,Name,Logo,Location,Latitude,Longitude,Rank_QS,Description,WebsiteUrl,Email,ContactPhone,Type")] University university, IFormFile? logoFile) //OverPosting Protection
         {
             ModelState.Remove("Logo");
 
@@ -179,7 +179,7 @@ namespace JO_UNI_Guide.Controllers.Admin_Panel
         [ValidateAntiForgeryToken]
         [Route("Edit/{id}")]
         //بعد استلام الداتا من التعديل وحفظها بالداتابيز
-        public async Task <IActionResult>Edit(int id , [Bind("University_ID,Name,Logo,Location,Rank_QS,Description,WebsiteUrl,Email,ContactPhone,Type")] University university, IFormFile? logoFile) 
+        public async Task <IActionResult>Edit(int id , [Bind("University_ID,Name,Logo,Location,Latitude,Longitude,Rank_QS,Description,WebsiteUrl,Email,ContactPhone,Type")] University university, IFormFile? logoFile) 
         {
             if (id != university.University_ID)
                 return NotFound();

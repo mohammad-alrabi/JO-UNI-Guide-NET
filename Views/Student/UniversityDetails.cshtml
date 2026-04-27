@@ -5,29 +5,26 @@
     Layout = "_StudentLayout";
 }
 
+@if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+{
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+}
+
 <div class="uni-hero-modern">
-
     <div class="uni-hero-box">
-
         <div class="uni-logo-floating">
             <img src="@Model.Logo" />
         </div>
-
         <h2 class="uni-title-modern">@Model.Name</h2>
-
         <div class="uni-top-row">
             <span class="uni-type-modern">
                 @(Model.Type == UniversityType.Governmental ? "Public" : "Private")
             </span>
-
             @if (!string.IsNullOrEmpty(Model.Rank_QS))
             {
-                <span class="uni-rank-modern">
-                    QS #@Model.Rank_QS
-                </span>
+                <span class="uni-rank-modern">QS #@Model.Rank_QS</span>
             }
         </div>
-
         <div class="uni-info-grid">
             <div class="uni-info-item"><i class="bi bi-geo-alt"></i> @Model.Location</div>
             <div class="uni-info-item"><i class="bi bi-envelope"></i> @Model.Email</div>
@@ -36,13 +33,22 @@
                 <i class="bi bi-globe"></i> Website
             </a>
         </div>
-
-        <div class="uni-desc-modern">
-            @Model.Description
-        </div>
-
+        <div class="uni-desc-modern">@Model.Description</div>
     </div>
 </div>
+
+@* ✅ الخريطة هون *@
+@if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+{
+    <h4 class="section-heading mb-3 mt-4">
+        <span class="heading-line"></span>
+        <i class="bi bi-geo-alt-fill text-danger me-2"></i> University Location
+    </h4>
+    <div class="card border-0 shadow-sm mb-5 overflow-hidden" style="border-radius: var(--radius-lg);">
+        <div id="map" style="height: 320px; width: 100%;"></div>
+    </div>
+}
+
 <h4 class="section-heading mb-4">
     <span class="heading-line"></span>
     <i class="bi bi-mortarboard-fill text-danger me-2"></i> Faculties & Available Programs
@@ -76,7 +82,8 @@ else
                         </div>
                     </button>
                 </h2>
-                <div id="faculty-@faculty.Faculty_ID" class="accordion-collapse collapse @(index == 0 ? "show" : "")"
+                <div id="faculty-@faculty.Faculty_ID"
+                     class="accordion-collapse collapse @(index == 0 ? "show" : "")"
                      data-bs-parent="#facultiesAccordion">
                     <div class="accordion-body p-0 bg-white">
                         <div class="table-responsive">
@@ -98,10 +105,13 @@ else
                                             <td class="text-center">
                                                 <span class="rate-badge-alt">@dept.AcceptanceRate%</span>
                                             </td>
-                                            <td class="text-center fw-bold text-success">@dept.HourPrice <small>JOD</small></td>
+                                            <td class="text-center fw-bold text-success">
+                                                @dept.HourPrice <small>JOD</small>
+                                            </td>
                                             <td class="text-center text-muted">@dept.TotalCreditHours hrs</td>
                                             <td class="text-end pe-4">
-                                                <a asp-action="MajorDetails" asp-controller="Student" asp-route-id="@dept.Department_ID"
+                                                <a asp-action="MajorDetails" asp-controller="Student"
+                                                   asp-route-id="@dept.Department_ID"
                                                    class="btn btn-view-major">
                                                     Details <i class="bi bi-chevron-right ms-1"></i>
                                                 </a>
@@ -117,4 +127,23 @@ else
             index++;
         }
     </div>
+}
+
+@section Scripts {
+    @if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+    {
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <text>
+            <script>
+                var map = L.map('map').setView([@Model.Latitude, @Model.Longitude], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+                L.marker([@Model.Latitude, @Model.Longitude])
+                    .addTo(map)
+                    .bindPopup('<strong>@Model.Name</strong><br>@Model.Location')
+                    .openPopup();
+            </script>
+        </text>
+    }
 }

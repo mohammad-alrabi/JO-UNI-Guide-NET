@@ -1,0 +1,121 @@
+﻿@model JO_UNI_Guide.Models.Department
+@using JO_UNI_Guide.Helpers
+@{
+    ViewData["Title"] = Model.DepartmentName;
+    Layout = "_StudentLayout";
+}
+
+<div class="mb-4">
+    <a asp-action="UniversityDetails" asp-controller="Student"
+       asp-route-id="@Model.Faculty?.University?.University_ID"
+       class="btn btn-sm btn-outline-secondary rounded-pill">
+        <i class="bi bi-arrow-left me-1"></i> Back to @Model.Faculty?.University?.Name
+    </a>
+</div>
+
+@* Header *@
+<div class="major-hero card p-4 mb-4">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <div class="major-icon-box">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+        </div>
+        <div class="col">
+            <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="badge-uni-name">@Model.Faculty?.University?.Name</span>
+                <span class="badge-faculty-name">@Model.Faculty?.Name</span>
+            </div>
+            <h2 class="fw-bold mb-1" style="color:var(--text-main);">@Model.DepartmentName</h2>
+            @if (Model.RequiredTrack.HasValue)
+            {
+                <span class="track-pill">
+                    <i class="bi bi-journal-bookmark-fill me-1"></i>
+                    @Model.RequiredTrack.Value.GetDisplayName()
+                </span>
+            }
+        </div>
+    </div>
+</div>
+
+@* Stats *@
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card major-stat-card text-center p-4">
+            <div class="major-stat-icon mx-auto mb-3" style="background:rgba(131,3,3,0.07);color:var(--brand-red);">
+                <i class="bi bi-bar-chart-fill"></i>
+            </div>
+            <div class="major-stat-label">Min. Acceptance Rate</div>
+            <div class="major-stat-value">@Model.AcceptanceRate%</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card major-stat-card text-center p-4">
+            <div class="major-stat-icon mx-auto mb-3" style="background:rgba(212,175,55,0.1);color:#7a5c00;">
+                <i class="bi bi-cash-coin"></i>
+            </div>
+            <div class="major-stat-label">Price Per Hour</div>
+            <div class="major-stat-value">@Model.HourPrice <small>JOD</small></div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card major-stat-card text-center p-4">
+            <div class="major-stat-icon mx-auto mb-3" style="background:rgba(43,54,116,0.07);color:var(--text-main);">
+                <i class="bi bi-stack"></i>
+            </div>
+            <div class="major-stat-label">Total Credit Hours</div>
+            <div class="major-stat-value">@Model.TotalCreditHours <small>hrs</small></div>
+        </div>
+    </div>
+</div>
+
+@* Details *@
+@if (!string.IsNullOrEmpty(Model.Details))
+{
+    <div class="card p-4 mb-4">
+        <h5 class="section-card-title">
+            <i class="bi bi-info-circle-fill"></i> About this Major
+        </h5>
+        <p class="text-muted" style="line-height:1.8;">@Model.Details</p>
+    </div>
+}
+
+@* Courses *@
+<div class="card p-4">
+    <h5 class="section-card-title">
+        <i class="bi bi-book-fill"></i> Courses
+        <span class="ms-auto" style="font-size:0.8rem;font-weight:600;color:var(--text-muted);">
+            @Model.Courses.Count courses
+        </span>
+    </h5>
+
+    @if (!Model.Courses.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-book"></i>
+            <p>No courses listed yet.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var course in Model.Courses)
+            {
+                <div class="col-md-6">
+                    <div class="course-card d-flex align-items-center gap-3 p-3">
+                        <div class="course-icon">
+                            <i class="bi bi-journal-text"></i>
+                        </div>
+                        <div>
+                            <div class="course-name">@course.Course_Name</div>
+                            @if (!string.IsNullOrEmpty(course.Details))
+                            {
+                                <div class="course-details">@course.Details</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

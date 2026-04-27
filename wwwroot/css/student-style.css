@@ -778,3 +778,382 @@ body {
         padding-top: 20px;
     }
 }
+
+
+/* ============================================================
+   JO-UNI Guide — Profile Page Stylesheet
+   ============================================================ */
+
+.profile-header {
+    background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+
+    .profile-header::after {
+        content: '';
+        position: absolute;
+        bottom: -60px;
+        left: -30px;
+        width: 160px;
+        height: 160px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 50%;
+    }
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 1rem;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.profile-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.profile-email {
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
+
+.stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.12);
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+    .stat-pill i {
+        color: var(--accent);
+    }
+
+.section-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--brand-red);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 12px;
+    border-bottom: 2px dashed rgba(131,3,3,0.12);
+}
+
+.profile-input-group {
+    margin-bottom: 1.2rem;
+}
+
+    .profile-input-group label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .profile-input-group .form-control,
+    .profile-input-group .form-select {
+        border-radius: 12px;
+        border: 1.5px solid #e8eaf6;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        color: var(--text-main);
+        transition: var(--transition);
+        background: #f8f9ff;
+    }
+
+        .profile-input-group .form-control:focus,
+        .profile-input-group .form-select:focus {
+            border-color: var(--brand-red);
+            box-shadow: 0 0 0 3px rgba(131,3,3,0.08);
+            background: #fff;
+            outline: none;
+        }
+
+        .profile-input-group .form-control:disabled {
+            background: #f0f0f0;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+.quick-info-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.quick-info-value {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.92rem;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 11px 32px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 14px rgba(131,3,3,0.25);
+}
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(131,3,3,0.3);
+        color: var(--accent);
+    }
+
+.btn-edit-profile {
+    background: rgba(131,3,3,0.07);
+    color: var(--brand-red);
+    border: 1.5px solid rgba(131,3,3,0.15);
+    border-radius: 12px;
+    padding: 6px 18px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+    .btn-edit-profile:hover {
+        background: var(--brand-red);
+        color: white;
+    }
+
+.btn-cancel-profile {
+    background: rgba(0,0,0,0.04);
+    color: var(--text-muted);
+    border: 1.5px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    padding: 6px 18px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+    .btn-cancel-profile:hover {
+        background: rgba(0,0,0,0.08);
+        color: var(--text-main);
+    }
+
+/* ستايل الحقل لما يكون active */
+.field-active {
+    border-color: var(--brand-red) !important;
+    background: #fff !important;
+    box-shadow: 0 0 0 3px rgba(131,3,3,0.08) !important;
+}
+
+/* ستايل الحقل لما يكون disabled */
+.profile-field:disabled {
+    background: #f8f9ff !important;
+    color: var(--text-main) !important;
+    cursor: default;
+    opacity: 1;
+    border-color: #e8eaf6 !important;
+}
+/* ============================================================
+   Video Section
+   ============================================================ */
+.ratio-16x9 {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+    .ratio-16x9 iframe {
+        border-radius: var(--radius-md);
+    }
+
+@media (max-width: 768px) {
+    .ratio-16x9 {
+        border-radius: var(--radius-md);
+    }
+}
+/* ============================================================
+   Major Details
+   ============================================================ */
+.major-hero {
+    background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
+    border-radius: var(--radius-lg) !important;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+    .major-hero::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+
+.major-icon-box {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.badge-uni-name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.badge-faculty-name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(212,175,55,0.25);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.track-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.12);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 20px;
+}
+
+.major-stat-card {
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-md) !important;
+    transition: var(--transition) !important;
+}
+
+    .major-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover) !important;
+    }
+
+.major-stat-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.major-stat-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.major-stat-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+    .major-stat-value small {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-muted);
+    }
+
+.course-card {
+    background: #f8f9ff;
+    border-radius: var(--radius-md);
+    border: 1.5px solid #e8eaf6;
+    transition: var(--transition);
+}
+
+    .course-card:hover {
+        border-color: var(--brand-red);
+        background: white;
+        box-shadow: var(--shadow-sm);
+    }
+
+.course-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(131,3,3,0.07);
+    color: var(--brand-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.course-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.course-details {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}

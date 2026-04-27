@@ -20,6 +20,9 @@ namespace JO_UNI_Guide.Models
         public string? Description { get; set; }
         public string? WebsiteUrl { get; set; } 
         public string? Email { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+
         public string? ContactPhone { get; set; }
         [Required]
         [Display(Name = "University Type")]

@@ -1,0 +1,209 @@
+﻿@model JO_UNI_Guide.Models.ProfileViewModel
+@using JO_UNI_Guide.Helpers
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "_StudentLayout";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success rounded-3 mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
+    </div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                @(Model.Name?.FirstOrDefault().ToString().ToUpper() ?? "S")
+            </div>
+            <div class="profile-name">@(Model.Name ?? "Student")</div>
+            <div class="profile-email">@Model.Email</div>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                <span class="stat-pill">
+                    <i class="bi bi-heart-fill"></i> @Model.FavoritesCount Favorites
+                </span>
+                @if (Model.GPA.HasValue)
+                {
+                    <span class="stat-pill">
+                        <i class="bi bi-bar-chart-fill"></i> GPA: @Model.GPA%
+                    </span>
+                }
+                @if (Model.TawjihiTrack.HasValue)
+                {
+                    <span class="stat-pill">
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                        @Model.TawjihiTrack.Value.GetDisplayName()
+                    </span>
+                }
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-card-title">
+                <i class="bi bi-info-circle-fill"></i> Quick Info
+            </div>
+            <div class="d-flex flex-column gap-3">
+                <div>
+                    <div class="quick-info-label">Governorate</div>
+                    <div class="quick-info-value">
+                        <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                        @(Model.Governorate ?? "Not set")
+                    </div>
+                </div>
+                <div>
+                    <div class="quick-info-label">Preferred University</div>
+                    <div class="quick-info-value">
+                        <i class="bi bi-building me-1 text-danger"></i>
+                        @(Model.PreferredUniType ?? "Not set")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <form method="post" id="profileForm">
+            <div class="section-card">
+                <div class="section-card-title d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-person-fill me-2"></i>Personal Information</span>
+                    <div class="d-flex gap-2">
+                        <!-- زر Edit -->
+                        <button type="button" id="btnEdit" class="btn btn-edit-profile">
+                            <i class="bi bi-pencil-fill me-1"></i> Edit
+                        </button>
+                        <!-- زر Cancel — مخفي بالأول -->
+                        <button type="button" id="btnCancel" class="btn btn-cancel-profile d-none">
+                            <i class="bi bi-x-lg me-1"></i> Cancel
+                        </button>
+                        <!-- زر Save — مخفي بالأول -->
+                        <button type="submit" id="btnSave" class="btn btn-save d-none">
+                            <i class="bi bi-check-lg me-1"></i> Save
+                        </button>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="profile-input-group">
+                            <label>Full Name</label>
+                            <input type="text" name="Name" value="@Model.Name"
+                                   class="form-control profile-field" disabled
+                                   placeholder="Your full name">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-input-group">
+                            <label>Email</label>
+                            <input type="email" value="@Model.Email"
+                                   class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-input-group">
+                            <label>Governorate</label>
+                            <select name="Governorate" class="form-select profile-field" disabled>
+                                <option value="">-- Select --</option>
+                                @foreach (var gov in new[] { "Amman", "Zarqa", "Irbid", "Aqaba", "Madaba",
+                                                                "Balqa", "Karak", "Tafilah", "Mafraq", "Jerash", "Ajloun", "Maan" })
+                                {
+                                    <option value="@gov" selected="@(Model.Governorate == gov)">@gov</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-card-title">
+                    <i class="bi bi-mortarboard-fill me-2"></i>Academic Information
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="profile-input-group">
+                            <label>Tawjihi GPA (%)</label>
+                            <input type="number" name="GPA" value="@Model.GPA"
+                                   step="0.1" min="0" max="100"
+                                   class="form-control profile-field" disabled
+                                   placeholder="e.g. 87.5">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-input-group">
+                            <label>Tawjihi Track</label>
+                            <select name="TawjihiTrack" class="form-select profile-field" disabled>
+                                <option value="">-- Select Track --</option>
+                                @foreach (TawjihiTrack track in Enum.GetValues(typeof(TawjihiTrack)))
+                                {
+                                    <option value="@track" selected="@(Model.TawjihiTrack == track)">
+                                        @track.GetDisplayName()
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-input-group">
+                            <label>Preferred University Type</label>
+                            <select name="PreferredUniType" class="form-select profile-field" disabled>
+                                <option value="">-- Select --</option>
+                                <option value="Governmental" selected="@(Model.PreferredUniType == "Governmental")">Public</option>
+                                <option value="Private" selected="@(Model.PreferredUniType == "Private")">Private</option>
+                                <option value="Both" selected="@(Model.PreferredUniType == "Both")">Both</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const btnEdit = document.getElementById('btnEdit');
+        const btnCancel = document.getElementById('btnCancel');
+        const btnSave = document.getElementById('btnSave');
+        const fields = document.querySelectorAll('.profile-field');
+
+        // حفظ القيم الأصلية عشان Cancel يرجعها
+        const originalValues = {};
+        fields.forEach(field => {
+            originalValues[field.name] = field.value;
+        });
+
+        btnEdit.addEventListener('click', () => {
+            // تفعيل الحقول
+            fields.forEach(field => field.disabled = false);
+            // إظهار Save و Cancel وإخفاء Edit
+            btnEdit.classList.add('d-none');
+            btnCancel.classList.remove('d-none');
+            btnSave.classList.remove('d-none');
+            // تغيير ستايل الحقول
+            fields.forEach(field => field.classList.add('field-active'));
+        });
+
+        btnCancel.addEventListener('click', () => {
+            // إرجاع القيم الأصلية
+            fields.forEach(field => {
+                field.value = originalValues[field.name];
+                field.disabled = true;
+                field.classList.remove('field-active');
+            });
+            // إرجاع الأزرار
+            btnEdit.classList.remove('d-none');
+            btnCancel.classList.add('d-none');
+            btnSave.classList.add('d-none');
+        });
+                const successAlert = document.querySelector('.alert-success');
+        if (successAlert) {
+            setTimeout(() => {
+                successAlert.style.transition = 'opacity 0.5s ease';
+                successAlert.style.opacity = '0';
+                setTimeout(() => successAlert.remove(), 500);
+            }, 2000);
+        }
+
+    </script>
+}

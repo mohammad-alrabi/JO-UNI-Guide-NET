@@ -149,10 +149,10 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
                 .AsNoTracking()
                 .ToListAsync();
 
-            var model = new UniversitiesListViewModel 
+            var model = new UniversitiesListViewModel
             {
                 PublicUniversities = allUniversities.Where(u => u.Type == UniversityType.Governmental).ToList(),
-                PrivateUniversities = allUniversities.Where(u =>u.Type == UniversityType.Private).ToList(),
+                PrivateUniversities = allUniversities.Where(u => u.Type == UniversityType.Private).ToList(),
             };
             return View(model);
         }
@@ -169,7 +169,20 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
 
             return View(university);
         }
-        public async Task<IActionResult> SmartSearch(SmartSearchViewModel searchViewModel) 
+        [Authorize]
+        public async Task<IActionResult> MajorDetails(int id)
+        {
+            var department = await _context.Departments
+                .Include(d => d.Faculty)
+                    .ThenInclude(f => f.University)
+                .Include(d => d.Courses)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(d => d.Department_ID == id);
+
+            if (department == null) return NotFound();
+            return View(department);
+        }
+        public async Task<IActionResult> SmartSearch(SmartSearchViewModel searchViewModel)
         {
             var query = _context.Departments
                 .Include(d => d.Faculty)
@@ -177,23 +190,23 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
                 .AsQueryable();
 
             //  الفلترة حسب النص (اسم التخصص أو الجامعة أو الكلية)
-            if (!string.IsNullOrEmpty(searchViewModel.Keyword)) 
+            if (!string.IsNullOrEmpty(searchViewModel.Keyword))
             {
-                query = query.Where(d=>d.DepartmentName.Contains(searchViewModel.Keyword)||
+                query = query.Where(d => d.DepartmentName.Contains(searchViewModel.Keyword) ||
                                      d.Faculty.University.Name.Contains(searchViewModel.Keyword));
             }
             //  الفلترة حسب سعر الساعة
-            if (searchViewModel.MaxHourPrice.HasValue) 
+            if (searchViewModel.MaxHourPrice.HasValue)
             {
                 query = query.Where(d => d.HourPrice <= searchViewModel.MaxHourPrice.Value);
             }
             //  الفلترة حسب المعدل (ليش هو سمارت؟ لأنه بطلع بس اللي بقبله الطالب)
-            if (searchViewModel.StudentGPA.HasValue) 
+            if (searchViewModel.StudentGPA.HasValue)
             {
-                query = query.Where(d =>d.AcceptanceRate <= searchViewModel.StudentGPA.Value);
+                query = query.Where(d => d.AcceptanceRate <= searchViewModel.StudentGPA.Value);
             }
             //  الفلترة حسب نوع الجامعة
-            if (searchViewModel.UniType.HasValue) 
+            if (searchViewModel.UniType.HasValue)
             {
                 query = query.Where(d => d.Faculty.University.Type == searchViewModel.UniType.Value);
             }
@@ -215,6 +228,46 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
                 .ToListAsync();
 
             return Json(suggestions);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            var model = new ProfileViewModel
+            {
+                Name = user.Name,
+                Email = user.Email,
+                Governorate = user.Governorate,
+                GPA = user.GPA,
+                TawjihiTrack = user.TawjihiTrack,
+                PreferredUniType = user.PreferredUniType,
+                FavoritesCount = await _context.Favorites
+                    .CountAsync(f => f.UserId == user.Id)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(ProfileViewModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            user.Name = model.Name;
+            user.Governorate = model.Governorate;
+            user.GPA = model.GPA;
+            user.TawjihiTrack = model.TawjihiTrack;
+            user.PreferredUniType = model.PreferredUniType;
+
+            await _userManager.UpdateAsync(user);
+            TempData["Success"] = "Profile updated successfully!";
+            return RedirectToAction(nameof(Profile));
         }
     }
 }
