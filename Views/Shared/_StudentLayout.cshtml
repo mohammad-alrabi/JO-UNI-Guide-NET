@@ -32,6 +32,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Universities" ? "active" : "")"
+                       asp-controller="Student" asp-action="Universities">
+                        <i class="bi bi-buildings me-2"></i> All Universities
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "ProposedMajors" ? "active" : "")"
                        asp-controller="Student" asp-action="ProposedMajors">
                         <i class="bi bi-mortarboard-fill"></i> Proposed Majors
@@ -53,12 +59,6 @@
                     <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Profile" ? "active" : "")"
                        asp-controller="Student" asp-action="Profile">
                         <i class="bi bi-person-bounding-box"></i> My Profile
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Universities" ? "active" : "")"
-                       asp-controller="Student" asp-action="Universities">
-                        <i class="bi bi-buildings me-2"></i> All Universities
                     </a>
                 </li>
                 <li class="nav-item mt-auto pt-3 border-top" style="border-color: rgba(255,255,255,0.1) !important;">
