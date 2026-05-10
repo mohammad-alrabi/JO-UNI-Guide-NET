@@ -36,8 +36,7 @@ namespace JO_UNI_Guide.Data
                     Email = superAdminEmail,
                     EmailConfirmed = true,
                     Name = "System Administrator",
-                    GPA = 100,
-                    TawjihiTrack = Models.TawjihiTrack.Business, 
+                    EquivalentGrade = 100,
                     IsOnboarded = true
                 };
 

@@ -34,12 +34,12 @@
 
         <div class="row">
             <div class="col-md-4 mb-3">
-                <label asp-for="AcceptanceRate" class="form-label fw-bold">Acceptance Rate (%)</label>
+                <label asp-for="MinEquivalentGrade" class="form-label fw-bold">Acceptance Rate (%)</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light"><i class="bi bi-graph-up-arrow text-primary"></i></span>
-                    <input asp-for="AcceptanceRate" class="form-control" type="number" step="0.01" placeholder="85.5" />
+                    <input asp-for="MinEquivalentGrade" class="form-control" type="number" step="0.01" placeholder="85.5" />
                 </div>
-                <span asp-validation-for="AcceptanceRate" class="text-danger small"></span>
+                <span asp-validation-for="MinEquivalentGrade" class="text-danger small"></span>
             </div>
 
             @* 2. سعر الساعة *@

@@ -52,7 +52,7 @@ namespace JO_UNI_Guide.Controllers
             if (minRate.HasValue)
             {
                 // تحويل minRate من decimal إلى double ليطابق نوع الحقل في قاعدة البيانات
-                departments = departments.Where(d => d.AcceptanceRate >= (double)minRate.Value);
+                departments = departments.Where(d => d.MinEquivalentGrade <= (double)minRate.Value);
             }
 
             // 3. الفلترة حسب الحد الأقصى لسعر الساعة (اختياري)
@@ -89,7 +89,7 @@ namespace JO_UNI_Guide.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DepartmentName,Faculty_ID,AcceptanceRate,HourPrice,TotalCreditHours")] Department department)
+        public async Task<IActionResult> Create([Bind("DepartmentName,Faculty_ID,MinEquivalentGrade,HourPrice,TotalCreditHours,RequiredTrack")] Department department)
         {
             if (ModelState.IsValid)
             {
@@ -113,7 +113,9 @@ namespace JO_UNI_Guide.Controllers
         {
             if (id == null) return NotFound();
 
-            var department = await _context.Departments.FindAsync(id);
+            var department = await _context.Departments
+                .Include(d => d.Faculty)
+                .FirstOrDefaultAsync(d => d.Department_ID == id);
             if (department == null) return NotFound();
 
             // ترتيب الكليات أبجدياً يسهل العمل على الأدمن
@@ -123,7 +125,7 @@ namespace JO_UNI_Guide.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Department_ID,DepartmentName,Faculty_ID,AcceptanceRate,HourPrice,TotalCreditHours")] Department department)
+        public async Task<IActionResult> Edit(int id, [Bind("Department_ID,DepartmentName,Faculty_ID,MinEquivalentGrade,HourPrice,TotalCreditHours,RequiredTrack")] Department department)
         {
             if (id != department.Department_ID) return NotFound();
 

@@ -1157,3 +1157,279 @@ body {
     color: var(--text-muted);
     margin-top: 2px;
 }
+/* =========================================================
+   COMPARE PAGE CLEAN STYLE
+   ========================================================= */
+
+.compare-hero {
+    background: linear-gradient(135deg, var(--brand-red), var(--brand-dark-red));
+    border-radius: 22px;
+    padding: 28px;
+    color: white;
+    margin-bottom: 28px;
+}
+
+.compare-main-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+}
+
+.compare-main-subtitle {
+    opacity: .85;
+    font-size: .92rem;
+}
+
+.compare-back-button {
+    background: rgba(255,255,255,.12);
+    color: white;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 14px;
+    padding: 10px 20px;
+    font-weight: 700;
+    transition: .3s;
+}
+
+    .compare-back-button:hover {
+        background: white;
+        color: var(--brand-red);
+    }
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.compare-major-card {
+    background: white;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid #edf0f5;
+    box-shadow: var(--shadow-md);
+    transition: .3s;
+}
+
+    .compare-major-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+    }
+
+.compare-card-header {
+    padding: 26px 22px;
+    text-align: center;
+    background: #fafafa;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.compare-logo-box {
+    width: 75px;
+    height: 75px;
+    border-radius: 18px;
+    background: white;
+    border: 1px solid #ececec;
+    margin: auto auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+    .compare-logo-box img {
+        width: 75%;
+        height: 75%;
+        object-fit: contain;
+    }
+
+.compare-major-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+
+.compare-faculty-name {
+    font-size: .84rem;
+    color: var(--brand-red);
+    font-weight: 700;
+}
+
+.compare-uni-name {
+    font-size: .78rem;
+    color: var(--text-muted);
+}
+
+/* =========================================================
+   BODY
+   ========================================================= */
+
+.compare-card-body {
+    padding: 22px;
+}
+
+.compare-info-box {
+    background: #f8f9fc;
+    border-radius: 16px;
+    padding: 15px 16px;
+    margin-bottom: 14px;
+    border: 1px solid #edf0f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.compare-highlight {
+    border-left: 4px solid var(--brand-red);
+    background: rgba(131,3,3,.03);
+}
+
+.compare-label {
+    font-size: .74rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.compare-value {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.compare-pill {
+    background: rgba(131,3,3,.08);
+    color: var(--brand-red);
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: .72rem;
+    font-weight: 700;
+}
+
+/* =========================================================
+   TOTAL COST
+   ========================================================= */
+
+.compare-total-cost {
+    background: #fafafa;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+.compare-total-price {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--brand-red);
+}
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.compare-description-box {
+    background: #fcfcfc;
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid #f1f1f1;
+    margin-bottom: 18px;
+}
+
+.compare-description-title {
+    font-size: .82rem;
+    font-weight: 800;
+    color: var(--brand-red);
+    margin-bottom: 8px;
+}
+
+.compare-description-box p {
+    margin: 0;
+    font-size: .84rem;
+    line-height: 1.7;
+    color: #666;
+}
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.compare-details-btn {
+    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg,var(--brand-red),var(--brand-dark-red));
+    color: white;
+    padding: 13px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: .3s;
+}
+
+    .compare-details-btn:hover {
+        transform: translateY(-2px);
+        color: white;
+        opacity: .92;
+    }
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.compare-summary-section {
+    margin-top: 35px;
+    background: white;
+    border-radius: 22px;
+    padding: 28px;
+    border: 1px solid #edf0f5;
+    box-shadow: var(--shadow-md);
+}
+
+.summary-card-box {
+    background: #f8f9fc;
+    border-radius: 18px;
+    padding: 22px;
+    text-align: center;
+    border: 1px solid #edf0f5;
+    height: 100%;
+}
+
+.summary-emoji {
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.summary-label {
+    font-size: .8rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.summary-major-name {
+    font-size: .95rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:768px) {
+
+    .compare-hero {
+        padding: 22px;
+    }
+
+    .compare-main-title {
+        font-size: 1.5rem;
+    }
+
+    .compare-major-card {
+        border-radius: 18px;
+    }
+
+    .compare-summary-section {
+        padding: 22px;
+    }
+}

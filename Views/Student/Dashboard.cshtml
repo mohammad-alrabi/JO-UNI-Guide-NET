@@ -2,146 +2,261 @@
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "_StudentLayout";
+    var gpa = Math.Min(Model.GPA ?? 0, 100);
+
+    var motivationalMessage = gpa >= 90 ? "Excellent! You qualify for top programs 🌟" :
+                              gpa >= 75 ? "Good standing — many options available 👍" :
+                                          "Don't worry, we'll find the right fit for you 💪";
+
+    var progressColor = gpa >= 90 ? "bg-success" :
+                        gpa >= 75 ? "bg-warning" : "bg-danger";
 }
 
 <div class="animate__animated animate__fadeIn">
-    <div class="mb-5">
-        <h2 class="fw-bold" style="color: var(--brand-red);">Welcome, @Model.Name! ✨</h2>
-        <p class="text-muted fs-5">Here's a comprehensive look at your academic options based on your profile.</p>
+
+    <!-- WELCOME -->
+    <div class="mb-4">
+        <h2 class="fw-bold" style="color: var(--brand-red);">
+            Welcome, @Model.Name! ✨
+        </h2>
+        <p class="text-muted">
+            Here's a comprehensive look at your academic options based on your profile.
+        </p>
     </div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-xl-4 col-md-6">
+    <!-- STATS -->
+    <div class="row g-4 mb-4">
+
+        <!-- NAME -->
+        <div class="col-xl-3 col-md-6">
             <div class="card stat-card h-100">
                 <div class="d-flex align-items-center gap-3">
                     <div class="stat-icon">
                         <i class="bi bi-person-vcard"></i>
                     </div>
                     <div>
-                        <p class="text-muted small mb-1 fw-bold">Current Student</p>
-                        <h4 class="fw-bold mb-0 text-truncate" style="max-width: 170px;">@Model.Name</h4>
+                        <p class="text-muted small mb-1 fw-bold">Student</p>
+                        <h6 class="fw-bold mb-0 text-truncate" style="max-width:140px;">
+                            @Model.Name
+                        </h6>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-4 col-md-6">
+        <!-- GPA -->
+        <div class="col-xl-3 col-md-6">
             <div class="card stat-card h-100">
-                <div class="d-flex align-items-center justify-content-between w-100">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon" style="background: rgba(212, 175, 55, 0.1); color: var(--accent);">
-                            <i class="bi bi-award"></i>
-                        </div>
-                        <div>
-                            <p class="text-muted small mb-1 fw-bold">Approved GPA</p>
-                            <h4 class="fw-bold mb-0">@Model.GPA?.ToString("F1")%</h4>
-                        </div>
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="stat-icon" style="background:rgba(212,175,55,0.1);color:var(--accent);">
+                        <i class="bi bi-award"></i>
                     </div>
-                    <span class="badge @Model.GpaColorClass rounded-pill px-3 py-2 fs-6">
-                        @Model.GpaLevel
-                    </span>
+                    <div>
+                        <p class="text-muted small mb-1 fw-bold">Equivalent GPA</p>
+                        <h5 class="fw-bold mb-0">@gpa.ToString("F1")%</h5>
+                    </div>
                 </div>
+                <div class="progress mt-1" style="height:6px;border-radius:10px;">
+                    <div class="progress-bar @progressColor"
+                         style="width:@gpa%;border-radius:10px;"></div>
+                </div>
+                <div class="small text-muted mt-1">@motivationalMessage</div>
             </div>
         </div>
 
-        <div class="col-xl-4 col-md-12">
+        <!-- MATCHING -->
+        <div class="col-xl-3 col-md-6">
             <div class="card stat-card h-100">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="stat-icon" style="background: rgba(43, 54, 116, 0.05); color: var(--text-main);">
+                    <div class="stat-icon" style="background:rgba(43,54,116,0.05);color:var(--text-main);">
                         <i class="bi bi-stack"></i>
                     </div>
                     <div>
-                        <p class="text-muted small mb-1 fw-bold">Matching Options</p>
-                        <h4 class="fw-bold mb-0">@Model.MatchingMajorsCount <span class="fs-6 text-muted fw-normal">Majors</span></h4>
+                        <p class="text-muted small mb-1 fw-bold">Matching Majors</p>
+                        <h5 class="fw-bold mb-0">
+                            @Model.MatchingMajorsCount
+                            <span class="fs-6 text-muted fw-normal">options</span>
+                        </h5>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card h-100">
+                <p class="text-muted small fw-bold mb-2">Quick Actions</p>
+                <div class="d-flex flex-column gap-2">
+                    <a asp-action="SmartSearch" class="btn btn-sm btn-outline-danger rounded-pill">
+                        <i class="bi bi-search me-1"></i> Smart Search
+                    </a>
+                    <a asp-action="MyFavorites" asp-controller="Favorite" class="btn btn-sm btn-outline-secondary rounded-pill">
+                        <i class="bi bi-heart me-1"></i> My Favorites
+                    </a>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    @* ✅ فيديو القبول الموحد *@
-    <div class="row mb-5 justify-content-center">
-        <div class="col-lg-7 col-md-9 col-12">
-            <div class="card p-4">
+    <div class="row g-4 mb-4">
+
+        <!-- VIDEO -->
+        <div class="col-lg-5">
+            <div class="card p-4 h-100">
                 <div class="d-flex align-items-center gap-3 mb-3">
-                    <div class="stat-icon" style="background: rgba(255,0,0,0.08); color: red;">
+                    <div class="stat-icon" style="background:rgba(255,0,0,0.08);color:red;">
                         <i class="bi bi-play-circle-fill"></i>
                     </div>
                     <div>
-                        <h5 class="fw-bold mb-0" style="color: var(--text-main);">
-                            How to Apply — Unified Admission
-                        </h5>
-                        <p class="text-muted small mb-0">Step-by-step guide for the Jordanian unified admission system</p>
+                        <h6 class="fw-bold mb-0">How to Apply in Jordan</h6>
+                        <p class="text-muted small mb-0">Step-by-step guide for international students</p>
                     </div>
                 </div>
-                <div class="ratio ratio-16x9" style="border-radius: var(--radius-md); overflow: hidden;">
+                <div class="ratio ratio-16x9" style="border-radius:12px;overflow:hidden;">
                     <iframe src="https://www.youtube.com/embed/G3kPvbcRT1I"
-                            title="Unified Admission Guide"
+                            title="Admission Guide"
                             allowfullscreen
-                            style="border: none;">
-                    </iframe>
+                            style="border:none;"></iframe>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="card p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold mb-0" style="color: var(--text-main);">
-                        <i class="bi bi-stars text-warning me-2"></i> Top 5 Suggested Majors
-                    </h5>
-                    <a asp-action="ProposedMajors" class="btn btn-outline-danger rounded-pill px-4 fw-bold">
-                        View All <i class="bi bi-arrow-right ms-1"></i>
-                    </a>
-                </div>
 
-                @if (Model.TopMajors != null && Model.TopMajors.Any())
+        <!-- TIPS -->
+        <div class="col-lg-7">
+            <div class="card p-4 h-100">
+                <h6 class="fw-bold mb-3">
+                    <i class="bi bi-lightbulb-fill text-warning me-2"></i>Tips for International Students
+                </h6>
+                <div class="d-flex flex-column gap-3">
+
+                    <div class="d-flex gap-3 align-items-start p-3 bg-light rounded-3">
+                        <div class="fs-4">📋</div>
+                        <div>
+                            <div class="fw-bold small">Prepare Your Documents Early</div>
+                            <div class="text-muted small">
+                                Make sure your transcripts are officially translated and authenticated before applying.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 align-items-start p-3 bg-light rounded-3">
+                        <div class="fs-4">💰</div>
+                        <div>
+                            <div class="fw-bold small">Compare Tuition Fees</div>
+                            <div class="text-muted small">
+                                Use Smart Search to filter majors by price per credit hour that fits your budget.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 align-items-start p-3 bg-light rounded-3">
+                        <div class="fs-4">🏫</div>
+                        <div>
+                            <div class="fw-bold small">Public vs Private</div>
+                            <div class="text-muted small">
+                                Public universities are generally more affordable. Private ones may offer more flexibility.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 align-items-start p-3 bg-light rounded-3">
+                        <div class="fs-4">❤️</div>
+                        <div>
+                            <div class="fw-bold small">Save Your Favorites</div>
+                            <div class="text-muted small">
+                                Bookmark majors you like and use the Compare feature to make the best decision.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TOP MAJORS -->
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold mb-0">
+                <i class="bi bi-stars text-warning me-2"></i>Top 5 Suggested Majors
+            </h5>
+            <a asp-action="ProposedMajors" class="btn btn-outline-danger rounded-pill px-4 fw-bold">
+                View All <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        @if (Model.TopMajors != null && Model.TopMajors.Any())
+        {
+            <div class="d-flex flex-column gap-3">
+                @foreach (var major in Model.TopMajors)
                 {
-                    <div class="d-flex flex-column gap-3">
-                        @foreach (var major in Model.TopMajors)
-                        {
-                            <div class="card major-card bg-light border-0">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <div class="bg-white p-2 rounded-circle shadow-sm" style="width:55px; height:55px;">
-                                            @{
-                                                var dbLogo = major.Faculty?.University?.Logo;
-                                                var finalSrc = string.IsNullOrWhiteSpace(dbLogo)
-                                                ? "/images/logo.png"
-                                                : (dbLogo.Contains("images") ? "/" + dbLogo.TrimStart('/') : "/images/" + dbLogo.TrimStart('/'));
-                                            }
-                                            <img src="@finalSrc" class="img-fluid w-100 h-100"
-                                                 style="object-fit: contain;" alt="University Logo">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <h6 class="fw-bold fs-5 mb-1 text-dark">@major.DepartmentName</h6>
-                                        <p class="text-muted small mb-0 fw-bold">
-                                            <i class="bi bi-building"></i> @major.Faculty?.University?.Name
-                                        </p>
-                                    </div>
-                                    <div class="col-auto text-end">
-                                        <span class="d-block small text-muted mb-1 fw-bold">Min. GPA</span>
-                                        <span class="badge bg-white text-danger border border-danger px-3 py-2 rounded-pill fs-6 shadow-sm">
-                                            @major.AcceptanceRate%
-                                        </span>
-                                    </div>
+                    <div class="card major-card bg-light border-0 p-3">
+                        <div class="row align-items-center">
+
+                            <!-- LOGO -->
+                            <div class="col-auto">
+                                <div class="bg-white p-2 rounded-circle shadow-sm"
+                                     style="width:55px;height:55px;">
+                                    @{
+                                        var dbLogo = major.Faculty?.University?.Logo;
+                                        var finalSrc = string.IsNullOrWhiteSpace(dbLogo)
+                                        ? "/images/logo.png"
+                                        : (dbLogo.Contains("images")
+                                        ? "/" + dbLogo.TrimStart('/')
+                                        : "/images/" + dbLogo.TrimStart('/'));
+                                    }
+                                    <img src="@finalSrc"
+                                         class="img-fluid w-100 h-100"
+                                         style="object-fit:contain;" />
                                 </div>
                             </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class="text-center py-5">
-                        <img src="~/images/empty-box.svg" width="150" class="mb-3 opacity-50" alt="No data" />
-                        <h5 class="fw-bold text-dark">No Matching Options</h5>
-                        <p class="text-muted">Please update your high school branch or GPA to get better results.</p>
-                        <a asp-action="Onboarding" class="btn btn-student-primary rounded-pill px-4 mt-2">Update Profile</a>
+
+                            <!-- INFO -->
+                            <div class="col">
+                                <h6 class="fw-bold mb-1">@major.DepartmentName</h6>
+                                <p class="text-muted small mb-0">
+                                    <i class="bi bi-building me-1"></i>@major.Faculty?.University?.Name
+                                </p>
+                                <span class="badge bg-white border text-muted small mt-1">
+                                    <i class="bi bi-cash me-1"></i>@major.HourPrice JOD/hr
+                                </span>
+                            </div>
+
+                            <!-- MIN GRADE -->
+                            <div class="col-auto text-end">
+                                <span class="d-block small text-muted mb-1 fw-bold">Min. Grade</span>
+                                <span class="badge bg-white text-danger border border-danger px-3 py-2 rounded-pill fs-6 shadow-sm">
+                                    @Math.Min(major.MinEquivalentGrade, 100).ToString("F1")%
+                                </span>
+                                <a asp-action="MajorDetails" asp-route-id="@major.Department_ID"
+                                   class="d-block small text-danger mt-1">
+                                    Details <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+
+                        </div>
                     </div>
                 }
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-search-heart fs-1 text-muted d-block mb-3"></i>
+                <h5 class="fw-bold">No Matching Majors Found</h5>
+                <p class="text-muted">Update your profile or try Smart Search to explore all options.</p>
+                <div class="d-flex gap-2 justify-content-center mt-3">
+                    <a asp-action="Onboarding" class="btn btn-danger rounded-pill px-4">
+                        Update Profile
+                    </a>
+                    <a asp-action="SmartSearch" class="btn btn-outline-danger rounded-pill px-4">
+                        Smart Search
+                    </a>
+                </div>
+            </div>
+        }
     </div>
+
 </div>

@@ -1,36 +1,62 @@
 ﻿@model JO_UNI_Guide.Models.SmartSearchViewModel
 @using JO_UNI_Guide.Helpers
+
 @{
     ViewData["Title"] = "Smart Search";
     Layout = "_StudentLayout";
 }
 
 <div class="row g-4 mt-2">
+
+    <!-- Sidebar -->
     <div class="col-lg-3">
         <div class="search-sidebar shadow-sm">
+
             <h5 class="filter-title mb-4">
                 <i class="bi bi-sliders2-vertical me-2"></i>Smart Filter
             </h5>
-            <form asp-action="SmartSearch" method="get">
+
+            <form asp-action="SmartSearch" asp-controller="Student" method="get">
+
+                <!-- Keyword -->
                 <div class="smart-input-group position-relative">
                     <label class="small fw-bold text-muted">Keywords</label>
-                    <input type="text" id="autoCompleteInput" name="Keyword" value="@Model.Keyword"
-                           class="form-control" placeholder="Major, University..." autocomplete="off">
-                    <div id="suggestionsBox" class="list-group position-absolute w-100 shadow-lg d-none" style="z-index: 1000; top: 100%;"></div>
+                    <input type="text"
+                           id="autoCompleteInput"
+                           name="Keyword"
+                           value="@Model.Keyword"
+                           class="form-control"
+                           placeholder="Major, University..."
+                           autocomplete="off">
+
+                    <div id="suggestionsBox"
+                         class="list-group position-absolute w-100 shadow-lg d-none"
+                         style="z-index: 1000; top: 100%;">
+                    </div>
                 </div>
 
+                <!-- Price -->
                 <div class="smart-input-group mt-3">
                     <label class="small fw-bold text-muted">Max Price / Hour (JOD)</label>
-                    <input type="number" name="MaxHourPrice" value="@Model.MaxHourPrice"
-                           class="form-control" placeholder="e.g. 50">
+                    <input type="number"
+                           name="MaxHourPrice"
+                           value="@Model.MaxHourPrice"
+                           class="form-control"
+                           placeholder="e.g. 50">
                 </div>
 
+                <!-- Equivalent Grade -->
                 <div class="smart-input-group mt-3">
                     <label class="small fw-bold text-muted">Your GPA</label>
-                    <input type="number" step="0.1" name="StudentGPA" value="@Model.StudentGPA"
-                           class="form-control" placeholder="e.g. 85.5">
+                    <input type="number"
+                           step="0.1"
+                           name="EquivalentGrade"
+                           value="@Model.EquivalentGrade"
+                           class="form-control"
+                           placeholder="e.g. 85.5">
                 </div>
 
+                <!-- University Type -->
                 <div class="smart-input-group mt-3">
                     <label class="small fw-bold text-muted">University Type</label>
                     <select name="UniType" class="form-select">
@@ -40,18 +66,24 @@
                     </select>
                 </div>
 
+                <!-- Buttons -->
                 <button type="submit" class="btn btn-search w-100 mt-4 py-2 shadow-sm">
                     <i class="bi bi-search me-2"></i>Apply Search
                 </button>
 
-                <a asp-action="SmartSearch" class="btn btn-light w-100 mt-2 border py-2">
+                <a asp-action="SmartSearch"
+                   asp-controller="Student"
+                   class="btn btn-light w-100 mt-2 border py-2">
                     <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
                 </a>
+
             </form>
         </div>
     </div>
 
+    <!-- Results -->
     <div class="col-lg-9">
+
         @if (Model.Results != null && Model.Results.Any())
         {
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -61,67 +93,103 @@
             </div>
 
             <div class="row g-4">
+
                 @foreach (var item in Model.Results)
                 {
                     <div class="col-md-6">
+
                         <div class="card result-card border-0 shadow-sm h-100">
+
                             <div class="card-body p-4">
+
+                                <!-- University -->
                                 <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <span class="uni-name">@item.Faculty?.University?.Name</span>
-                                    <span class="badge @(item.Faculty?.University?.Type.ToString() == "Governmental" ? "bg-info text-dark" : "bg-light text-muted border")" style="font-size: 10px;">
-                                        @(item.Faculty?.University?.Type)
+                                    <span class="uni-name">
+                                        @item.Faculty?.University?.Name
                                     </span>
-                                </div>
 
-                                <h5 class="dept-name">@item.DepartmentName</h5>
+                                    <span class="badge @(item.Faculty?.University?.Type == JO_UNI_Guide.Models.UniversityType.Governmental
+                                                                                  ? "bg-info text-dark"
+                                                                                  : "bg-light text-muted border")"
+                                  style="font-size: 10px;">
+                                @item.Faculty?.University?.Type
+                            </span>
+                        </div>
+
+                                <!-- Department -->
+                                <h5 class="dept-name">
+                                    @item.DepartmentName
+                                </h5>
+
                                 <p class="text-muted small mb-3">
-                                    <i class="bi bi-building me-1"></i>@item.Faculty?.Name
+                                    <i class="bi bi-building me-1"></i>
+                                    @item.Faculty?.Name
                                 </p>
-
-                                @if (item.RequiredTrack.HasValue)
-                                {
-                                    <span class="badge mb-3 track-badge">
-                                        <i class="bi bi-journal-bookmark me-1"></i>
-                                        @item.RequiredTrack.Value.GetDisplayName()
-                                    </span>
-                                }
-
                                 <hr class="opacity-25 my-3">
 
+                                <!-- Info -->
                                 <div class="d-flex justify-content-between align-items-center mt-auto">
+
                                     <span class="price-tag">
-                                        <i class="bi bi-cash-stack me-1"></i>@item.HourPrice JOD
+                                        <i class="bi bi-cash-stack me-1"></i>
+                                        @item.HourPrice JOD
                                     </span>
+
                                     <span class="rate-tag">
-                                        <i class="bi bi-graph-up-arrow me-1"></i>@item.AcceptanceRate%
+                                        <i class="bi bi-graph-up-arrow me-1"></i>
+                                        @item.MinEquivalentGrade %
                                     </span>
+
                                 </div>
+
                             </div>
+
                         </div>
+
                     </div>
                 }
+
             </div>
         }
         else
         {
             <div class="empty-state text-center py-5 shadow-sm rounded-4 bg-white mt-4">
-                <i class="bi bi-search-heart mb-3 d-block text-muted" style="font-size: 4rem; opacity: 0.5;"></i>
+
+                <i class="bi bi-search-heart mb-3 d-block text-muted"
+                   style="font-size: 4rem; opacity: 0.5;"></i>
+
                 <h5 class="fw-bold">No results found</h5>
-                <p class="text-muted px-5">We couldn't find any departments matching your current filters. Try relaxing your GPA or Price requirements.</p>
-                <a asp-action="SmartSearch" class="btn btn-danger rounded-pill px-4 mt-2">View All Departments</a>
+
+                <p class="text-muted px-5">
+                    We couldn't find any departments matching your filters.
+                    Try relaxing your GPA or price limits.
+                </p>
+
+                <a asp-action="SmartSearch"
+                   asp-controller="Student"
+                   class="btn btn-danger rounded-pill px-4 mt-2">
+                    View All Departments
+                </a>
+
             </div>
         }
+
     </div>
+
 </div>
 
+<!-- Scripts -->
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+
             const input = document.getElementById("autoCompleteInput");
             const box = document.getElementById("suggestionsBox");
 
             input.addEventListener("input", async function () {
+
                 const term = input.value.trim();
+
                 if (term.length < 2) {
                     box.classList.add("d-none");
                     return;
@@ -134,15 +202,18 @@
                     if (data.length > 0) {
                         box.innerHTML = data.map(item => `
                             <button type="button" class="list-group-item list-group-item-action py-2">
-                                <i class="bi bi-search me-2 text-muted" style="font-size: 0.8rem;"></i>${item.name}
+                                <i class="bi bi-search me-2 text-muted" style="font-size: 0.8rem;"></i>
+                                ${item.name}
                             </button>
                         `).join('');
+
                         box.classList.remove("d-none");
                     } else {
                         box.classList.add("d-none");
                     }
+
                 } catch (error) {
-                    console.error("Suggestions error:", error);
+                    console.error(error);
                 }
             });
 
@@ -156,8 +227,11 @@
             });
 
             document.addEventListener("click", (e) => {
-                if (e.target !== input) box.classList.add("d-none");
+                if (e.target !== input) {
+                    box.classList.add("d-none");
+                }
             });
+
         });
     </script>
 }

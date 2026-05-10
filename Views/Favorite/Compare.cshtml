@@ -1,67 +1,280 @@
 ﻿@model JO_UNI_Guide.Models.ComparisonViewModel
-@using JO_UNI_Guide.Helpers
+
 @{
     ViewData["Title"] = "Compare Departments";
     Layout = "_StudentLayout";
+
+    var depts = Model.SelectedDepartments;
+
+    var easiest = depts.OrderBy(d => d.MinEquivalentGrade).First();
+    var cheapest = depts.OrderBy(d => d.HourPrice).First();
+    var shortest = depts.OrderBy(d => d.TotalCreditHours).First();
 }
 
-<div class="container mt-4">
-    <h2 class="page-title mb-4">Department Comparison</h2>
+<div class="container-fluid py-4">
 
-    <div style="display: grid; grid-template-columns: repeat(@Model.SelectedDepartments.Count, minmax(0, 1fr)); gap: 16px;">
-        @foreach (var dept in Model.SelectedDepartments)
+    <!-- HEADER -->
+    <div class="compare-hero d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+        <div>
+            <h2 class="compare-main-title mb-2">
+                <i class="bi bi-columns-gap me-2"></i>
+                Compare Majors
+            </h2>
+
+            <p class="compare-main-subtitle mb-0">
+                Compare majors side-by-side and find the best fit for you.
+            </p>
+        </div>
+
+        <a asp-action="MyFavorites"
+           asp-controller="Favorite"
+           class="btn compare-back-button">
+
+            <i class="bi bi-arrow-left me-2"></i>
+            Back
+
+        </a>
+
+    </div>
+
+    <!-- CARDS -->
+    <div class="row g-4 mt-1">
+
+        @foreach (var dept in depts)
         {
-            <div style="background: var(--bs-body-bg); border: 1px solid #dee2e6; border-radius: 12px; padding: 1.25rem;">
+            var totalCost = dept.HourPrice * dept.TotalCreditHours;
 
-                <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #dee2e6;">
-                    <h5 class="mb-1">@dept.DepartmentName</h5>
-                    <span class="text-muted" style="font-size: 13px;">@dept.Faculty?.Name</span><br />
-                    <span class="text-muted" style="font-size: 12px;">@dept.Faculty?.University?.Name</span>
+            var isEasy = dept.Department_ID == easiest.Department_ID;
+            var isCheap = dept.Department_ID == cheapest.Department_ID;
+            var isShort = dept.Department_ID == shortest.Department_ID;
+
+            var dbLogo = dept.Faculty?.University?.Logo;
+
+            var finalSrc = string.IsNullOrWhiteSpace(dbLogo)
+            ? "/images/logo.png"
+            : (dbLogo.Contains("images")
+            ? "/" + dbLogo.TrimStart('/')
+            : "/images/" + dbLogo.TrimStart('/'));
+
+            <div class="col-xl col-lg-4 col-md-6">
+
+                <div class="compare-major-card h-100">
+
+                    <!-- TOP -->
+                    <div class="compare-card-header">
+
+                        <div class="compare-logo-box">
+                            <img src="@finalSrc" alt="logo" />
+                        </div>
+
+                        <h5 class="compare-major-name">
+                            @dept.DepartmentName
+                        </h5>
+
+                        <div class="compare-faculty-name">
+                            @dept.Faculty?.Name
+                        </div>
+
+                        <div class="compare-uni-name">
+                            @dept.Faculty?.University?.Name
+                        </div>
+
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="compare-card-body">
+
+                        <!-- Grade -->
+                        <div class="compare-info-box @(isEasy ? "compare-highlight" : "")">
+
+                            <div>
+                                <div class="compare-label">
+                                    Required Grade
+                                </div>
+
+                                <div class="compare-value">
+                                    @dept.MinEquivalentGrade%
+                                </div>
+                            </div>
+
+                            @if (isEasy)
+                            {
+                                <span class="compare-pill">
+                                    Easier
+                                </span>
+                            }
+
+                        </div>
+
+                        <!-- Price -->
+                        <div class="compare-info-box @(isCheap ? "compare-highlight" : "")">
+
+                            <div>
+                                <div class="compare-label">
+                                    Cost Per Hour
+                                </div>
+
+                                <div class="compare-value">
+                                    @dept.HourPrice JOD
+                                </div>
+                            </div>
+
+                            @if (isCheap)
+                            {
+                                <span class="compare-pill">
+                                    Cheaper
+                                </span>
+                            }
+
+                        </div>
+
+                        <!-- Hours -->
+                        <div class="compare-info-box @(isShort ? "compare-highlight" : "")">
+
+                            <div>
+                                <div class="compare-label">
+                                    Credit Hours
+                                </div>
+
+                                <div class="compare-value">
+                                    @dept.TotalCreditHours hrs
+                                </div>
+                            </div>
+
+                            @if (isShort)
+                            {
+                                <span class="compare-pill">
+                                    Shorter
+                                </span>
+                            }
+
+                        </div>
+
+                        <!-- Total -->
+                        <div class="compare-total-cost">
+
+                            <div class="compare-label">
+                                Estimated Total Cost
+                            </div>
+
+                            <div class="compare-total-price">
+                                @totalCost.ToString("N0") JOD
+                            </div>
+
+                        </div>
+
+                        <!-- Description -->
+                        @if (!string.IsNullOrWhiteSpace(dept.Details))
+                        {
+                            <div class="compare-description-box">
+
+                                <div class="compare-description-title">
+                                    About Major
+                                </div>
+
+                                <p>
+                                    @dept.Details
+                                </p>
+
+                            </div>
+                        }
+
+                        <!-- BTN -->
+                        <a asp-action="MajorDetails"
+                           asp-controller="Student"
+                           asp-route-id="@dept.Department_ID"
+                           class="compare-details-btn">
+
+                            View Details
+                            <i class="bi bi-arrow-right-short ms-1"></i>
+
+                        </a>
+
+                    </div>
+
                 </div>
 
-                <table class="table table-sm mb-0">
-                    <tbody>
-                        <tr>
-                            <td class="text-muted">Acceptance Rate</td>
-                            <td><strong>@dept.AcceptanceRate%</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">Price/Hour</td>
-                            <td><strong>@dept.HourPrice JOD</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">Credit Hours</td>
-                            <td><strong>@dept.TotalCreditHours</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">Required Track</td>
-                            <td>
-                                @if (dept.RequiredTrack.HasValue)
-                                {
-                                    <span class="badge bg-info text-dark">
-                                        @dept.RequiredTrack.Value.GetDisplayName()
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">Any</span>
-                                }
-                            </td>
-                        </tr>
-                        @if (!string.IsNullOrEmpty(dept.Details))
-                        {
-                            <tr>
-                                <td class="text-muted">Details</td>
-                                <td style="font-size: 13px;">@dept.Details</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
             </div>
         }
+
     </div>
 
-    <div class="mt-4">
-        <a asp-action="MyFavorites" asp-controller="Favorite" class="btn btn-secondary">Back to Favorites</a>
+    <!-- SUMMARY -->
+    <div class="compare-summary-section">
+
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <i class="bi bi-stars fs-4 text-warning"></i>
+
+            <h4 class="mb-0 fw-bold">
+                Quick Summary
+            </h4>
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+
+                <div class="summary-card-box">
+
+                    <div class="summary-emoji">
+                        🎯
+                    </div>
+
+                    <div class="summary-label">
+                        Easier Admission
+                    </div>
+
+                    <div class="summary-major-name">
+                        @easiest.DepartmentName
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="summary-card-box">
+
+                    <div class="summary-emoji">
+                        💰
+                    </div>
+
+                    <div class="summary-label">
+                        Lower Cost
+                    </div>
+
+                    <div class="summary-major-name">
+                        @cheapest.DepartmentName
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="summary-card-box">
+
+                    <div class="summary-emoji">
+                        ⚡
+                    </div>
+
+                    <div class="summary-label">
+                        Shorter Duration
+                    </div>
+
+                    <div class="summary-major-name">
+                        @shortest.DepartmentName
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
+
 </div>

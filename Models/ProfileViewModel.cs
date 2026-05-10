@@ -7,8 +7,12 @@
         public string? Governorate { get; set; }
 
         // معلومات أكاديمية
-        public double? GPA { get; set; }
-        public TawjihiTrack? TawjihiTrack { get; set; }
+       
+        public CertificateType CertificateType { get; set; }
+
+        public double? OriginalGrade { get; set; }
+
+        public double? EquivalentGrade { get; set; }
         public string? PreferredUniType { get; set; }
 
         // إحصائيات

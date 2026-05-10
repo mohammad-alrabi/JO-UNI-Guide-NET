@@ -64,7 +64,7 @@
                 string heartIconClass = isFav ? "bi-heart-fill text-danger" : "bi-heart";
 
                 <div class="col-xl-4 col-md-6 major-card-item"
-                     data-gpa="@item.AcceptanceRate"
+                     data-gpa="@item.MinEquivalentGrade"
                      data-type="@item.Faculty?.University?.Type.ToString()">
 
                     <div class="card h-100 border-0 shadow-sm major-card position-relative" style="border-radius: var(--radius-md);">
@@ -98,7 +98,7 @@
                                 </div>
                                 <div class="text-end">
                                     <span class="d-block small text-muted" style="font-size: 0.75rem;">AcceptanceRate</span>
-                                    <span class="fw-bold text-danger fs-5">@item.AcceptanceRate%</span>
+                                    <span class="fw-bold text-danger fs-5">@item.MinEquivalentGrade%</span>
                                 </div>
                             </div>
                         </div>

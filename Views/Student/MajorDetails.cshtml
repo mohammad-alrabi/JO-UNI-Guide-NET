@@ -1,5 +1,4 @@
 ﻿@model JO_UNI_Guide.Models.Department
-@using JO_UNI_Guide.Helpers
 @{
     ViewData["Title"] = Model.DepartmentName;
     Layout = "_StudentLayout";
@@ -27,13 +26,6 @@
                 <span class="badge-faculty-name">@Model.Faculty?.Name</span>
             </div>
             <h2 class="fw-bold mb-1" style="color:var(--text-main);">@Model.DepartmentName</h2>
-            @if (Model.RequiredTrack.HasValue)
-            {
-                <span class="track-pill">
-                    <i class="bi bi-journal-bookmark-fill me-1"></i>
-                    @Model.RequiredTrack.Value.GetDisplayName()
-                </span>
-            }
         </div>
     </div>
 </div>
@@ -45,8 +37,8 @@
             <div class="major-stat-icon mx-auto mb-3" style="background:rgba(131,3,3,0.07);color:var(--brand-red);">
                 <i class="bi bi-bar-chart-fill"></i>
             </div>
-            <div class="major-stat-label">Min. Acceptance Rate</div>
-            <div class="major-stat-value">@Model.AcceptanceRate%</div>
+            <div class="major-stat-label">Min. Acceptance Grade</div>
+            <div class="major-stat-value">@Model.MinEquivalentGrade%</div>
         </div>
     </div>
     <div class="col-md-4">

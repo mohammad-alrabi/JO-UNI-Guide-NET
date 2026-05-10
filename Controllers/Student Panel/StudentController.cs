@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using JO_UNI_Guide.Service;
+using JO_UNI_Guide.interfaces;
+
 
 namespace JO_UNI_Guide.Controllers.Student_Panel
 {
@@ -25,13 +28,10 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
         public async Task<IActionResult> Onboarding()
         {
             var user = await _userManager.GetUserAsync(User);
-
             if (user == null)
                 return RedirectToAction("Login", "Account");
-
             if (user.IsOnboarded)
                 return RedirectToAction("Dashboard", "Student");
-
             return View();
         }
 
@@ -39,28 +39,37 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Onboarding(OnboardingViewModel model)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-
             var user = await _userManager.GetUserAsync(User);
-
             if (user == null)
                 return RedirectToAction("Login", "Account");
 
-            user.GPA = model.GPA;
-            user.TawjihiTrack = model.TawjihiTrack;
+            // التحقق من صحة الدرجة حسب نوع الشهادة
+            var gradeValid = model.CertificateType switch
+            {
+                CertificateType.Tawjihi => model.OriginalGrade >= 0 && model.OriginalGrade <= 100,
+                CertificateType.Saudi => model.OriginalGrade >= 0 && model.OriginalGrade <= 100,
+                CertificateType.AmericanHighSchool => model.OriginalGrade >= 0 && model.OriginalGrade <= 4,
+                CertificateType.IGCSE => model.OriginalGrade >= 0 && model.OriginalGrade <= 8,
+                CertificateType.IB => model.OriginalGrade >= 1 && model.OriginalGrade <= 45,
+                _ => model.OriginalGrade >= 0 && model.OriginalGrade <= 100
+            };
+
+            if (!gradeValid)
+                ModelState.AddModelError("OriginalGrade",
+                    "Please enter a valid grade for your certificate type.");
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            user.CertificateType = model.CertificateType;
+            user.OriginalGrade = model.OriginalGrade;
+            var converter = GradeConverterFactory.GetConverter(model.CertificateType);
+            user.EquivalentGrade = Math.Min(100, converter.Convert(model.OriginalGrade ?? 0));
             user.PreferredUniType = model.PreferredUniType;
             user.IsOnboarded = true;
 
-            var result = await _userManager.UpdateAsync(user);
-
-            if (result.Succeeded)
-                return RedirectToAction("Dashboard", "Student");
-
-            foreach (var error in result.Errors)
-                ModelState.AddModelError("", error.Description);
-
-            return View(model);
+            await _userManager.UpdateAsync(user);
+            return RedirectToAction("Dashboard", "Student");
         }
 
         [HttpGet]
@@ -74,25 +83,34 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
             if (!user.IsOnboarded)
                 return RedirectToAction("Onboarding", "Student");
 
-            // FIX: نفس منطق ProposedMajors — يأخذ Track بعين الاعتبار عشان الأرقام تتطابق
-            var matchingMajorsCount = await _context.Departments
-                .CountAsync(d => d.AcceptanceRate <= user.GPA
-                    && (d.RequiredTrack == null || d.RequiredTrack == user.TawjihiTrack));
+            // 🔴 حماية من null (مهم جداً)
+            var equivalentGrade = user.EquivalentGrade ?? 0;
 
-            // FIX: Include موجود + نفس شرط الـ Track
+            // =========================
+            // Matching Count
+            // =========================
+            var matchingMajorsCount = await _context.Departments
+              .CountAsync(d => d.MinEquivalentGrade <= equivalentGrade);
+
+
+            // =========================
+            // Top Majors
+            // =========================
             var topMajors = await _context.Departments
                 .Include(d => d.Faculty)
                     .ThenInclude(f => f.University)
-                .Where(d => d.AcceptanceRate <= user.GPA
-                    && (d.RequiredTrack == null || d.RequiredTrack == user.TawjihiTrack))
-                .OrderByDescending(d => d.AcceptanceRate)
+                         .Where(d => d.MinEquivalentGrade <= equivalentGrade)
+                .OrderByDescending(d => d.MinEquivalentGrade)
                 .Take(5)
                 .ToListAsync();
 
+            // =========================
+            // ViewModel
+            // =========================
             var model = new StudentDashboardViewModel
             {
                 Name = user.Name,
-                GPA = user.GPA,
+                GPA = equivalentGrade, // 🔥 أهم إصلاح (بدون null / بدون 1000%)
                 MatchingMajorsCount = matchingMajorsCount,
                 TopMajors = topMajors
             };
@@ -109,14 +127,13 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
                 return RedirectToAction("Login", "Account");
 
             // FIX: حماية ضد null قبل الـ cast
-            if (user.GPA == null)
+            if (user.EquivalentGrade == null)
                 return RedirectToAction("Onboarding", "Student");
 
             var query = _context.Departments
                 .Include(d => d.Faculty)
                     .ThenInclude(f => f.University)
-                .Where(d => d.AcceptanceRate <= user.GPA.Value
-                    && (d.RequiredTrack == null || d.RequiredTrack == user.TawjihiTrack))
+                .Where(d => d.MinEquivalentGrade <= user.EquivalentGrade.Value)
                 .AsQueryable();
 
             if (user.PreferredUniType == "Public")
@@ -124,7 +141,7 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
             else if (user.PreferredUniType == "Private")
                 query = query.Where(d => d.Faculty.University.Type == UniversityType.Private);
 
-            var result = await query.OrderByDescending(d => d.AcceptanceRate).ToListAsync();
+            var result = await query.OrderByDescending(d => d.MinEquivalentGrade).ToListAsync();
             var userId = _userManager.GetUserId(User);
             var userFavorites = await _context.Favorites
                 .Where(f => f.UserId == userId)
@@ -132,16 +149,16 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
                 .ToListAsync();
 
             ViewBag.UserFavorites = userFavorites;
+
             foreach (var item in result)
             {
-                _logger.LogInformation($"Department: {item.DepartmentName}, MinGPA: {item.AcceptanceRate}");
+                _logger.LogInformation($"Department: {item.DepartmentName}, MinGPA: {item.MinEquivalentGrade}");
             }
 
             return View(result);
         }
 
         // for universities : 
-        // Task for Bhaa 
         [HttpGet]
         public async Task<IActionResult> Universities()
         {
@@ -184,6 +201,8 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
         }
         public async Task<IActionResult> SmartSearch(SmartSearchViewModel searchViewModel)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             var query = _context.Departments
                 .Include(d => d.Faculty)
                     .ThenInclude(f => f.University)
@@ -195,24 +214,29 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
                 query = query.Where(d => d.DepartmentName.Contains(searchViewModel.Keyword) ||
                                      d.Faculty.University.Name.Contains(searchViewModel.Keyword));
             }
+
             //  الفلترة حسب سعر الساعة
             if (searchViewModel.MaxHourPrice.HasValue)
             {
                 query = query.Where(d => d.HourPrice <= searchViewModel.MaxHourPrice.Value);
             }
+
             //  الفلترة حسب المعدل (ليش هو سمارت؟ لأنه بطلع بس اللي بقبله الطالب)
-            if (searchViewModel.StudentGPA.HasValue)
+            if (user?.EquivalentGrade != null)
             {
-                query = query.Where(d => d.AcceptanceRate <= searchViewModel.StudentGPA.Value);
+                query = query.Where(d => d.MinEquivalentGrade <= user.EquivalentGrade);
             }
+
             //  الفلترة حسب نوع الجامعة
             if (searchViewModel.UniType.HasValue)
             {
                 query = query.Where(d => d.Faculty.University.Type == searchViewModel.UniType.Value);
             }
+
             searchViewModel.Results = await query
-                .OrderBy(d => d.AcceptanceRate)
+                .OrderBy(d => d.MinEquivalentGrade)
                 .ToListAsync();
+
             return View(searchViewModel);
         }
         [HttpGet]
@@ -241,8 +265,7 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
                 Name = user.Name,
                 Email = user.Email,
                 Governorate = user.Governorate,
-                GPA = user.GPA,
-                TawjihiTrack = user.TawjihiTrack,
+                EquivalentGrade = user.EquivalentGrade,
                 PreferredUniType = user.PreferredUniType,
                 FavoritesCount = await _context.Favorites
                     .CountAsync(f => f.UserId == user.Id)
@@ -261,8 +284,13 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
 
             user.Name = model.Name;
             user.Governorate = model.Governorate;
-            user.GPA = model.GPA;
-            user.TawjihiTrack = model.TawjihiTrack;
+            user.OriginalGrade = model.OriginalGrade;
+            user.CertificateType = model.CertificateType;
+            var converter = GradeConverterFactory
+                .GetConverter(model.CertificateType);
+            user.EquivalentGrade = Math.Min(100, converter.Convert(model.OriginalGrade ?? 0));
+            user.CertificateType = model.CertificateType;
+            user.OriginalGrade = model.OriginalGrade;
             user.PreferredUniType = model.PreferredUniType;
 
             await _userManager.UpdateAsync(user);

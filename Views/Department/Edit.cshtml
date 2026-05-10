@@ -31,11 +31,11 @@
         <div class="row g-3 p-3 bg-light rounded-3 mb-4">
             @* 1. معدل القبول - تغيير الاسم لـ AcceptanceRate *@
             <div class="col-md-4">
-                <label asp-for="AcceptanceRate" class="form-label fw-bold small text-primary text-uppercase">
+                <label asp-for="MinEquivalentGrade" class="form-label fw-bold small text-primary text-uppercase">
                     <i class="bi bi-graph-up-arrow me-1"></i> Acceptance Rate (%)
                 </label>
-                <input asp-for="AcceptanceRate" class="form-control shadow-sm" type="number" step="0.01" />
-                <span asp-validation-for="AcceptanceRate" class="text-danger small"></span>
+                <input asp-for="MinEquivalentGrade" class="form-control shadow-sm" type="number" step="0.01" />
+                <span asp-validation-for="MinEquivalentGrade" class="text-danger small"></span>
             </div>
 
             @* 2. سعر الساعة *@

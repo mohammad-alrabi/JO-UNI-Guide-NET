@@ -65,14 +65,14 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
         [HttpGet] 
         public async Task<IActionResult> MyFavorites() 
         { 
-            var userId = _userManager.GetUserId(User); 
+            var userId = _userManager.GetUserId(User);
             var favorites = await _context.Favorites
-                .Include(f => f.Department)
-                    .ThenInclude(d => d.Faculty)
-                        .ThenInclude(fac => fac.University)
-                            .Where(f => f.UserId == userId)
-                                .OrderByDescending(f => f.SavedDate)
-                                    .ToListAsync();
+     .Include(f => f.Department)
+         .ThenInclude(d => d.Faculty)
+             .ThenInclude(fac => fac.University)
+     .Where(f => f.UserId == userId)
+     .OrderByDescending(f => f.SavedDate)
+     .ToListAsync();
             return View(favorites);
         }
         [HttpGet]
@@ -91,11 +91,12 @@ namespace JO_UNI_Guide.Controllers.Student_Panel
 
             //  جلب التخصصات المختارة
             var departmentsToCompare = await _context.Departments
-                .Include(d => d.Faculty)
-                    .ThenInclude(f => f.University)
-                .Where(d => departmentIds.Contains(d.Department_ID))
-                .AsNoTracking()
-                .ToListAsync();
+      .Include(d => d.Faculty)
+          .ThenInclude(f => f.University)
+      .Include(d => d.Courses)
+      .Where(d => departmentIds.Contains(d.Department_ID))
+      .AsNoTracking()
+      .ToListAsync();
 
             //  تأكد فعلاً عندك 2 تخصص أو أكثر بعد الجلب
             if (departmentsToCompare.Count < 2)
