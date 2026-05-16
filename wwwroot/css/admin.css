@@ -551,3 +551,22 @@ th, td {
         background-color: #0b5ed7;
         color: white;
     }
+.message-card {
+    transition: all 0.3s ease;
+    border: 1px solid #eef2ff;
+    background: rgba(255,255,255,0.8);
+}
+
+    .message-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+        border-color: rgba(79,70,229,0.15);
+    }
+
+.message-preview {
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

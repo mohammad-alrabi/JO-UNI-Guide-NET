@@ -173,36 +173,99 @@
                 </div>
 
                 @* Latest Messages List *@
-                <div class="card shadow-sm border-0 rounded-4 bg-white">
-                    <div class="card-header bg-white border-0 pt-4 px-4">
-                        <h5 class="fw-bold text-dark m-0"><i class="bi bi-envelope-open me-2 text-info"></i> Recent Messages</h5>
+                <div class="card-ui">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+
+                        <h5 class="fw-bold m-0">
+                            <i class="bi bi-envelope-open me-2 text-info"></i>
+                            Recent Messages
+                        </h5>
+
+                        <span class="badge-ui badge-soft-primary">
+                            @(Model.LatestMessages?.Count() ?? 0) Messages
+                        </span>
+
                     </div>
-                    <div class="card-body p-4 pt-2">
-                        @if (Model.LatestMessages != null && Model.LatestMessages.Any())
-                        {
-                            <div class="list-group list-group-flush">
-                                @foreach (var msg in Model.LatestMessages)
-                                {
-                                    <div class="list-group-item px-0 py-3 border-0 border-bottom">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <h6 class="fw-bold mb-0 text-dark">@msg.Name</h6>
-                                            <small class="text-muted">@msg.SentDate.ToString("MMM dd")</small>
+
+                    @if (Model.LatestMessages != null && Model.LatestMessages.Any())
+                    {
+                        <div class="d-flex flex-column gap-3">
+
+                            @foreach (var msg in Model.LatestMessages)
+                            {
+                                <div class="message-card p-3 rounded-4 border bg-light-subtle">
+
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+
+                                        <div>
+
+                                            @* الاسم *@
+                                            <h6 class="fw-bold text-dark mb-1">
+                                                @msg.Name
+                                            </h6>
+
+                                            @* الايميل *@
+                                            <div class="small text-muted">
+
+                                                <i class="bi bi-envelope me-1 text-primary"></i>
+
+                                                <a href="mailto:@msg.Email"
+                                                   class="text-decoration-none text-primary fw-semibold">
+
+                                                    @msg.Email
+
+                                                </a>
+
+                                            </div>
+
                                         </div>
-                                        <div class="text-muted small text-truncate" style="max-width: 100%;">
-                                            <span class="text-primary fw-semibold">@msg.Subject:</span> @msg.Message
-                                        </div>
+
+                                        <small class="text-muted">
+                                            @msg.SentDate.ToString("MMM dd")
+                                        </small>
+
                                     </div>
-                                }
+
+                                    @* الموضوع *@
+                                    <div class="mb-2">
+
+                                        <span class="badge-ui badge-soft-warning">
+                                            @msg.Subject
+                                        </span>
+
+                                    </div>
+
+                                    @* الرسالة *@
+                                    <p class="text-muted small mb-0 message-preview">
+                                        @msg.Message
+                                    </p>
+
+                                </div>
+                            }
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+
+                            <div class="mb-3">
+                                <i class="bi bi-inbox text-muted"
+                                   style="font-size: 3rem;"></i>
                             </div>
-                        }
-                        else
-                        {
-                            <div class="text-center py-4">
-                                <i class="bi bi-inbox text-muted fs-2"></i>
-                                <p class="text-muted small mt-2">No messages received yet.</p>
-                            </div>
-                        }
-                    </div>
+
+                            <h6 class="fw-bold text-muted">
+                                No Messages Yet
+                            </h6>
+
+                            <p class="text-muted small mb-0">
+                                Messages sent by users will appear here.
+                            </p>
+
+                        </div>
+                    }
+
                 </div>
 
             </div>

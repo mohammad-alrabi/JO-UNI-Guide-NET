@@ -14,11 +14,7 @@
             <p class="text-muted small">Manage admission rates, tuition fees, and credit hours</p>
         </div>
         <div class="d-flex gap-2">
-            @* زر تحميل Excel الذي تحدثنا عنه سابقاً *@
-            <a asp-action="ExportToExcel" class="btn btn-outline-success rounded-pill px-3 shadow-sm">
-                <i class="bi bi-file-earmark-excel me-1"></i> Export
-            </a>
-            <a asp-action="Create" class="btn btn-primary px-4 rounded-pill shadow-sm">
+            <a asp-action="Create" class="btn btn-main px-4">
                 <i class="bi bi-plus-lg me-2"></i> Add Department
             </a>
         </div>
@@ -173,24 +169,3 @@
     }
 
 </div>
-
-@section Scripts {
-    <style>
-        .hover-primary:hover {
-            color: #0d6efd !important;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .smaller {
-            font-size: 0.75rem;
-        }
-
-        .table th, .table td {
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-    </style>
-}
